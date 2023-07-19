@@ -198,10 +198,10 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
                         scale: image_params.scale,
                         ..default()
                     },
-                    texture: asset_server.load("button.png"),
+                    texture: asset_server.load("settings/button_dark.png"),
                     sprite: Sprite {
                         anchor: image_params.anchor,
-                        color: RED_COLOR_DIM,
+                        color: RED_COLOR_DIM.with_l(0.5),
                         ..default()
                     },
                     ..Default::default()
