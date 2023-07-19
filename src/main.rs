@@ -2,9 +2,6 @@ use bevy::audio::Volume;
 use bevy_lunex::prelude::*;
 use bevy::{prelude::*, sprite::Anchor};
 
-
-
-//# This is where Main Menu is styled
 mod general;
 use general::*;
 
@@ -18,6 +15,7 @@ use menu_main::*;
 use bevy::core_pipeline::bloom::{BloomSettings, BloomPrefilterSettings, BloomCompositeMode};
 use bevy::core_pipeline::tonemapping::Tonemapping;
 use rand::Rng;
+
 
 fn main() {
     App::new()
@@ -45,7 +43,6 @@ fn main() {
 
         .run();
 }
-
 
 fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
 
@@ -123,7 +120,6 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
 }
 
 
-
 //################################################################################
 //# == Bloom Update ==
 //# Just a quick system to randomly change bloom threshold (smoothly)
@@ -137,19 +133,3 @@ fn vfx_bloom_update (mut query: Query<&mut BloomSettings>) {
         bloom.prefilter_settings.threshold += (rng.gen_range(0.2..0.35)-bloom.prefilter_settings.threshold)/10.;
     }
 }
-
-
-/*fn mouse_click_system(mouse_button_input: Res<Input<MouseButton>>, mut systems: Query<&mut Hierarchy>,) {
-    let mut system = systems.get_single_mut().unwrap();
-
-    if mouse_button_input.just_pressed(MouseButton::Left) {
-
-        let visibility = Widget {path: "Main_Menu".to_string()}.fetch(&system, "").unwrap().get_visibility();
-        Widget {path: "Main_Menu".to_string()}.fetch_mut(&mut system, "").unwrap().set_visibility(!visibility);
-
-        Widget {path: "Settings".to_string()}.fetch_mut(&mut system, "").unwrap().set_visibility(visibility);
-
-    }
-
-
-}*/

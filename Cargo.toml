@@ -1,5 +1,5 @@
 [package]
-name = "lunex"
+name = "bevy-lunex-cyberpunk"
 version = "0.1.0"
 edition = "2021"
 
@@ -12,10 +12,8 @@ opt-level = 3
 
 [dependencies]
 ahash = "0.8.3"
-#bevy = "0.11"
-#bevy = { version = "0.11", features = ["dynamic_linking"] }
+#Currently requires extra features, so I had to fork Bevy. But PR is on its way, hopefully it will arrive in 0.12 or on main in few days
 bevy = { git = "https://github.com/idedary/bevy", features = ["dynamic_linking"] }
 rand = "0.8.5"
 
-#bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch = "main" }
-bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex" }
+bevy_lunex = { git = "https://github.com/bytestring-net/bevy-lunex", branch = "main" }
