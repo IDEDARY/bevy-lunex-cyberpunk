@@ -9,11 +9,17 @@ opt-level = 1
 [profile.dev.package."*"]
 opt-level = 3
 
+[profile.release]
+strip = true
+lto = "fat"
+
 
 [dependencies]
 ahash = "0.8.3"
 #Currently requires extra features, so I had to fork Bevy. But PR is on its way, hopefully it will arrive in 0.12 or on main in few days
 bevy = { git = "https://github.com/idedary/bevy", features = ["dynamic_linking"] }
+#bevy = { git = "https://github.com/idedary/bevy", default-features = false, features = ["bevy_sprite", "bevy_render", "bevy_text", "bevy_audio", "png", "vorbis", "bevy_winit", "x11"] }
 rand = "0.8.5"
 
-bevy_lunex = { git = "https://github.com/bytestring-net/bevy-lunex", branch = "main" }
+#bevy_lunex = { git = "https://github.com/bytestring-net/bevy-lunex", branch = "main" }
+bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy-lunex" }
