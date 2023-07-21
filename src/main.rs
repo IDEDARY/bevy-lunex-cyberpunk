@@ -5,11 +5,14 @@ use bevy::{prelude::*, sprite::Anchor};
 mod general;
 use general::*;
 
-mod menu_settings;
-use menu_settings::*;
+mod style;
+use style::*;
 
-mod menu_main;
-use menu_main::*;
+mod ui_settings;
+use ui_settings::*;
+
+mod ui_mainmenu;
+use ui_mainmenu::*;
 
 //# For visual effects only
 use bevy::core_pipeline::bloom::{BloomSettings, BloomPrefilterSettings, BloomCompositeMode};
@@ -27,19 +30,20 @@ fn main() {
         //.add_plugins(LunexDebugPlugin)
 
 
-        .add_plugins(ButtonPlugin)
-        .add_plugins(WigglePlugin)
-
         .add_systems(Update, (hierarchy_update, cursor_update).chain().before(image_update))
         .add_plugins(AlignPlugin)
+
+        //UI_Settings plugins
+        .add_plugins(UISettingsPlugin)
+        .add_plugins(UIMainMenuPlugin)
+
+
+        .add_plugins(HoverEffectPlugin)
         
 
         //GLOBAL VFX
         .add_systems(Update, vfx_bloom_update)
 
-
-        //WILL BE REMOVED
-        //.add_systems(Update, mouse_click_system)
 
         .run();
 }

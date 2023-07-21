@@ -1,8 +1,11 @@
 use bevy::prelude::*;
 use bevy_lunex::prelude::*;
 use crate::general::*;
+use crate::style::*;
 
 
+// ===========================================================
+// === SETUP SETTINGS LAYOUT ===
 
 pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut Hierarchy) {
 
@@ -12,7 +15,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
 
     let rajdhani_bold: Handle<Font> = asset_server.load("Fonts/Rajdhani/Rajdhani-Bold.ttf");
     let rajdhani_medium: Handle<Font> = asset_server.load("Fonts/Rajdhani/Rajdhani-Medium.ttf");
-    let blender_medium: Handle<Font> = asset_server.load("Fonts/Blender/BlenderPro-Book.ttf");
+    let blender_medium: Handle<Font> = asset_server.load("Fonts/Blender/BlenderPro-Medium.ttf");
 
 
     let style_navigation = TextStyle {
@@ -65,7 +68,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         scaling: SolidScale::Fill,
         ..Default::default()
     }.pack()).unwrap();
-    spawn_image(commands, asset_server, image.clone(), ImageParams::default(), "settings/background.png");
+    image_element_spawn!(commands, asset_server, image.clone(), &ImageParams::default(), "settings/background.png");
     image.fetch_mut(system, "").unwrap().set_depth(90.0);
 
 
@@ -73,8 +76,8 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
 
     //# Create 'nameless' widget in SETTINGS
     let boundary = Widget::create(system, &settings.end(""), Box::Relative {
-        relative_1: Vec2 { x: 2.0, y: 2.0 },
-        relative_2: Vec2 { x: 10.0, y: 8.0 },
+        relative_1: Vec2 { x: 3.0, y: 1.0 },
+        relative_2: Vec2 { x: 15.0, y: 8.0 },
         ..Default::default()
     }.pack()).unwrap();
 
@@ -86,15 +89,39 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         horizontal_anchor: -1.0,
         ..Default::default()
     }.pack()).unwrap();
-    spawn_text(commands, button_return, TextParams::centered(style_navigation.clone(), 40.0), "RETURN");
+    text_element_spawn!(commands, button_return, &TextParams::centerleft().styled(&style_navigation).scaled(35.0).with_height(80.0).at(10.0, 50.0), "RETURN",
+        ColorHighlightEffect (style_navigation.color, GLOBAL_COLOR_HOVER),
+        ReturnButton (),
+        HoverEffectInput (),
+        Effect ()
+    );
+
+    //# --------------------------------------------------------------------------------------------------------------
+
+    //# Create 'nameless' widget in SETTINGS
+    let boundary = Widget::create(system, &settings.end(""), Box::Relative {
+        relative_1: Vec2 { x: 3.0, y: 9.0 },
+        relative_2: Vec2 { x: 90.0, y: 13.0 },
+        ..Default::default()
+    }.pack()).unwrap();
+
+    //# Create BUTTON widget in 'nameless'
+    let line = Widget::create(system, &boundary.end(""), Box::Solid {
+        width: 3522,
+        height: 4,
+        scaling: SolidScale::Fit,
+        vertical_anchor: -1.0,
+        ..Default::default()
+    }.pack()).unwrap();
+    image_element_spawn!(commands, asset_server, line, &ImageParams::default(), "settings/line.png");
 
 
     //# --------------------------------------------------------------------------------------------------------------
 
     //# Create BAR widget in SETTINGS
     let bar = Widget::create(system, &settings.end("bar"), Box::Relative {
-        relative_1: Vec2 { x: 12.0, y: 2.0 },
-        relative_2: Vec2 { x: 88.0, y: 8.0 },
+        relative_1: Vec2 { x: 18.0, y: 1.0 },
+        relative_2: Vec2 { x: 82.0, y: 8.0 },
         ..Default::default()
     }.pack()).unwrap();
 
@@ -107,7 +134,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
     }.pack()).unwrap();
 
     //# Generate grid of widgets in 'nameless'
-    let map = [["sound"].to_vec(), ["controls"].to_vec(), ["video"].to_vec(), ["interface"].to_vec()].to_vec();
+    let map = [["tab 1"].to_vec(), ["tab 2"].to_vec(), ["tab 3"].to_vec(), ["tab 4"].to_vec(), ["tab 5"].to_vec(), ["tab 6"].to_vec(), ["tab 7"].to_vec(), ["tab 8"].to_vec()].to_vec();
     let grid = Grid {
         width_relative: 100.0,
         height_relative: 20.0,
@@ -123,7 +150,11 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
 
             //# Spawn image for widgets in 'nameless'
             let widget = Widget::new(&boundary.end(map[x][y]));
-            spawn_text(commands, widget, TextParams::centered(style_tab.clone(), 40.0), &map[x][y].to_uppercase());
+            text_element_spawn!(commands, widget, &TextParams::center().styled(&style_tab).scaled(50.0).with_height(80.0), &map[x][y].to_uppercase(),
+                ColorHighlightEffect (style_tab.color, GLOBAL_COLOR_HOVER),
+                HoverEffectInput (),
+                Effect ()
+            );
         }
     }
 
@@ -132,8 +163,8 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
     
     //# Create 'nameless' widget in SETTINGS
     let boundary1 = Widget::create(system, &settings.end(""), Box::Relative {
-        relative_1: Vec2 { x: 5.0, y: 14.0 },
-        relative_2: Vec2 { x: 95.0, y: 100.0 },
+        relative_1: Vec2 { x: 10.0, y: 14.0 },
+        relative_2: Vec2 { x: 90.0, y: 100.0 },
         ..Default::default()
     }.pack()).unwrap();
 
@@ -162,8 +193,8 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         scaling: SolidScale::Fit,
         ..Default::default()
     }.pack()).unwrap();
-    spawn_image(commands, asset_server, category.clone(), ImageParams::default(), "settings/category.png");
-    spawn_text(commands, category.clone(), TextParams::left(style_category.clone(), 40.0, Vec2::new(2.0, 50.0)), "Display");
+    image_element_spawn!(commands, asset_server, category.clone(), &ImageParams::default(), "settings/category.png");
+    text_element_spawn!(commands, category.clone(), &TextParams::centerleft().styled(&style_category).scaled(40.0).at(2.0, 50.0), "Display");
 
 
     let map = [["fullscreen","window_mode","resolution", "monitor", "vsync"].to_vec()].to_vec();
@@ -179,7 +210,11 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
     for x in 0..map.len() {
         for y in 0..map[0].len() {
             let widget = Widget::new(&widget.end(map[x][y]));
-            spawn_text(commands, widget.clone(), TextParams::left(style_item.clone(), 40.0, Vec2::new(2.0, 50.0)), &map[x][y].to_uppercase());
+            text_element_spawn!(commands, widget.clone(), &TextParams::centerleft().styled(&style_item).scaled(40.0).at(2.0, 50.0), &map[x][y].to_uppercase(),
+                ColorHighlightEffect (style_item.color, GLOBAL_COLOR_HOVER),
+                HoverEffectInput (),
+                Effect ()
+            );
 
             //# Create 'nameless' widget in DISPLAY
             let button = Widget::create(system, &widget.end(""), Box::Relative {
@@ -187,25 +222,14 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
                 relative_2: Vec2::new(95.0, 98.0),
                 ..Default::default()
             }.pack()).unwrap();
-            //spawn_image(commands, asset_server, button.clone(), ImageParams::default(), "settings/button_dark.png");
-            let image_params = ImageParams::default();
-            commands.spawn (
-                ImageElementBundle {
-                    widget: button,
-                    element: Element {
-                        relative: image_params.relative,
-                        absolute: image_params.absolute,
-                        scale: image_params.scale,
-                        ..default()
-                    },
-                    texture: asset_server.load("settings/button_dark.png"),
-                    sprite: Sprite {
-                        anchor: image_params.anchor,
-                        color: RED_COLOR_DIM.with_l(0.5),
-                        ..default()
-                    },
-                    ..Default::default()
-                }
+
+            text_element_spawn!(commands, button.clone(), &TextParams::center().styled(&style_item).scaled(50.0), "Option to select from!",
+                ColorHighlightEffect (GLOBAL_COLOR_STANDBY, GLOBAL_COLOR_HOVER)
+            );
+            image_element_spawn!(commands, asset_server, button.clone(), &ImageParams::default(), "settings/button_dark.png",
+                ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.6), GLOBAL_COLOR_HOVER),
+                HoverEffectInput (),
+                Effect ()
             );
         }
     }
@@ -213,46 +237,56 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
 }
 
 
+// ===========================================================
+// === INTERACTION SYSTEMS ===
+
 #[derive(Component)]
-pub struct HoverEffect (Color, Color);
-fn hover_effect_text(mut systems: Query<&mut Hierarchy>, mut query: Query<(&Widget, &mut Text, &HoverEffect)>) {
-    let mut system = systems.get_single_mut().unwrap();
-    for (widget, mut text, colors) in &mut query {
-        let widget = widget.fetch_mut(&mut system, "").unwrap();
-        match widget.data_get_mut() {
-            Option::Some ( data ) => {
-                match data.f32s.get_mut("color_slider") {
-                    Option::Some(color_slider) => {
-                        if *color_slider > 0.0 {*color_slider -= 0.03} else {*color_slider = 0.0}
-                        let color = tween_color_hsla_short(colors.0, colors.1, *color_slider);
-                        text.sections[0].style.color = color;
-                    }
-                    _ => (),
-                }
-            }
-            _ => (),
-        }
-    }
-}
+pub struct HoverEffectInput ();
+fn hover_effect_input(mut systems: Query<(&mut Hierarchy, &UserInterface)>, cursors: Query<&Cursor>, mut query: Query<(&mut Widget, &HoverEffectInput)>) {
+    let (mut system, placement) = systems.get_single_mut().unwrap();
+    let cursor = cursors.get_single().unwrap();
+    for (widget, _) in &mut query {
+        if widget.is_within(&system, "", &vec_convert(cursor.position_world(), &placement.offset)).unwrap(){
 
-fn hover_effect_image(mut systems: Query<&mut Hierarchy>, mut query: Query<(&Widget, &mut Sprite, &Handle<Image>, &HoverEffect)>) {
-    let mut system = systems.get_single_mut().unwrap();
-    for (widget, mut sprite, _, colors) in &mut query {
-        let widget = widget.fetch_mut(&mut system, "").unwrap();
-        match widget.data_get_mut() {
-            Option::Some ( data ) => {
-                match data.f32s.get_mut("color_slider") {
-                    Option::Some(color_slider) => {
-                        if *color_slider > 0.0 {*color_slider -= 0.03} else {*color_slider = 0.0}
-                        let color = tween_color_hsla_short(colors.0, colors.1, *color_slider);
-                        sprite.color = color;
-                    }
-                    _ => (),
-                }
+            let data_option = widget.fetch_mut(&mut system, "").unwrap().data_get_mut();
+            match data_option {
+                Option::Some ( data ) => {
+                    data.f32s.insert("color_highlight_effect_slider".to_string() , 1.0);
+                },
+                Option::None => {
+                    *data_option = Option::Some(Data::new());
+                },
             }
-            _ => (),
         }
     }
 }
 
 
+#[derive(Component)]
+pub struct ReturnButton ();
+fn return_button_update (mut systems: Query<(&mut Hierarchy, &UserInterface)>, cursors: Query<&Cursor>, mut query: Query<(&mut Widget, &ReturnButton)>, mouse_button_input: Res<Input<MouseButton>>) {
+    let (mut system, placement) = systems.get_single_mut().unwrap();
+    let cursor = cursors.get_single().unwrap();
+    for (widget, _) in &mut query {
+        if widget.is_within(&system, "", &vec_convert(cursor.position_world(), &placement.offset)).unwrap(){
+
+            if mouse_button_input.just_pressed(MouseButton::Left) {
+                Widget::new("main_menu").fetch_mut(&mut system, "").unwrap().set_visibility(true);
+                Widget::new("settings").fetch_mut(&mut system, "").unwrap().set_visibility(false);
+            }
+
+        }
+    }
+}
+
+// ===========================================================
+// === PACK ALL SYSTEMS TO PLUGIN ===
+
+pub struct UISettingsPlugin;
+impl Plugin for UISettingsPlugin {
+    fn build(&self, app: &mut App) {
+        app
+            .add_systems(Update, hover_effect_input)
+            .add_systems(Update, return_button_update);
+    }
+}
