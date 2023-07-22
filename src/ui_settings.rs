@@ -197,7 +197,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
     text_element_spawn!(commands, category.clone(), &TextParams::centerleft().styled(&style_category).scaled(40.0).at(2.0, 50.0), "Display");
 
 
-    let map = [["fullscreen","window_mode","resolution", "monitor", "vsync"].to_vec()].to_vec();
+    let map = [["fullscreen", "window_mode", "title", "resizable", "decorations", "window mode"].to_vec()].to_vec();
     let grid = Grid {
         width_relative: 96.0,
         height_relative: 11.0,
@@ -223,13 +223,13 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
                 ..Default::default()
             }.pack()).unwrap();
 
-            text_element_spawn!(commands, button.clone(), &TextParams::center().styled(&style_item).scaled(50.0), "Option to select from!",
-                ColorHighlightEffect (GLOBAL_COLOR_STANDBY, GLOBAL_COLOR_HOVER)
-            );
+            let bb = buttons::OptionButton::create(commands, asset_server, system, button.clone(), ["Enabled".to_string(), "Disabled".to_string()].to_vec());
+
             image_element_spawn!(commands, asset_server, button.clone(), &ImageParams::default(), "settings/button_dark.png",
-                ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.6), GLOBAL_COLOR_HOVER),
+                ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.3), GLOBAL_COLOR_HOVER),
                 HoverEffectInput (),
-                Effect ()
+                Effect (),
+                bb
             );
         }
     }
@@ -263,7 +263,7 @@ fn hover_effect_input(mut systems: Query<(&mut Hierarchy, &UserInterface)>, curs
 
 
 #[derive(Component)]
-pub struct ReturnButton ();
+struct ReturnButton ();
 fn return_button_update (mut systems: Query<(&mut Hierarchy, &UserInterface)>, cursors: Query<&Cursor>, mut query: Query<(&mut Widget, &ReturnButton)>, mouse_button_input: Res<Input<MouseButton>>) {
     let (mut system, placement) = systems.get_single_mut().unwrap();
     let cursor = cursors.get_single().unwrap();
@@ -279,6 +279,215 @@ fn return_button_update (mut systems: Query<(&mut Hierarchy, &UserInterface)>, c
     }
 }
 
+mod buttons {
+    use bevy::prelude::*;
+    use bevy_lunex::prelude::*;
+    use crate::{style::*, ui_settings::*};
+
+    #[derive(Component)]
+    pub struct OptionButtonText ();
+    pub fn option_button_text_update (mut systems: Query<&mut Hierarchy>, mut query: Query<(&Widget, &mut Text, &OptionButtonText)>) {
+        let mut system = systems.get_single_mut().unwrap();
+        for (widget, mut text, colors) in &mut query {
+            let widget = widget.fetch_mut(&mut system, "").unwrap();
+            match widget.data_get_mut() {
+                Option::Some ( data ) => {
+                    match data.strings.get_mut("option_button_text") {
+                        Option::Some(txt) => {
+                            text.sections[0].value = txt.to_string();
+                        }
+                        _ => (),
+                    }
+                }
+                _ => (),
+            }
+        }
+    }
+
+    #[derive(Component)]
+    pub struct OptionButton {
+        state_change: bool,
+        current: usize,
+        options: Vec<String>,
+    }
+    impl OptionButton {
+        pub fn create (commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut Hierarchy, widget: Widget, options: Vec<String>) -> OptionButton {
+
+            let cycle_left = Widget::create(system, &widget.end("button_cycle_left"), Box::Relative {
+                relative_1: Vec2::new(4.0, 20.0),
+                relative_2: Vec2::new(15.0, 80.0),
+                ..Default::default()
+            }.pack()).unwrap();
+            let image_box = Widget::create(system, &cycle_left.end(""), Box::Solid {
+                width: 1,
+                height: 1,
+                ..Default::default()
+            }.pack()).unwrap();
+            image_element_spawn!(commands, asset_server, image_box, &ImageParams::default(), "settings/arrow_left_empty.png",
+                ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.6), GLOBAL_COLOR_HOVER),
+                HoverEffectInput (),
+                Effect ()
+            );
+
+
+            let cycle_right = Widget::create(system, &widget.end("button_cycle_right"), Box::Relative {
+                relative_1: Vec2::new(85.0, 20.0),
+                relative_2: Vec2::new(96.0, 80.0),
+                ..Default::default()
+            }.pack()).unwrap();
+            let image_box = Widget::create(system, &cycle_right.end(""), Box::Solid {
+                width: 1,
+                height: 1,
+                ..Default::default()
+            }.pack()).unwrap();
+            image_element_spawn!(commands, asset_server, image_box, &ImageParams::default(), "settings/arrow_right_empty.png",
+                ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.6), GLOBAL_COLOR_HOVER),
+                HoverEffectInput (),
+                Effect ()
+            );
+
+            let style = TextStyle {
+                font: asset_server.load("Fonts/Rajdhani/Rajdhani-SemiBold.ttf"),
+                font_size: 40.0,
+                color: GLOBAL_COLOR_STANDBY,
+            };
+            text_element_spawn!(commands, widget.clone(), &TextParams::center().styled(&style).scaled(90.0).with_height(40.0).at(50.0, 35.0), &options[0],
+                ColorHighlightEffect (GLOBAL_COLOR_STANDBY, GLOBAL_COLOR_HOVER),
+                OptionButtonText ()
+            );
+
+            OptionButton {
+                state_change: true,
+                current: 0,
+                options,
+            }
+        }
+        pub fn cycle_left (&mut self, system: &mut Hierarchy, widget: Widget) {
+            if self.current > 0 {
+                self.current -= 1;
+                self.state_change = true;
+            
+                let widget = widget.fetch_mut(system, "").unwrap();
+
+                let data_option = widget.data_get_mut();
+                match data_option {
+                    Option::Some ( data ) => {
+                        match data.strings.get_mut("option_button_text") {
+                            Option::Some(txt) => {
+                                *txt = self.options[self.current].to_string();
+                            }
+                            Option::None => {
+                                data.strings.insert("option_button_text".to_string(), self.options[self.current].to_string());
+                            },
+                        }
+                    }
+                    Option::None => {
+                        let mut data = Data::new();
+                        data.strings.insert("option_button_text".to_string(), self.options[self.current].to_string());
+                        *data_option = Option::Some(data);
+                    },
+                }
+            }
+        }
+        pub fn cycle_right (&mut self, system: &mut Hierarchy, widget: Widget) {
+            if self.current < self.options.len() - 1 {
+                self.current += 1;
+                self.state_change = true;
+            
+                let widget = widget.fetch_mut(system, "").unwrap();
+
+                let data_option = widget.data_get_mut();
+                match data_option {
+                    Option::Some ( data ) => {
+                        match data.strings.get_mut("option_button_text") {
+                            Option::Some(txt) => {
+                                *txt = self.options[self.current].to_string();
+                            }
+                            Option::None => {
+                                data.strings.insert("option_button_text".to_string(), self.options[self.current].to_string());
+                            },
+                        }
+                    }
+                    Option::None => {
+                        let mut data = Data::new();
+                        data.strings.insert("option_button_text".to_string(), self.options[self.current].to_string());
+                        *data_option = Option::Some(data);
+                    },
+                }
+            }
+        }
+    }
+    pub fn option_button_update (mut systems: Query<(&mut Hierarchy, &UserInterface)>, cursors: Query<&Cursor>, mut query: Query<(&mut Widget, &mut OptionButton)>, mouse_button_input: Res<Input<MouseButton>>) {
+        let (mut system, placement) = systems.get_single_mut().unwrap();
+        let cursor = cursors.get_single().unwrap();
+        for (widget, mut button) in &mut query {
+            if widget.is_within(&system, "button_cycle_left", &vec_convert(cursor.position_world(), &placement.offset)).unwrap(){
+                if mouse_button_input.just_pressed(MouseButton::Left) {
+                    button.cycle_left(&mut system, widget.clone());
+                }
+            }
+            if widget.is_within(&system, "button_cycle_right", &vec_convert(cursor.position_world(), &placement.offset)).unwrap(){
+                if mouse_button_input.just_pressed(MouseButton::Left) {
+                    button.cycle_right(&mut system, widget.clone());
+                }
+            }
+        }
+    }
+
+    
+}
+
+
+
+
+struct SettingButton ();
+fn button_tick(mut systems: Query<(&mut Hierarchy, &UserInterface)>, cursors: Query<&Cursor>, mut query: Query<(&mut Widget, &Button)>, mouse_button_input: Res<Input<MouseButton>>, mut windows: Query<&mut Window>, mut exit: EventWriter<bevy::app::AppExit>) {
+    let (mut system, placement) = systems.get_single_mut().unwrap();
+    let cursor = cursors.get_single().unwrap();
+    let mut window = windows.get_single_mut().unwrap();
+    for (widget, _) in &mut query {
+        if widget.is_within(&system, "", &vec_convert(cursor.position_world(), &placement.offset)).unwrap(){
+
+            let data_option = widget.fetch_mut(&mut system, "#0").unwrap().data_get_mut();
+            match data_option {
+                Option::Some ( data ) => {
+                    data.f32s.insert("color_highlight_effect_slider".to_string() , 1.0);
+                    data.f32s.insert("animate_widget_effect_slider".to_string() , 1.0);
+                },
+                Option::None => {
+                    *data_option = Option::Some(Data::new());
+                },
+            }
+
+            if mouse_button_input.just_pressed(MouseButton::Left) {
+                match widget.fetch(&mut system, "").unwrap().get_name().as_str() {
+                    "fullscreen" => {
+                        if window.mode == bevy::window::WindowMode::BorderlessFullscreen {
+                            window.mode = bevy::window::WindowMode::Windowed;
+                        } else {
+                            window.mode = bevy::window::WindowMode::BorderlessFullscreen;
+                        }
+                    },
+                    "decorations" => {
+                        window.decorations = !window.decorations;
+                    },
+                    "resizable" => {
+                        window.resizable = !window.resizable;
+                    },
+                    "quit_game" => {
+                        exit.send(bevy::app::AppExit);
+                    },
+                    _ => {},
+                }
+            }
+
+        }
+    }
+}
+
+
+
+
 // ===========================================================
 // === PACK ALL SYSTEMS TO PLUGIN ===
 
@@ -287,6 +496,7 @@ impl Plugin for UISettingsPlugin {
     fn build(&self, app: &mut App) {
         app
             .add_systems(Update, hover_effect_input)
-            .add_systems(Update, return_button_update);
+            .add_systems(Update, return_button_update)
+            .add_systems(Update, (buttons::option_button_text_update, buttons::option_button_update));
     }
 }
