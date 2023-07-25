@@ -10,6 +10,7 @@ use style::*;
 
 mod ui_settings;
 use ui_settings::*;
+mod ui_settings_buttons;
 
 mod ui_mainmenu;
 use ui_mainmenu::*;
@@ -18,6 +19,7 @@ use ui_mainmenu::*;
 use bevy::core_pipeline::bloom::{BloomSettings, BloomPrefilterSettings, BloomCompositeMode};
 use bevy::core_pipeline::tonemapping::Tonemapping;
 use rand::Rng;
+
 
 
 fn main() {

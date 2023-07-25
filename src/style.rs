@@ -20,11 +20,23 @@ pub const GLOBAL_COLOR_HOVER: Color = BLUE_COLOR;
 pub const SETTINGS_COLOR_CATEGORY: Color = GREY_COLOR;
 
 
+pub const GLOBAL_NAVIGATION_BUTTON_FONT: &str = "Fonts/Rajdhani/Rajdhani-Bold.ttf";
+pub const GLOBAL_ITEM_BUTTON_FONT: &str = "Fonts/Rajdhani/Rajdhani-Medium.ttf";
+pub const GLOBAL_TAB_BUTTON_FONT: &str = "Fonts/Blender/BlenderPro-Medium.ttf";
+pub const MAIN_MENU_BUTTON_FONT: &str = "Fonts/Rajdhani/Rajdhani-Medium.ttf";
+//pub const MAIN_MENU_BUTTON_FONT: &str = GLOBAL_TAB_BUTTON_FONT;
+
+
 // ===========================================================
 // === WIDGET EFFECTS ===
+
+/// ## Widget color tweening effect updater
+/// Add this component to widget to update the effect
+/// * Uses: `"color_highlight_effect_slider"` data variable
+/// * Requires [`ColorHighlightEffect`] for visual data sync
 #[derive(Component)]
-pub struct Effect ();
-fn effect_tick(mut systems: Query<&mut Hierarchy>, mut query: Query<(&Widget, &Effect)>) {
+pub struct ColorHighlightEffectUpdater ();
+fn color_highlight_effect_update(mut systems: Query<&mut Hierarchy>, mut query: Query<(&Widget, &ColorHighlightEffectUpdater)>) {
     let mut system = systems.get_single_mut().unwrap();
     for (widget, _) in &mut query {
         let widget = widget.fetch_mut(&mut system, "").unwrap();
@@ -42,6 +54,10 @@ fn effect_tick(mut systems: Query<&mut Hierarchy>, mut query: Query<(&Widget, &E
     }
 }
 
+/// ## Widget color tweening effect
+/// Add this component to widget to add the effect
+/// * Uses: `"color_highlight_effect_slider"` data variable
+/// * Requires [`ColorHighlightEffectUpdater`] to update 
 #[derive(Component)]
 pub struct ColorHighlightEffect (pub Color, pub Color);
 fn color_highlight_effect_update_text(mut systems: Query<&mut Hierarchy>, mut query: Query<(&Widget, &mut Text, &ColorHighlightEffect)>) {
@@ -89,7 +105,9 @@ fn color_highlight_effect_update_image(mut systems: Query<&mut Hierarchy>, mut q
     }
 }
 
-
+/// ## Widget position animation effect
+/// Add this component to widget to add the effect
+/// * Uses: `"animate_widget_effect_slider"` data variable
 #[derive(Component)]
 pub struct AnimateWidgetEffect (pub Vec2, pub Vec2);
 fn animate_widget_effect_update(mut systems: Query<&mut Hierarchy>, mut query: Query<(&Widget, &AnimateWidgetEffect)>) {
@@ -123,7 +141,10 @@ fn animate_widget_effect_update(mut systems: Query<&mut Hierarchy>, mut query: Q
     }
 }
 
-
+/// ## Widget smooth wiggle effect
+/// Add this component to widget to add the effect
+/// * Overwrites relative position to 0.0
+/// * Panics if widget is not [`Window`]
 #[derive(Component, Default)]
 pub struct SmoothWiggleEffect {
     x: f32,
@@ -159,6 +180,7 @@ fn smooth_wiggle_effect_update (mut systems: Query<&mut Hierarchy>, mut query: Q
     }
 }
 
+
 // ===========================================================
 // === PACK ALL SYSTEMS TO PLUGIN ===
 
@@ -166,8 +188,7 @@ pub struct HoverEffectPlugin;
 impl Plugin for HoverEffectPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_systems(Update, effect_tick)
-            .add_systems(Update, (color_highlight_effect_update_text, color_highlight_effect_update_image).chain())
+            .add_systems(Update, (color_highlight_effect_update, color_highlight_effect_update_text, color_highlight_effect_update_image).chain())
             .add_systems(Update, animate_widget_effect_update)
             .add_systems(Update, smooth_wiggle_effect_update);
     }
