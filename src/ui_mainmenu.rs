@@ -104,8 +104,6 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         ..Default::default()
     }.pack()).unwrap();
 
-    let names = textgrid![["continue", "new_game", "load_game", "settings", "additional_content", "credits", "quit_game"]];
-    let names_display = textgrid![["CONTINUE", "NEW GAME", "LOAD GAME", "SETTINGS", "ADDITIONAL CONTENT", "CREDITS", "QUIT GAME"]];
 
     let text_style = TextStyle {
         font: asset_server.load(MAIN_MENU_BUTTON_FONT),
@@ -113,15 +111,11 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         color: GLOBAL_COLOR_STANDBY,
     };
 
-    let grid = Grid {
-        width_relative: 96.0,
-        height_relative: 11.0,
-        width_padding_gap: true,
-        height_padding_gap: true,
-        gap_relative: Vec2::new(2.0, 2.0),
-        ..Default::default()
-    };
-    let widget = grid.create(system, &button_list.end(""), &names, Vec2::new(0.0, 0.0)).unwrap();
+    let names = textgrid![["continue", "new_game", "load_game", "settings", "additional_content", "credits", "quit_game"]];
+    let names_display = textgrid![["CONTINUE", "NEW GAME", "LOAD GAME", "SETTINGS", "ADDITIONAL CONTENT", "CREDITS", "QUIT GAME"]];
+
+    let grid = GridParams::new(&names).with_width(100.0).with_height(11.0);
+    let widget = grid_generate(system, &button_list.end(""), Vec2::default(), &grid).unwrap();
     
     for x in 0..names.len() {
         for y in 0..names[0].len() {

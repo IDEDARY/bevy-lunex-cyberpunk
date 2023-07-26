@@ -132,23 +132,17 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
     }.pack()).unwrap();
 
     //# Generate grid of widgets in 'nameless'
-    let map = textgrid![["tab 1"], ["tab 2"], ["tab 3"], ["tab 4"], ["tab 5"], ["tab 6"], ["tab 7"], ["tab 8"]];
-    let grid = Grid {
-        width_relative: 100.0,
-        height_relative: 20.0,
-        width_padding_gap: true,
-        gap_relative: Vec2::new(10.0, 0.0),
-        ..Default::default()
-    };
-    grid.create_inside(system, &boundary, &map).unwrap();
+    let names = textgrid![["tab 1"], ["tab 2"], ["tab 3"], ["tab 4"], ["tab 5"], ["tab 6"], ["tab 7"], ["tab 8"]];
+    let grid = GridParams::new(&names).with_width(100.0).with_height(20.0).with_width_gap(10.0);
+    grid_generate_inside(system, &boundary, &grid).unwrap();
 
     //# Loop over grid of widgets in 'nameless'
-    for x in 0..map.len() {
-        for y in 0..map[0].len() {
+    for x in 0..names.len() {
+        for y in 0..names[0].len() {
 
             //# Spawn image for widgets in 'nameless'
-            let widget = Widget::new(&boundary.end(&map[x][y]));
-            text_element_spawn!(commands, widget, &TextParams::center().styled(&style_tab).scaled(50.0).with_height(80.0), &map[x][y].to_uppercase(),
+            let widget = Widget::new(&boundary.end(&names[x][y]));
+            text_element_spawn!(commands, widget, &TextParams::center().styled(&style_tab).scaled(50.0).with_height(80.0), &names[x][y].to_uppercase(),
                 ColorHighlightEffect (style_tab.color, GLOBAL_COLOR_HOVER),
                 HoverEffectInput (),
                 ColorHighlightEffectUpdater ()
@@ -202,15 +196,9 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
     options.insert("Resolution", textrow!["1920x1080", "1280x720", "720x720"]);
 
 
-    let grid = Grid {
-        width_relative: 96.0,
-        height_relative: 11.0,
-        width_padding_gap: true,
-        height_padding_gap: true,
-        gap_relative: Vec2::new(2.0, 2.0),
-        ..Default::default()
-    };
-    let widget = grid.create(system, &display.end("list"), &names, Vec2::new(0.0, 16.0)).unwrap();
+    let grid = GridParams::new(&names).with_width(96.0).with_height(11.0).with_width_gap_border(true).with_height_gap_border(true);
+    let widget = grid_generate(system, &display.end("list"), Vec2::new(0.0, 16.0), &grid).unwrap();
+
     for x in 0..names.len() {
         for y in 0..names[0].len() {
 
