@@ -42,7 +42,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
     //# This is where the layouting magic happens. Here we declare the positions and spawn relevant entities.
 
     //# Create SETTINGS in ROOT
-    let settings = Widget::create(system, "settings", Box::Relative {
+    let settings = Widget::create(system, "settings", Layout::Relative {
         relative_1: Vec2 { x: 0.0, y: 0.0 },
         relative_2: Vec2 { x: 100.0, y: 100.0 },
         ..Default::default()
@@ -52,7 +52,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
     //# --------------------------------------------------------------------------------------------------------------
 
     //# Create BACKGROUND in SETTINGS
-    let background = Widget::create(system, &settings.end("background"), Box::Window {
+    let background = Widget::create(system, &settings.end("background"), Layout::Window {
         relative: Vec2 { x: 0.0, y: 0.0 },
         width_relative: 100.0,
         height_relative: 100.0,
@@ -60,9 +60,9 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
     }.pack()).unwrap();
 
     //# Create 'nameless' widget in BACKGROUND
-    let image = Widget::create(system, &background.end(""), Box::Solid {
-        width: 3840,
-        height: 2160,
+    let image = Widget::create(system, &background.end(""), Layout::Solid {
+        width: 3840.0,
+        height: 2160.0,
         scaling: SolidScale::Fill,
         ..Default::default()
     }.pack()).unwrap();
@@ -73,16 +73,16 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
     //# --------------------------------------------------------------------------------------------------------------
 
     //# Create 'nameless' widget in SETTINGS
-    let boundary = Widget::create(system, &settings.end(""), Box::Relative {
+    let boundary = Widget::create(system, &settings.end(""), Layout::Relative {
         relative_1: Vec2 { x: 3.0, y: 1.0 },
         relative_2: Vec2 { x: 15.0, y: 8.0 },
         ..Default::default()
     }.pack()).unwrap();
 
     //# Create BUTTON widget in 'nameless'
-    let button_return = Widget::create(system, &boundary.end("return"), Box::Solid {
-        width: 3,
-        height: 1,
+    let button_return = Widget::create(system, &boundary.end("return"), Layout::Solid {
+        width: 3.0,
+        height: 1.0,
         scaling: SolidScale::Fit,
         horizontal_anchor: -1.0,
         ..Default::default()
@@ -97,16 +97,16 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
     //# --------------------------------------------------------------------------------------------------------------
 
     //# Create 'nameless' widget in SETTINGS
-    let boundary = Widget::create(system, &settings.end(""), Box::Relative {
+    let boundary = Widget::create(system, &settings.end(""), Layout::Relative {
         relative_1: Vec2 { x: 3.0, y: 9.0 },
         relative_2: Vec2 { x: 90.0, y: 13.0 },
         ..Default::default()
     }.pack()).unwrap();
 
     //# Create BUTTON widget in 'nameless'
-    let line = Widget::create(system, &boundary.end(""), Box::Solid {
-        width: 3522,
-        height: 4,
+    let line = Widget::create(system, &boundary.end(""), Layout::Solid {
+        width: 3522.0,
+        height: 4.0,
         scaling: SolidScale::Fit,
         vertical_anchor: -1.0,
         ..Default::default()
@@ -117,16 +117,16 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
     //# --------------------------------------------------------------------------------------------------------------
 
     //# Create BAR widget in SETTINGS
-    let bar = Widget::create(system, &settings.end("bar"), Box::Relative {
+    let bar = Widget::create(system, &settings.end("bar"), Layout::Relative {
         relative_1: Vec2 { x: 18.0, y: 1.0 },
         relative_2: Vec2 { x: 82.0, y: 8.0 },
         ..Default::default()
     }.pack()).unwrap();
 
     //# Create 'nameless' widget in BAR
-    let boundary = Widget::create(system, &bar.end(""), Box::Solid {
-        width: 28,
-        height: 1,
+    let boundary = Widget::create(system, &bar.end(""), Layout::Solid {
+        width: 28.0,
+        height: 1.0,
         scaling: SolidScale::Fit,
         ..Default::default()
     }.pack()).unwrap();
@@ -154,23 +154,23 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
     //# --------------------------------------------------------------------------------------------------------------
     
     //# Create 'nameless' widget in SETTINGS
-    let boundary1 = Widget::create(system, &settings.end(""), Box::Relative {
+    let boundary1 = Widget::create(system, &settings.end(""), Layout::Relative {
         relative_1: Vec2 { x: 10.0, y: 14.0 },
         relative_2: Vec2 { x: 90.0, y: 100.0 },
         ..Default::default()
     }.pack()).unwrap();
 
     //# Create 'nameless' widget in 'nameless'
-    let boundary2 = Widget::create(system, &boundary1.end(""), Box::Solid {
-        width: 105,
-        height: 100,
+    let boundary2 = Widget::create(system, &boundary1.end(""), Layout::Solid {
+        width: 105.0,
+        height: 100.0,
         scaling: SolidScale::Fit,
         vertical_anchor: -1.0,
         ..Default::default()
     }.pack()).unwrap();
 
     //# Create DISPLAY widget in 'nameless'/'nameless' (skipping 2 nameless widgets at once)
-    let display = Widget::create(system, &settings.add(&boundary1).add(&boundary2).end("display"), Box::Window {
+    let display = Widget::create(system, &settings.add(&boundary1).add(&boundary2).end("display"), Layout::Window {
         relative: Vec2::new(0.0, 0.0),
         width_relative: 100.0,
         height_relative: 40.0,
@@ -178,9 +178,9 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
     }.pack()).unwrap();
 
     //# Create 'nameless' widget in DISPLAY
-    let category = Widget::create(system, &display.end(""), Box::Solid {
-        width: 1934,
-        height: 96,
+    let category = Widget::create(system, &display.end(""), Layout::Solid {
+        width: 1934.0,
+        height: 96.0,
         vertical_anchor: -1.0,
         scaling: SolidScale::Fit,
         ..Default::default()
@@ -213,7 +213,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
             );
 
             //# Create 'nameless' widget in LIST
-            let button = Widget::create(system, &widget.end(""), Box::Relative {
+            let button = Widget::create(system, &widget.end(""), Layout::Relative {
                 relative_1: Vec2::new(47.0, 2.0),
                 relative_2: Vec2::new(95.0, 98.0),
                 ..Default::default()
@@ -225,7 +225,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
                 option = custom.to_vec();
             }
 
-            let (button, component) = OptionButton::create(commands, asset_server, system, &button.end(&names[x][y]), Box::Relative::default().pack(), option);
+            let (button, component) = OptionButton::create(commands, asset_server, system, &button.end(&names[x][y]), Layout::Relative::default().pack(), option);
             widget_spawn!(commands, button, component);
 
             //# --------------------------------------------------------------------------------------------------------------

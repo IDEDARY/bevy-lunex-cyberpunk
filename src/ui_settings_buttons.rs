@@ -55,7 +55,7 @@ impl OptionButton {
             },
         }
     }
-    pub fn create (commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut Hierarchy, path: &str, position: Layout, options: Vec<String>) -> (Widget, OptionButton){
+    pub fn create (commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut Hierarchy, path: &str, position: LayoutPackage, options: Vec<String>) -> (Widget, OptionButton){
         
         let widget = Widget::create(system, path, position).unwrap();
         image_element_spawn!(commands, asset_server, widget.clone(), &ImageParams::default(), "settings/button_dark.png",
@@ -64,14 +64,14 @@ impl OptionButton {
         );
 
 
-        let cycle_left = Widget::create(system, &widget.end("button_cycle_left"), Box::Relative {
+        let cycle_left = Widget::create(system, &widget.end("button_cycle_left"), Layout::Relative {
             relative_1: Vec2::new(3.0, 18.0),
             relative_2: Vec2::new(25.0, 82.0),
             ..Default::default()
         }.pack()).unwrap();
-        let image_box = Widget::create(system, &cycle_left.end(""), Box::Solid {
-            width: 1,
-            height: 1,
+        let image_box = Widget::create(system, &cycle_left.end(""), Layout::Solid {
+            width: 1.0,
+            height: 1.0,
             horizontal_anchor: -0.8,
             ..Default::default()
         }.pack()).unwrap();
@@ -81,14 +81,14 @@ impl OptionButton {
         );
 
 
-        let cycle_right = Widget::create(system, &widget.end("button_cycle_right"), Box::Relative {
+        let cycle_right = Widget::create(system, &widget.end("button_cycle_right"), Layout::Relative {
             relative_1: Vec2::new(75.0, 18.0),
             relative_2: Vec2::new(97.0, 82.0),
             ..Default::default()
         }.pack()).unwrap();
-        let image_box = Widget::create(system, &cycle_right.end(""), Box::Solid {
-            width: 1,
-            height: 1,
+        let image_box = Widget::create(system, &cycle_right.end(""), Layout::Solid {
+            width: 1.0,
+            height: 1.0,
             horizontal_anchor: 0.8,
             ..Default::default()
         }.pack()).unwrap();

@@ -14,7 +14,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
     //# This is where the layouting magic happens. Here we declare the positions and spawn relevant entities.
 
     //# Create MAIN_MENU widget
-    let main_menu = Widget::create(system, "main_menu", Box::Relative {
+    let main_menu = Widget::create(system, "main_menu", Layout::Relative {
         relative_1: Vec2 { x: 0.0, y: 0.0 },
         relative_2: Vec2 { x: 100.0, y: 100.0 },
         ..Default::default()
@@ -26,7 +26,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
     //# --------------------------------------------------------------------------------------------------------------
 
     //# Create BACKGROUND in MAIN_MENU
-    let background = Widget::create(system, &main_menu.end("background"), Box::Window {
+    let background = Widget::create(system, &main_menu.end("background"), Layout::Window {
         relative: Vec2 { x: 0.0, y: 0.0 },
         width_relative: 100.0 + 2.6*2.0,
         height_relative: 100.0 + 2.0*2.0,
@@ -39,9 +39,9 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
     );
 
     //# Create 'nameless' widget in BACKGROUND (useful when widget is not important and is used only for layout purposes (no interaction), it is skipped in path)
-    let image = Widget::create(system, &background.end(""), Box::Solid {
-        width: 2560,
-        height: 1440,
+    let image = Widget::create(system, &background.end(""), Layout::Solid {
+        width: 2560.0,
+        height: 1440.0,
         scaling: SolidScale::Fill,
         ..Default::default()
     }.pack()).unwrap();
@@ -53,9 +53,9 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
     //# --------------------------------------------------------------------------------------------------------------
 
     //# Create BOARD in MAIN_MENU
-    let board = Widget::create(system, &main_menu.end("board"), Box::Solid {
-        width: 807,
-        height: 1432,
+    let board = Widget::create(system, &main_menu.end("board"), Layout::Solid {
+        width: 807.0,
+        height: 1432.0,
         horizontal_anchor: -0.80,
         scaling: SolidScale::Fit,
         ..Default::default()
@@ -65,7 +65,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
 
 
     //# Create 'nameless' widget in BOARD
-    let nameless_boundary = Widget::create(system, &board.end(""), Box::Relative {
+    let nameless_boundary = Widget::create(system, &board.end(""), Layout::Relative {
         relative_1: Vec2 { x: -5.0, y: 15.0 },
         relative_2: Vec2 { x: 105.0, y: 30.0 },
         ..Default::default()
@@ -74,9 +74,9 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
 
 
     //# Create LOGO in 'nameless' widget and omit 'nameless' from path (BOARD/'nameless'/LOGO -> BOARD/LOGO)
-    let logo = Widget::create(system, &nameless_boundary.end("logo"), Box::Solid {
-        width: 681,
-        height: 166,
+    let logo = Widget::create(system, &nameless_boundary.end("logo"), Layout::Solid {
+        width: 681.0,
+        height: 166.0,
         scaling: SolidScale::Fit,
         ..Default::default()
     }.pack()).unwrap();
@@ -85,7 +85,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
 
 
     //# Create 'nameless' widget in LOGO. Further down in the application the widget is not used, so we can leave it nameless and forget about it.
-    let logo_shadow = Widget::create(system, &logo.end(""), Box::Relative {
+    let logo_shadow = Widget::create(system, &logo.end(""), Layout::Relative {
         relative_1: Vec2 { x: -5.0, y: -10.0 },
         relative_2: Vec2 { x: 105.0, y: 110.0 },
         ..Default::default()
@@ -98,7 +98,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
     // === BUTTON LAYOUT ===
 
     //# Create BUTTONLIST in BOARD
-    let button_list = Widget::create(system, &board.end("buttons"), Box::Relative {
+    let button_list = Widget::create(system, &board.end("buttons"), Layout::Relative {
         relative_1: Vec2 { x: 17.0, y: 33.0 },
         relative_2: Vec2 { x: 82.0, y: 79.0 },
         ..Default::default()
@@ -125,7 +125,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
                 MainMenuButton ()
             );
 
-            let widget = Widget::create(system, &new_widget.end(""), Box::Window {
+            let widget = Widget::create(system, &new_widget.end(""), Layout::Window {
                 width_relative: 100.0,
                 height_relative: 100.0,
                 ..Default::default()
