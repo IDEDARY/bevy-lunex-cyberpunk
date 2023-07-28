@@ -1,5 +1,47 @@
 use bevy::prelude::*;
-use bevy_lunex::prelude::*;  
+use bevy_lunex::prelude::*;
+use super::style::*;
+
+
+// ===========================================================
+// === GENERAL WIDGET FUNCTIONALY ===
+//# Defines general functionaly of widgets shared accross the app.
+
+/// ### Live widget text
+/// Add this component to an text entity with [`Widget`] component.
+/// It will make the text dynamic.
+/// 
+/// Text will be synchronized with `widget_text` data value stored in the widget.
+#[derive(Component)]
+pub struct LiveWidgetText ();
+pub fn live_widget_text_update (mut systems: Query<&mut Hierarchy>, mut query: Query<(&Widget, &mut Text, &LiveWidgetText)>) {
+    let mut system = systems.get_single_mut().unwrap();
+    for (widget, mut text, _) in &mut query {
+        let widget = widget.fetch_mut(&mut system, "").unwrap();
+        match widget.data_get_mut() {
+            Option::Some ( data ) => {
+                match data.strings.get_mut("widget_text") {
+                    Option::Some(txt) => {
+                        text.sections[0].value = txt.to_string();
+                    }
+                    _ => (),
+                }
+            }
+            _ => (),
+        }
+    }
+}
+
+
+/// ### General widget plugin
+/// Plugin adding general shared functionality of widgets.
+pub struct GeneralWidgetPlugin;
+impl Plugin for GeneralWidgetPlugin {
+    fn build(&self, app: &mut App) {
+        app
+        .add_systems(Update, live_widget_text_update);
+    }
+}
 
 
 // ===========================================================
@@ -116,3 +158,33 @@ impl Plugin for AlignPlugin {
         .add_systems(Update, (element_update, image_update).chain());
     }
 }
+
+
+// ===========================================================
+// === SETUP PROFILER ===
+
+pub fn setup_profiler (commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut Hierarchy) {
+    let profiler = Widget::create(system, "profiler", Layout::Relative {
+        relative_1: Vec2 { x: 0.0, y: 0.0 },
+        relative_2: Vec2 { x: 100.0, y: 30.0 },
+        ..Default::default()
+    }.pack()).unwrap();
+
+    let widget = Widget::create(system, &profiler.end(""), Layout::Solid {
+        width: 20.0,
+        height: 10.0,
+        scaling: SolidScale::Fit,
+        horizontal_anchor: -1.0,
+        ..Default::default()
+    }.pack()).unwrap();
+
+    let style = TextStyle {
+        font: asset_server.load(GLOBAL_ITEM_BUTTON_FONT),
+        font_size: 40.0,
+        color: YELLOW_COLOR,
+    };
+    text_element_spawn!(commands, widget.clone(), &TextParams::centerleft().styled(&style).with_height(10.0).at(10.0, 30.0), "FPS: ",
+        LiveWidgetText ()
+    );
+}
+

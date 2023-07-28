@@ -3,7 +3,6 @@ use bevy::prelude::*;
 use bevy_lunex::prelude::*;
 use crate::general::*;
 use crate::style::*;
-use super::ui_settings_buttons::*;
 
 
 // ===========================================================
@@ -190,10 +189,11 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
 
 
 
-    let names = textgrid![["Window mode", "Decorations", "Resizable window", "Title", "Resolution"]];
+    let names = textgrid![["Window mode", "Decorations", "Resizable window", "Title", "Resolution", "Profiler Overlay"]];
     let mut options = HashMap::new();
-    options.insert("Window mode", textrow!["Windowed", "Borderless"]);
-    options.insert("Resolution", textrow!["1920x1080", "1280x720", "720x720"]);
+    options.insert("Window mode", (textrow!["Borderless", "Windowed"], 0));
+    options.insert("Resolution", (textrow!["1920x1080", "1280x720", "720x720"], 0));
+    options.insert("Profiler Overlay", (textrow!["Enabled", "Disabled"], 1));
 
 
     let grid = GridParams::new(&names).with_width(96.0).with_height(11.0).with_width_gap_border(true).with_height_gap_border(true);
@@ -205,28 +205,27 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
             //# --------------------------------------------------------------------------------------------------------------
 
             //# Create OPTION widget in LIST
-            let widget = Widget::new(&widget.end(&names[x][y]));
-            text_element_spawn!(commands, widget.clone(), &TextParams::centerleft().styled(&style_item).scaled(40.0).at(2.0, 50.0), &names[x][y].to_uppercase(),
+            let boundary = Widget::new(&widget.end(&names[x][y]));
+            text_element_spawn!(commands, boundary.clone(), &TextParams::centerleft().styled(&style_item).scaled(40.0).at(2.0, 50.0), &names[x][y],
                 ColorHighlightEffect (style_item.color, GLOBAL_COLOR_HOVER),
                 HoverEffectInput (),
                 ColorHighlightEffectUpdater ()
             );
 
             //# Create 'nameless' widget in LIST
-            let button = Widget::create(system, &widget.end(""), Layout::Relative {
+            let button = Widget::create(system, &boundary.end(""), Layout::Relative {
                 relative_1: Vec2::new(47.0, 2.0),
                 relative_2: Vec2::new(95.0, 98.0),
                 ..Default::default()
             }.pack()).unwrap();
 
             //# Create BUTTON in 'nameless'
-            let mut option = vec!["Enabled".to_string(), "Disabled".to_string()];
+            let mut option = (textrow!["Enabled", "Disabled"], 0);
             if let Some (custom) = options.get(names[x][y].as_str()) {
-                option = custom.to_vec();
+                option = custom.clone();
             }
 
-            let (button, component) = OptionButton::create(commands, asset_server, system, &button.end(&names[x][y]), Layout::Relative::default().pack(), option);
-            widget_spawn!(commands, button, component);
+            let _ = OptionButton::create(commands, asset_server, system, &button.end(&format!("{} button", &names[x][y])), Layout::Relative::default().pack(), option.0, option.1);
 
             //# --------------------------------------------------------------------------------------------------------------
 
@@ -279,6 +278,183 @@ fn return_button_update (mut systems: Query<(&mut Hierarchy, &UserInterface)>, c
 }
 
 
+#[derive(Component)]
+pub struct OptionButton {
+    state_change: bool,
+    current: usize,
+    options: Vec<String>,
+}
+impl OptionButton {
+    fn update_data (&self, system: &mut Hierarchy, widget: Widget) {
+        let widget = widget.fetch_mut(system, "").unwrap();
+        let data_option = widget.data_get_mut();
+        match data_option {
+            Option::Some ( data ) => {
+                match data.strings.get_mut("widget_text") {
+                    Option::Some(txt) => {
+                        *txt = self.options[self.current].to_string();
+                    }
+                    Option::None => {
+                        data.strings.insert("widget_text".to_string(), self.options[self.current].to_string());
+                    },
+                }
+            }
+            Option::None => {
+                let mut data = Data::new();
+                data.strings.insert("widget_text".to_string(), self.options[self.current].to_string());
+                *data_option = Option::Some(data);
+            },
+        }
+    }
+    pub fn create (commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut Hierarchy, path: &str, position: LayoutPackage, options: Vec<String>, current: usize) -> Widget {
+        
+        let widget = Widget::create(system, path, position).unwrap();
+        image_element_spawn!(commands, asset_server, widget.clone(), &ImageParams::default(), "settings/button_dark.png",
+            ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.3), GLOBAL_COLOR_HOVER),
+            ColorHighlightEffectUpdater ()
+        );
+
+
+        let cycle_left = Widget::create(system, &widget.end("button_cycle_left"), Layout::Relative {
+            relative_1: Vec2::new(3.0, 18.0),
+            relative_2: Vec2::new(25.0, 82.0),
+            ..Default::default()
+        }.pack()).unwrap();
+        let image_box = Widget::create(system, &cycle_left.end(""), Layout::Solid {
+            width: 1.0,
+            height: 1.0,
+            horizontal_anchor: -0.8,
+            ..Default::default()
+        }.pack()).unwrap();
+        image_element_spawn!(commands, asset_server, image_box, &ImageParams::default(), "settings/arrow_left_empty.png",
+            ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.6), GLOBAL_COLOR_HOVER),
+            ColorHighlightEffectUpdater ()
+        );
+
+
+        let cycle_right = Widget::create(system, &widget.end("button_cycle_right"), Layout::Relative {
+            relative_1: Vec2::new(75.0, 18.0),
+            relative_2: Vec2::new(97.0, 82.0),
+            ..Default::default()
+        }.pack()).unwrap();
+        let image_box = Widget::create(system, &cycle_right.end(""), Layout::Solid {
+            width: 1.0,
+            height: 1.0,
+            horizontal_anchor: 0.8,
+            ..Default::default()
+        }.pack()).unwrap();
+        image_element_spawn!(commands, asset_server, image_box, &ImageParams::default(), "settings/arrow_right_empty.png",
+            ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.6), GLOBAL_COLOR_HOVER),
+            ColorHighlightEffectUpdater ()
+        );
+
+        let style = TextStyle {
+            font: asset_server.load("Fonts/Rajdhani/Rajdhani-SemiBold.ttf"),
+            font_size: 40.0,
+            color: GLOBAL_COLOR_STANDBY,
+        };
+        text_element_spawn!(commands, widget.clone(), &TextParams::center().styled(&style).scaled(90.0).with_height(40.0).at(50.0, 35.0), &options[current],
+            ColorHighlightEffect (GLOBAL_COLOR_STANDBY, GLOBAL_COLOR_HOVER),
+            LiveWidgetText ()
+        );
+
+        widget_spawn!(commands, widget.clone(), OptionButton {
+            state_change: true,
+            current,
+            options,
+        });
+
+        widget
+
+    }
+    pub fn cycle_left (&mut self, system: &mut Hierarchy, widget: Widget) {
+        if self.current > 0 {
+            self.current -= 1;
+            self.state_change = true;
+            self.update_data(system, widget);
+        } else {
+            self.current = self.options.len() - 1;
+            self.state_change = true;
+            self.update_data(system, widget);
+        }
+    }
+    pub fn cycle_right (&mut self, system: &mut Hierarchy, widget: Widget) {
+        if self.current < self.options.len() - 1 {
+            self.current += 1;
+            self.state_change = true;
+            self.update_data(system, widget);
+        } else {
+            self.current = 0;
+            self.state_change = true;
+            self.update_data(system, widget);
+        }
+    }
+    pub fn get_current (&self) -> &str {
+        &self.options[self.current]
+    }
+}
+pub fn option_button_update (mut systems: Query<(&mut Hierarchy, &UserInterface)>, cursors: Query<&Cursor>, mut query: Query<(&Widget, &mut OptionButton)>, mouse_button_input: Res<Input<MouseButton>>, mut windows: Query<&mut Window>) {
+    
+    let (mut system, placement) = systems.get_single_mut().unwrap();
+    let cursor = cursors.get_single().unwrap();
+    let mut window = windows.get_single_mut().unwrap();
+
+    for (widget, mut button) in &mut query {
+        if widget.is_within(&system, "", &vec_convert(cursor.position_world(), &placement.offset)).unwrap(){
+
+            widget.fetch_data_set_f32(&mut system, "", "color_highlight_effect_slider", 1.0).unwrap();
+            widget.fetch_data_set_f32(&mut system, "button_cycle_left/#0", "color_highlight_effect_slider", 1.0).unwrap();
+            widget.fetch_data_set_f32(&mut system, "button_cycle_right/#0", "color_highlight_effect_slider", 1.0).unwrap();
+
+            if mouse_button_input.just_pressed(MouseButton::Left) {
+
+                if widget.is_within(&system, "button_cycle_left", &vec_convert(cursor.position_world(), &placement.offset)).unwrap(){
+                    button.cycle_left(&mut system, widget.clone());
+                }
+                if widget.is_within(&system, "button_cycle_right", &vec_convert(cursor.position_world(), &placement.offset)).unwrap(){
+                    button.cycle_right(&mut system, widget.clone());
+                }
+
+                if button.state_change == true {
+                    button.state_change = false;
+                    match widget.fetch(&mut system, "").unwrap().get_name().as_str() {
+                        "Window mode button" => {
+                            match button.get_current() {
+                                "Windowed" => {window.mode = bevy::window::WindowMode::Windowed},
+                                "Borderless" => {window.mode = bevy::window::WindowMode::BorderlessFullscreen},
+                                _ => (),
+                            };
+                        },
+                        "Decorations button" => {
+                            match button.get_current() {
+                                "Enabled" => {window.decorations = true},
+                                "Disabled" => {window.decorations = false},
+                                _ => (),
+                            };
+                        },
+                        "Resizable window button" => {
+                            match button.get_current() {
+                                "Enabled" => {window.resizable = true},
+                                "Disabled" => {window.resizable = false},
+                                _ => (),
+                            };
+                        },
+                        "Profiler Overlay button" => {
+                            match button.get_current() {
+                                "Enabled" => {Widget::new("profiler").fetch_mut(&mut system, "").unwrap().set_visibility(true)},
+                                "Disabled" => {Widget::new("profiler").fetch_mut(&mut system, "").unwrap().set_visibility(false);},
+                                _ => (),
+                            };
+                        },
+                        _ => {},
+                    }
+                }
+            }
+
+        }
+    }
+}
+
 
 // ===========================================================
 // === PACK ALL SYSTEMS TO PLUGIN ===
@@ -289,6 +465,6 @@ impl Plugin for UISettingsPlugin {
         app
             .add_systems(Update, hover_effect_input)
             .add_systems(Update, return_button_update)
-            .add_systems(Update, (option_button_text_update, option_button_update));
+            .add_systems(Update, option_button_update);
     }
 }

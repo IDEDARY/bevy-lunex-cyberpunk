@@ -10,7 +10,6 @@ use style::*;
 
 mod ui_settings;
 use ui_settings::*;
-mod ui_settings_buttons;
 
 mod ui_mainmenu;
 use ui_mainmenu::*;
@@ -24,7 +23,16 @@ use rand::Rng;
 
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins)
+        .add_plugins(DefaultPlugins.set (
+            WindowPlugin {
+                primary_window: Some(Window {
+                    title: "Bevy Lunex Cyberpunk".into(),
+                    mode: bevy::window::WindowMode::BorderlessFullscreen,
+                    ..Default::default()
+                }),
+                ..Default::default()
+            }
+        ))
 
         .add_systems(Startup, (setup, apply_deferred).chain())
 
@@ -34,6 +42,7 @@ fn main() {
 
         .add_systems(Update, (hierarchy_update, cursor_update).chain().before(image_update))
         .add_plugins(AlignPlugin)
+        .add_plugins(GeneralWidgetPlugin)
 
         //UI_Settings plugins
         .add_plugins(UISettingsPlugin)
@@ -108,6 +117,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     let mut system = Hierarchy::new();
     setup_main_menu(&mut commands, &asset_server, &mut system);
     setup_menu_settings(&mut commands, &asset_server, &mut system);
+    setup_profiler(&mut commands, &asset_server, &mut system);
     
     //################################################################################
     //# == Hierarchy Debug ==
