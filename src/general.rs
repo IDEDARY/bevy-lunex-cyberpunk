@@ -1,3 +1,5 @@
+use std::collections::VecDeque;
+
 use bevy::prelude::*;
 use bevy_lunex::prelude::*;
 use super::style::*;
@@ -163,6 +165,19 @@ impl Plugin for AlignPlugin {
 // ===========================================================
 // === SETUP PROFILER ===
 
+#[derive(Component)]
+pub struct Profiler {
+    timer: f32,
+    fps_recording: VecDeque<f32>,
+}
+impl Profiler {
+    pub fn new () -> Profiler {
+        Profiler {
+            timer: 0.0,
+            fps_recording: VecDeque::new(),
+        }
+    }
+}
 pub fn setup_profiler (commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut Hierarchy) {
     let profiler = Widget::create(system, "profiler", Layout::Relative {
         relative_1: Vec2 { x: 0.0, y: 0.0 },
@@ -184,7 +199,34 @@ pub fn setup_profiler (commands: &mut Commands, asset_server: &Res<AssetServer>,
         color: YELLOW_COLOR,
     };
     text_element_spawn!(commands, widget.clone(), &TextParams::centerleft().styled(&style).with_height(10.0).at(10.0, 30.0), "FPS: ",
-        LiveWidgetText ()
+        LiveWidgetText (),
+        Profiler::new()
     );
 }
+pub fn profiler_update (mut systems: Query<&mut Hierarchy>, diagnostics: Res<bevy::diagnostic::DiagnosticsStore>, mut query: Query<(&mut Widget, &mut Profiler)> ) {
+    let mut system = systems.single_mut();
+    let (widget, mut profiler) = query.single_mut();
 
+    if let Some(fps) = diagnostics.get(bevy::diagnostic::FrameTimeDiagnosticsPlugin::FPS) {
+        if let Some(raw) = fps.value() {
+
+            if profiler.timer <= 0.0 {
+                profiler.timer = 60.0;
+
+                if profiler.fps_recording.len() >= 10 { profiler.fps_recording.pop_front(); }
+                profiler.fps_recording.push_back(raw as f32);
+
+                let mut sum = 0.0;
+                for n in profiler.fps_recording.iter() {
+                    sum += n;
+                }
+
+                let average: f32 = sum / profiler.fps_recording.len() as f32;
+
+                widget.fetch_data_set_string(&mut system, "", "widget_text",  format!("FPS: {average:.2}")).unwrap();
+            } else {
+                profiler.timer -= 1.0;
+            }
+        }
+    };
+}

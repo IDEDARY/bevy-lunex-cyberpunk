@@ -23,7 +23,7 @@ use rand::Rng;
 
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins.set (
+        .add_plugins((DefaultPlugins.set (
             WindowPlugin {
                 primary_window: Some(Window {
                     title: "Bevy Lunex Cyberpunk".into(),
@@ -32,12 +32,13 @@ fn main() {
                 }),
                 ..Default::default()
             }
-        ))
+        ), bevy::diagnostic::FrameTimeDiagnosticsPlugin ))
 
         .add_systems(Startup, (setup, apply_deferred).chain())
 
         //Debug
         //.add_plugins(LunexDebugPlugin)
+        .add_systems(Update, profiler_update)
 
 
         .add_systems(Update, (hierarchy_update, cursor_update).chain().before(image_update))

@@ -189,7 +189,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
 
 
 
-    let names = textgrid![["Window mode", "Decorations", "Resizable window", "Title", "Resolution", "Profiler Overlay"]];
+    let names = textgrid![["Window mode", "Decorations", "Resizable window", "Resolution", "Profiler Overlay"]];
     let mut options = HashMap::new();
     options.insert("Window mode", (textrow!["Borderless", "Windowed"], 0));
     options.insert("Resolution", (textrow!["1920x1080", "1280x720", "720x720"], 0));
@@ -436,6 +436,14 @@ pub fn option_button_update (mut systems: Query<(&mut Hierarchy, &UserInterface)
                             match button.get_current() {
                                 "Enabled" => {window.resizable = true},
                                 "Disabled" => {window.resizable = false},
+                                _ => (),
+                            };
+                        },
+                        "Resolution button" => {
+                            match button.get_current() {
+                                "1920x1080" => {window.resolution.set(1920.0, 1080.0)},
+                                "1280x720" => {window.resolution.set(1280.0, 720.0)},
+                                "720x720" => {window.resolution.set(720.0, 720.0)},
                                 _ => (),
                             };
                         },
