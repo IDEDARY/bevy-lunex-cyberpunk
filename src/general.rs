@@ -195,7 +195,7 @@ pub fn setup_profiler (commands: &mut Commands, asset_server: &Res<AssetServer>,
 
     let style = TextStyle {
         font: asset_server.load(GLOBAL_ITEM_BUTTON_FONT),
-        font_size: 40.0,
+        font_size: 80.0,
         color: YELLOW_COLOR,
     };
     text_element_spawn!(commands, widget.clone(), &TextParams::centerleft().styled(&style).with_height(10.0).at(10.0, 30.0), "FPS: ",
@@ -223,7 +223,7 @@ pub fn profiler_update (mut systems: Query<&mut Hierarchy>, diagnostics: Res<bev
 
                 let average: f32 = sum / profiler.fps_recording.len() as f32;
 
-                widget.fetch_data_set_string(&mut system, "", "widget_text",  format!("FPS: {average:.2}")).unwrap();
+                widget.fetch_data_set_string(&mut system, "", "widget_text",  format!("FPS: {average:.0}")).unwrap();
             } else {
                 profiler.timer -= 1.0;
             }

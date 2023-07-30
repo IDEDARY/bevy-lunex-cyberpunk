@@ -204,7 +204,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
 
             //# --------------------------------------------------------------------------------------------------------------
 
-            //# Create OPTION widget in LIST
+            //# Spawn text element in the grid item
             let boundary = Widget::new(&widget.end(&names[x][y]));
             text_element_spawn!(commands, boundary.clone(), &TextParams::centerleft().styled(&style_item).scaled(40.0).at(2.0, 50.0), &names[x][y],
                 ColorHighlightEffect (style_item.color, GLOBAL_COLOR_HOVER),
@@ -212,20 +212,29 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
                 ColorHighlightEffectUpdater ()
             );
 
-            //# Create 'nameless' widget in LIST
-            let button = Widget::create(system, &boundary.end(""), Layout::Relative {
-                relative_1: Vec2::new(47.0, 2.0),
-                relative_2: Vec2::new(95.0, 98.0),
+            let highlight = Widget::create(system, &boundary.end(""), Layout::Relative {
+                relative_1: Vec2 { x: -5.0, y: 15.0 },
+                relative_2: Vec2 { x: 46.0, y: 85.0 },
                 ..Default::default()
             }.pack()).unwrap();
+            image_element_spawn!(commands, asset_server, highlight, &ImageParams::default(), "settings/selection_shadow.png",
+                ColorHighlightEffect (style_item.color.with_a(0.0), GLOBAL_COLOR_HOVER.with_a(0.15)),
+                ColorHighlightEffectUpdater ()
+            );
 
-            //# Create BUTTON in 'nameless'
+            //# Create BUTTON in the grid item
             let mut option = (textrow!["Enabled", "Disabled"], 0);
             if let Some (custom) = options.get(names[x][y].as_str()) {
                 option = custom.clone();
             }
 
-            let _ = OptionButton::create(commands, asset_server, system, &button.end(&format!("{} button", &names[x][y])), Layout::Relative::default().pack(), option.0, option.1);
+            let position = Layout::Relative {
+                relative_1: Vec2::new(47.0, 2.0),
+                relative_2: Vec2::new(95.0, 98.0),
+                ..Default::default()
+            }.pack();
+
+            let _ = OptionButton::create(commands, asset_server, system, &boundary.end(&format!("{} button", &names[x][y])), position, &names[x][y], option.0, option.1);
 
             //# --------------------------------------------------------------------------------------------------------------
 
@@ -244,17 +253,16 @@ fn hover_effect_input(mut systems: Query<(&mut Hierarchy, &UserInterface)>, curs
     let (mut system, placement) = systems.get_single_mut().unwrap();
     let cursor = cursors.get_single().unwrap();
     for (widget, _) in &mut query {
-        if widget.is_within(&system, "", &vec_convert(cursor.position_world(), &placement.offset)).unwrap(){
+        if widget.is_within(&system, "", &vec_convert(cursor.position_world(), &placement.offset)).unwrap() {
 
-            let data_option = widget.fetch_mut(&mut system, "").unwrap().data_get_mut();
-            match data_option {
-                Option::Some ( data ) => {
-                    data.f32s.insert("color_highlight_effect_slider".to_string() , 1.0);
-                },
-                Option::None => {
-                    *data_option = Option::Some(Data::new());
-                },
-            }
+            //SET COLOR SLIDER ON SELF
+            widget.fetch_data_set_f32(&mut system, "", "color_highlight_effect_slider", 1.0).unwrap();
+
+            //THIS WILL SET THE COLOR SLIDER OF THE BUTTON, IF IT DOESNT HAVE THAT WIDGET IT WILL ERROR OUT, BUT WE DON'T CARE
+            let _ = widget.fetch_data_set_f32(&mut system, "#0", "color_highlight_effect_slider", 1.0);
+            let _ = widget.fetch_data_set_f32(&mut system, "#1", "color_highlight_effect_slider", 1.0);
+            let _ = widget.fetch_data_set_f32(&mut system, "#1/button_cycle_left/#0", "color_highlight_effect_slider", 1.0);
+            let _ = widget.fetch_data_set_f32(&mut system, "#1/button_cycle_right/#0", "color_highlight_effect_slider", 1.0);
         }
     }
 }
@@ -280,6 +288,7 @@ fn return_button_update (mut systems: Query<(&mut Hierarchy, &UserInterface)>, c
 
 #[derive(Component)]
 pub struct OptionButton {
+    name: String,
     state_change: bool,
     current: usize,
     options: Vec<String>,
@@ -306,7 +315,7 @@ impl OptionButton {
             },
         }
     }
-    pub fn create (commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut Hierarchy, path: &str, position: LayoutPackage, options: Vec<String>, current: usize) -> Widget {
+    pub fn create (commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut Hierarchy, path: &str, position: LayoutPackage, name: &str, options: Vec<String>, current: usize) -> Widget {
         
         let widget = Widget::create(system, path, position).unwrap();
         image_element_spawn!(commands, asset_server, widget.clone(), &ImageParams::default(), "settings/button_dark.png",
@@ -359,6 +368,7 @@ impl OptionButton {
         );
 
         widget_spawn!(commands, widget.clone(), OptionButton {
+            name: name.to_string(),
             state_change: true,
             current,
             options,
@@ -392,6 +402,9 @@ impl OptionButton {
     pub fn get_current (&self) -> &str {
         &self.options[self.current]
     }
+    pub fn get_name (&self) -> &str {
+        &self.name
+    }
 }
 pub fn option_button_update (mut systems: Query<(&mut Hierarchy, &UserInterface)>, cursors: Query<&Cursor>, mut query: Query<(&Widget, &mut OptionButton)>, mouse_button_input: Res<Input<MouseButton>>, mut windows: Query<&mut Window>) {
     
@@ -417,29 +430,29 @@ pub fn option_button_update (mut systems: Query<(&mut Hierarchy, &UserInterface)
 
                 if button.state_change == true {
                     button.state_change = false;
-                    match widget.fetch(&mut system, "").unwrap().get_name().as_str() {
-                        "Window mode button" => {
+                    match button.get_name() {
+                        "Window mode" => {
                             match button.get_current() {
                                 "Windowed" => {window.mode = bevy::window::WindowMode::Windowed},
                                 "Borderless" => {window.mode = bevy::window::WindowMode::BorderlessFullscreen},
                                 _ => (),
                             };
                         },
-                        "Decorations button" => {
+                        "Decorations" => {
                             match button.get_current() {
                                 "Enabled" => {window.decorations = true},
                                 "Disabled" => {window.decorations = false},
                                 _ => (),
                             };
                         },
-                        "Resizable window button" => {
+                        "Resizable window" => {
                             match button.get_current() {
                                 "Enabled" => {window.resizable = true},
                                 "Disabled" => {window.resizable = false},
                                 _ => (),
                             };
                         },
-                        "Resolution button" => {
+                        "Resolution" => {
                             if window.mode == bevy::window::WindowMode::Windowed {
                                 match button.get_current() {
                                     "1920x1080" => {window.resolution.set(1920.0, 1080.0)},
@@ -449,7 +462,7 @@ pub fn option_button_update (mut systems: Query<(&mut Hierarchy, &UserInterface)
                                 };
                             }
                         },
-                        "Profiler Overlay button" => {
+                        "Profiler Overlay" => {
                             match button.get_current() {
                                 "Enabled" => {Widget::new("profiler").fetch_mut(&mut system, "").unwrap().set_visibility(true)},
                                 "Disabled" => {Widget::new("profiler").fetch_mut(&mut system, "").unwrap().set_visibility(false);},
