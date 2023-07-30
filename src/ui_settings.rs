@@ -440,12 +440,14 @@ pub fn option_button_update (mut systems: Query<(&mut Hierarchy, &UserInterface)
                             };
                         },
                         "Resolution button" => {
-                            match button.get_current() {
-                                "1920x1080" => {window.resolution.set(1920.0, 1080.0)},
-                                "1280x720" => {window.resolution.set(1280.0, 720.0)},
-                                "720x720" => {window.resolution.set(720.0, 720.0)},
-                                _ => (),
-                            };
+                            if window.mode == bevy::window::WindowMode::Windowed {
+                                match button.get_current() {
+                                    "1920x1080" => {window.resolution.set(1920.0, 1080.0)},
+                                    "1280x720" => {window.resolution.set(1280.0, 720.0)},
+                                    "720x720" => {window.resolution.set(720.0, 720.0)},
+                                    _ => (),
+                                };
+                            }
                         },
                         "Profiler Overlay button" => {
                             match button.get_current() {
