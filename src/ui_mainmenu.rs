@@ -45,7 +45,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         scaling: SolidScale::Fill,
         ..Default::default()
     }.pack()).unwrap();
-    image_element_spawn!(commands, asset_server, image.clone(), &ImageParams::default(), "background.png");
+    image_element_spawn!(commands, asset_server, image.clone(), &ImageParams::default(), "images/main_menu/screen_10.png");
 
     //# Set depth to IMAGE widget so the image renders behind other widgets (All widgets start at 100 + level == Menu/Display -> 102, Menu/Display/Button -> 103)
     image.fetch_mut(system, "").unwrap().set_depth(50.0);
@@ -60,7 +60,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         scaling: SolidScale::Fit,
         ..Default::default()
     }.pack()).unwrap();
-    image_element_spawn!(commands, asset_server, board.clone(), &ImageParams::default(), "board.png");
+    image_element_spawn!(commands, asset_server, board.clone(), &ImageParams::default(), "images/main_menu/board.png");
 
 
 
@@ -80,7 +80,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         scaling: SolidScale::Fit,
         ..Default::default()
     }.pack()).unwrap();
-    image_element_spawn!(commands, asset_server, logo.clone(), &ImageParams::default(), "logo.png");
+    image_element_spawn!(commands, asset_server, logo.clone(), &ImageParams::default(), "images/main_menu/logo.png");
 
 
 
@@ -90,7 +90,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         relative_2: Vec2 { x: 105.0, y: 110.0 },
         ..Default::default()
     }.pack()).unwrap();
-    image_element_spawn!(commands, asset_server, logo_shadow.clone(), &ImageParams::default(), "logo_shadow.png");
+    image_element_spawn!(commands, asset_server, logo_shadow.clone(), &ImageParams::default(), "images/main_menu/logo_shadow.png");
 
     //# --------------------------------------------------------------------------------------------------------------
 
@@ -135,7 +135,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
                 ColorHighlightEffect (text_style.color, GLOBAL_COLOR_HOVER),
                 AnimateWidgetEffect (Vec2::default(), Vec2::new(5.0, 0.0))
             );
-            image_element_spawn!(commands, asset_server, widget.clone(), &ImageParams::default(), "button.png",
+            image_element_spawn!(commands, asset_server, widget.clone(), &ImageParams::default(), "images/main_menu/button.png",
                 ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.0), GLOBAL_COLOR_HOVER.with_a(0.8)),
                 ColorHighlightEffectUpdater ()
             );

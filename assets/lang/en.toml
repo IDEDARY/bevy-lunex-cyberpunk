@@ -1,0 +1,8 @@
+[main_menu]
+continue = "CONTINUE"
+new_game = "NEW GAME"
+load_game = "LOAD GAME"
+settings = "SETTINGS"
+additional_content = "ADDITIONAL CONTENT"
+credits = "CREDITS"
+quit_game = "QUIT GAME"

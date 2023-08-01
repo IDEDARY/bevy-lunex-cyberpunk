@@ -20,10 +20,11 @@ pub const GLOBAL_COLOR_HOVER: Color = BLUE_COLOR;
 pub const SETTINGS_COLOR_CATEGORY: Color = GREY_COLOR;
 
 
-pub const GLOBAL_NAVIGATION_BUTTON_FONT: &str = "Fonts/Rajdhani/Rajdhani-Bold.ttf";
-pub const GLOBAL_ITEM_BUTTON_FONT: &str = "Fonts/Rajdhani/Rajdhani-Medium.ttf";
-pub const GLOBAL_TAB_BUTTON_FONT: &str = "Fonts/Blender/BlenderPro-Medium.ttf";
-pub const MAIN_MENU_BUTTON_FONT: &str = "Fonts/Rajdhani/Rajdhani-Medium.ttf";
+pub const GLOBAL_NAVIGATION_BUTTON_FONT: &str = "fonts/rajdhani/Rajdhani-Bold.ttf";
+pub const GLOBAL_OPTION_BUTTON_FONT: &str = "fonts/rajdhani/Rajdhani-SemiBold.ttf";
+pub const GLOBAL_ITEM_BUTTON_FONT: &str = "fonts/rajdhani/Rajdhani-Medium.ttf";
+pub const GLOBAL_TAB_BUTTON_FONT: &str = "fonts/blender/BlenderPro-Medium.ttf";
+pub const MAIN_MENU_BUTTON_FONT: &str = "fonts/rajdhani/Rajdhani-Medium.ttf";
 //pub const MAIN_MENU_BUTTON_FONT: &str = GLOBAL_TAB_BUTTON_FONT;
 
 

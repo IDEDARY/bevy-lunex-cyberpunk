@@ -65,7 +65,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         scaling: SolidScale::Fill,
         ..Default::default()
     }.pack()).unwrap();
-    image_element_spawn!(commands, asset_server, image.clone(), &ImageParams::default(), "settings/background.png");
+    image_element_spawn!(commands, asset_server, image.clone(), &ImageParams::default(), "images/settings/background.png");
     image.fetch_mut(system, "").unwrap().set_depth(90.0);
 
 
@@ -110,7 +110,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         vertical_anchor: -1.0,
         ..Default::default()
     }.pack()).unwrap();
-    image_element_spawn!(commands, asset_server, line, &ImageParams::default(), "settings/line.png");
+    image_element_spawn!(commands, asset_server, line, &ImageParams::default(), "images/settings/line.png");
 
 
     //# --------------------------------------------------------------------------------------------------------------
@@ -184,7 +184,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         scaling: SolidScale::Fit,
         ..Default::default()
     }.pack()).unwrap();
-    image_element_spawn!(commands, asset_server, category.clone(), &ImageParams::default(), "settings/category.png");
+    image_element_spawn!(commands, asset_server, category.clone(), &ImageParams::default(), "images/settings/category.png");
     text_element_spawn!(commands, category.clone(), &TextParams::centerleft().styled(&style_category).scaled(40.0).at(2.0, 50.0), "Display");
 
 
@@ -217,7 +217,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
                 relative_2: Vec2 { x: 46.0, y: 85.0 },
                 ..Default::default()
             }.pack()).unwrap();
-            image_element_spawn!(commands, asset_server, highlight, &ImageParams::default(), "settings/selection_shadow.png",
+            image_element_spawn!(commands, asset_server, highlight, &ImageParams::default(), "images/settings/selection_shadow.png",
                 ColorHighlightEffect (style_item.color.with_a(0.0), GLOBAL_COLOR_HOVER.with_a(0.15)),
                 ColorHighlightEffectUpdater ()
             );
@@ -318,7 +318,7 @@ impl OptionButton {
     pub fn create (commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut Hierarchy, path: &str, position: LayoutPackage, name: &str, options: Vec<String>, current: usize) -> Widget {
         
         let widget = Widget::create(system, path, position).unwrap();
-        image_element_spawn!(commands, asset_server, widget.clone(), &ImageParams::default(), "settings/button_dark.png",
+        image_element_spawn!(commands, asset_server, widget.clone(), &ImageParams::default(), "images/settings/button_dark.png",
             ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.3), GLOBAL_COLOR_HOVER),
             ColorHighlightEffectUpdater ()
         );
@@ -335,7 +335,7 @@ impl OptionButton {
             horizontal_anchor: -0.8,
             ..Default::default()
         }.pack()).unwrap();
-        image_element_spawn!(commands, asset_server, image_box, &ImageParams::default(), "settings/arrow_left_empty.png",
+        image_element_spawn!(commands, asset_server, image_box, &ImageParams::default(), "images/settings/arrow_left_empty.png",
             ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.6), GLOBAL_COLOR_HOVER),
             ColorHighlightEffectUpdater ()
         );
@@ -352,20 +352,35 @@ impl OptionButton {
             horizontal_anchor: 0.8,
             ..Default::default()
         }.pack()).unwrap();
-        image_element_spawn!(commands, asset_server, image_box, &ImageParams::default(), "settings/arrow_right_empty.png",
+        image_element_spawn!(commands, asset_server, image_box, &ImageParams::default(), "images/settings/arrow_right_empty.png",
             ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.6), GLOBAL_COLOR_HOVER),
             ColorHighlightEffectUpdater ()
         );
 
         let style = TextStyle {
-            font: asset_server.load("Fonts/Rajdhani/Rajdhani-SemiBold.ttf"),
+            font: asset_server.load(GLOBAL_OPTION_BUTTON_FONT),
             font_size: 40.0,
             color: GLOBAL_COLOR_STANDBY,
         };
-        text_element_spawn!(commands, widget.clone(), &TextParams::center().styled(&style).scaled(90.0).with_height(40.0).at(50.0, 35.0), &options[current],
+        text_element_spawn!(commands, widget.clone(), &TextParams::center().styled(&style).scaled(90.0).with_height(40.0).at(50.0, 40.0), &options[current],
             ColorHighlightEffect (GLOBAL_COLOR_STANDBY, GLOBAL_COLOR_HOVER),
             LiveWidgetText ()
         );
+
+        let mut grid: Vec<Vec<String>> = Vec::new();
+        for i in 0..options.len() {
+            grid.push(vec![format!("selector {}", i)]);
+        }
+        let params = GridParams::new(&grid).with_anchor(bevy::sprite::Anchor::Center).with_width(6.0).with_height(10.0).with_width_gap(0.5);
+        let grid_widget = grid_generate(system, &widget.end("grid"), Vec2::new(50.0, 80.0), &params).unwrap();
+
+        for i in 0..options.len() {
+            image_element_spawn!(commands, asset_server, Widget::new(&grid_widget.end(&format!("selector {}", i))), &ImageParams::default(), "images/settings/underline_dark.png",
+                ColorHighlightEffect (GLOBAL_COLOR_STANDBY, GLOBAL_COLOR_HOVER),
+                ColorHighlightEffectUpdater (),
+                HoverEffectInput ()
+            );
+        }
 
         widget_spawn!(commands, widget.clone(), OptionButton {
             name: name.to_string(),
