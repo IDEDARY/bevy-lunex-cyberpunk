@@ -45,7 +45,10 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         scaling: SolidScale::Fill,
         ..Default::default()
     }.pack()).unwrap();
-    image_element_spawn!(commands, asset_server, image.clone(), &ImageParams::default(), "images/main_menu/screen_10.png");
+    image_element_spawn!(commands, asset_server, image.clone(), &ImageParams::default().with_depth(-5.0), "images/main_menu/screen_10.png");
+    image_element_spawn!(commands, asset_server, image.clone(), &ImageParams::default(), "images/main_menu/screen_10_red.png");
+    image_element_spawn!(commands, asset_server, image.clone(), &ImageParams::default(), "images/main_menu/screen_10_blue.png");
+    image_element_spawn!(commands, asset_server, image.clone(), &ImageParams::default(), "images/main_menu/screen_10_blink1.png");
 
     //# Set depth to IMAGE widget so the image renders behind other widgets (All widgets start at 100 + level == Menu/Display -> 102, Menu/Display/Button -> 103)
     image.fetch_mut(system, "").unwrap().set_depth(50.0);

@@ -56,24 +56,24 @@ pub struct UserInterface {
 }
 
 //OUTDATED, NEEDS TO RUN AFTER ELEMENT_UPDATE TO FIX ALL IMAGES DUE TO 0 FOR THER BOUNDARY
-pub fn image_update(mut systems: Query<(&mut Hierarchy, &mut UserInterface)>, mut query: Query<(&mut Widget, &Handle<Image>, &mut Transform)>, assets: Res<Assets<Image>>) {
+pub fn image_update(mut systems: Query<(&mut Hierarchy, &UserInterface)>, mut query: Query<(&mut Widget, &Handle<Image>, &mut Transform)>, assets: Res<Assets<Image>>) {
 
-    let (mut system, mut ui) = systems.get_single_mut().unwrap();     //get the single hiearchy struct
+    let (mut system, ui) = systems.get_single_mut().unwrap();     //get the single hiearchy struct
     for (widget, image_handle, mut transform) in &mut query {
         match widget.fetch(&system, "") {
             Result::Err(..) => {
-                transform.translation.x = -10000.0;
-                transform.translation.y = -10000.0;
+                //transform.translation.x = -10000.0;
+                //transform.translation.y = -10000.0;
             },
             Result::Ok(branch) => {
                 if !branch.is_visible() {
-                    transform.translation.x = -10000.0;
-                    transform.translation.y = -10000.0;
+                    //transform.translation.x = -10000.0;
+                    //transform.translation.y = -10000.0;
                 } else {
-                    ui.offset.x = -system.width/2.0;
-                    ui.offset.y = system.height/2.0;
+                    //ui.offset.x = -system.width/2.0;
+                    //ui.offset.y = system.height/2.0;
 
-                    transform.translation.z = branch.get_depth();
+                    //transform.translation.z = branch.get_depth();
 
                     let pos = widget.fetch(&mut system, "").unwrap().container_get().position_get().invert_y();      //The widget will locate itself inside the hierarchy
                     transform.translation.x = pos.point_1.x + ui.offset.x;

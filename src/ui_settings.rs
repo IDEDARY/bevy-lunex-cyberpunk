@@ -131,7 +131,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
     }.pack()).unwrap();
 
     //# Generate grid of widgets in 'nameless'
-    let names = textgrid![["tab 1"], ["tab 2"], ["tab 3"], ["tab 4"], ["tab 5"], ["tab 6"], ["tab 7"], ["tab 8"]];
+    let names = textgrid![["Display"], ["Sound"], ["tab 3"], ["tab 4"], ["tab 5"], ["tab 6"], ["tab 7"], ["tab 8"]];
     let grid = GridParams::new(&names).with_width(100.0).with_height(20.0).with_width_gap(10.0);
     grid_generate_inside(system, &boundary, &grid).unwrap();
 
@@ -261,8 +261,6 @@ fn hover_effect_input(mut systems: Query<(&mut Hierarchy, &UserInterface)>, curs
             //THIS WILL SET THE COLOR SLIDER OF THE BUTTON, IF IT DOESNT HAVE THAT WIDGET IT WILL ERROR OUT, BUT WE DON'T CARE
             let _ = widget.fetch_data_set_f32(&mut system, "#0", "color_highlight_effect_slider", 1.0);
             let _ = widget.fetch_data_set_f32(&mut system, "#1", "color_highlight_effect_slider", 1.0);
-            let _ = widget.fetch_data_set_f32(&mut system, "#1/button_cycle_left/#0", "color_highlight_effect_slider", 1.0);
-            let _ = widget.fetch_data_set_f32(&mut system, "#1/button_cycle_right/#0", "color_highlight_effect_slider", 1.0);
         }
     }
 }
@@ -336,8 +334,7 @@ impl OptionButton {
             ..Default::default()
         }.pack()).unwrap();
         image_element_spawn!(commands, asset_server, image_box, &ImageParams::default(), "images/settings/arrow_left_empty.png",
-            ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.6), GLOBAL_COLOR_HOVER),
-            ColorHighlightEffectUpdater ()
+            ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.6), GLOBAL_COLOR_HOVER)
         );
 
 
@@ -353,8 +350,7 @@ impl OptionButton {
             ..Default::default()
         }.pack()).unwrap();
         image_element_spawn!(commands, asset_server, image_box, &ImageParams::default(), "images/settings/arrow_right_empty.png",
-            ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.6), GLOBAL_COLOR_HOVER),
-            ColorHighlightEffectUpdater ()
+            ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.6), GLOBAL_COLOR_HOVER)
         );
 
         let style = TextStyle {
@@ -376,9 +372,7 @@ impl OptionButton {
 
         for i in 0..options.len() {
             image_element_spawn!(commands, asset_server, Widget::new(&grid_widget.end(&format!("selector {}", i))), &ImageParams::default(), "images/settings/underline_dark.png",
-                ColorHighlightEffect (GLOBAL_COLOR_STANDBY, GLOBAL_COLOR_HOVER),
-                ColorHighlightEffectUpdater (),
-                HoverEffectInput ()
+                ColorHighlightEffect (GLOBAL_COLOR_STANDBY, GLOBAL_COLOR_HOVER)
             );
         }
 
@@ -428,12 +422,21 @@ pub fn option_button_update (mut systems: Query<(&mut Hierarchy, &UserInterface)
     let mut window = windows.get_single_mut().unwrap();
 
     for (widget, mut button) in &mut query {
+
+        // Mirror the color slider value
+        match widget.fetch_data(&system, "").unwrap() {
+            Option::Some(data) => {
+                let val = data.f32s.get("color_highlight_effect_slider").unwrap().clone();
+                widget.fetch_data_set_f32(&mut system, "button_cycle_left/#0", "color_highlight_effect_slider", val).unwrap();
+                widget.fetch_data_set_f32(&mut system, "button_cycle_right/#0", "color_highlight_effect_slider", val).unwrap();
+                for i in 0..button.options.len() {
+                    widget.fetch_data_set_f32(&mut system, &format!("grid/selector {}", i), "color_highlight_effect_slider", val).unwrap();
+                }
+            },
+            Option::None => {},
+        }
+
         if widget.is_within(&system, "", &vec_convert(cursor.position_world(), &placement.offset)).unwrap(){
-
-            widget.fetch_data_set_f32(&mut system, "", "color_highlight_effect_slider", 1.0).unwrap();
-            widget.fetch_data_set_f32(&mut system, "button_cycle_left/#0", "color_highlight_effect_slider", 1.0).unwrap();
-            widget.fetch_data_set_f32(&mut system, "button_cycle_right/#0", "color_highlight_effect_slider", 1.0).unwrap();
-
             if mouse_button_input.just_pressed(MouseButton::Left) {
 
                 if widget.is_within(&system, "button_cycle_left", &vec_convert(cursor.position_world(), &placement.offset)).unwrap(){
