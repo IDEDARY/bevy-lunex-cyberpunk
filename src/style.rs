@@ -83,9 +83,9 @@ fn color_highlight_effect_update_text(mut systems: Query<&mut Hierarchy>, mut qu
         }
     }
 }
-fn color_highlight_effect_update_image(mut systems: Query<&mut Hierarchy>, mut query: Query<(&Widget, &mut Sprite, &Handle<Image>, &ColorHighlightEffect)>) {
+fn color_highlight_effect_update_image(mut systems: Query<&mut Hierarchy>, mut query: Query<(&Widget, &mut Sprite, &ColorHighlightEffect)>) {
     let mut system = systems.get_single_mut().unwrap();
-    for (widget, mut sprite, _, colors) in &mut query {
+    for (widget, mut sprite, colors) in &mut query {
         let widget = widget.fetch_mut(&mut system, "").unwrap();
         match widget.data_get_mut() {
             Option::Some ( data ) => {
@@ -182,6 +182,36 @@ fn smooth_wiggle_effect_update (mut systems: Query<&mut Hierarchy>, mut query: Q
 }
 
 
+/// ## Widget fast flickering effect
+/// Add this component to widget to add the effect
+/// * Overwrites relative position to 0.0
+/// * Panics if widget is not [`Window`]
+#[derive(Component, Default)]
+pub struct FastFlickerEffect {
+    x: f32,
+    x_speed: f32,
+    x_min: f32,
+    x_max: f32,
+}
+impl FastFlickerEffect {
+    pub fn new (x_speed: f32, x_min: f32, x_max: f32) -> FastFlickerEffect {
+        FastFlickerEffect {
+            x: 0.0,
+            x_speed,
+            x_min,
+            x_max,
+        }
+    }
+}
+pub fn fast_flicker_effect_update (mut query: Query<(&mut Sprite, &mut FastFlickerEffect)>) {
+    for (mut sprite, mut flicker) in &mut query {
+        flicker.x += flicker.x_speed;
+        let alpha = tween(flicker.x_min, flicker.x_max, flicker.x.sin()/2.0 + 0.5);
+        sprite.color.set_a(alpha);
+    }
+}
+
+
 // ===========================================================
 // === PACK ALL SYSTEMS TO PLUGIN ===
 
@@ -191,6 +221,7 @@ impl Plugin for HoverEffectPlugin {
         app
             .add_systems(Update, (color_highlight_effect_update, color_highlight_effect_update_text, color_highlight_effect_update_image).chain())
             .add_systems(Update, animate_widget_effect_update)
-            .add_systems(Update, smooth_wiggle_effect_update);
+            .add_systems(Update, smooth_wiggle_effect_update)
+            .add_systems(Update, fast_flicker_effect_update);
     }
 }
