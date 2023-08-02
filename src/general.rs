@@ -55,9 +55,7 @@ pub struct UserInterface {
     pub offset: Vec2,
 }
 
-
 pub fn image_update(mut systems: Query<(&mut Hierarchy, &UserInterface)>, mut query: Query<(&mut Widget, &Handle<Image>, &mut Transform)>, assets: Res<Assets<Image>>) {
-
     let (mut system, ui) = systems.get_single_mut().unwrap();     //get the single hiearchy struct
     for (widget, image_handle, mut transform) in &mut query {
         match widget.fetch(&system, "") {
@@ -81,9 +79,7 @@ pub fn image_update(mut systems: Query<(&mut Hierarchy, &UserInterface)>, mut qu
         };
     }
 }
-
 pub fn element_update(mut systems: Query<(&mut Hierarchy, &mut UserInterface)>, mut query: Query<(&mut Widget, &Element, &mut Transform)>) {
-
     let (mut system, mut ui) = systems.get_single_mut().unwrap();
     for (widget, element, mut transform) in &mut query {
         match widget.fetch(&system, "") {

@@ -94,7 +94,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         scaling: SolidScale::Fit,
         ..Default::default()
     }.pack()).unwrap();
-    image_element_spawn!(commands, asset_server, logo.clone(), &ImageParams::default(), "images/main_menu/logo.png");
+    image_element_spawn!(commands, asset_server, logo.clone(), &ImageParams::default(), "images/main_menu/logo.png", FastFlickerEffect::new(0.05, 0.9, 1.0));
 
 
 

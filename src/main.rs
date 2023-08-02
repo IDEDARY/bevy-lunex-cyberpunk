@@ -84,17 +84,16 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
             ..default()
         },
         BloomSettings {
-            intensity: 0.25,
-            low_frequency_boost: 0.7,
+            intensity: 0.20,
+            low_frequency_boost: 0.8,
             low_frequency_boost_curvature: 0.95,
-            high_pass_frequency: 0.7,
+            high_pass_frequency: 0.9,
             prefilter_settings: BloomPrefilterSettings {
-                threshold: 0.3,
-                threshold_softness: 0.5,
+                threshold: 0.25,
+                threshold_softness: 0.1,
             },
             composite_mode: BloomCompositeMode::Additive,
-        },
-        //SmoothWiggle {..Default::default()},
+        }
     ));
 
     //# Spawn cursor
@@ -109,7 +108,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
                 ..default()
             },
             ..default()
-        }
+        },
+        FastFlickerEffect::new(0.02, 1.5, 2.5)
     ));
 
 
@@ -144,7 +144,7 @@ fn vfx_bloom_update (mut query: Query<&mut BloomSettings>) {
         let mut rng = rand::thread_rng();
         if rng.gen_range(0..100) > 20 {break;}
 
-        bloom.intensity += (rng.gen_range(0.25..0.32)-bloom.intensity)/10.;
-        bloom.prefilter_settings.threshold += (rng.gen_range(0.2..0.35)-bloom.prefilter_settings.threshold)/10.;
+        bloom.intensity += (rng.gen_range(0.20..0.25)-bloom.intensity)/5.;
+        bloom.prefilter_settings.threshold += (rng.gen_range(0.25..0.30)-bloom.prefilter_settings.threshold)/5.;
     }
 }
