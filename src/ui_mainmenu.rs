@@ -45,21 +45,29 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         scaling: SolidScale::Fill,
         ..Default::default()
     }.pack()).unwrap();
-    image_element_spawn!(commands, asset_server, image.clone(), &ImageParams::default().with_depth(-0.1), "images/main_menu/screen_10.png");
-    image_element_spawn!(commands, asset_server, image.clone(), &ImageParams::default(), "images/main_menu/screen_10_red.png",
+
+    commands.spawn(ImageElementBundle::new(image.clone(), &ImageParams::default().with_depth(-0.1), asset_server.load("images/main_menu/screen_10.png"), Vec2::default()));
+
+    commands.spawn((
+        ImageElementBundle::new(image.clone(), &ImageParams::default(), asset_server.load("images/main_menu/screen_10_red.png"), Vec2::default()),
         FastFlickerEffect::new(0.9, 0.75, 1.0),
-        OnOffImageEffect::new(0.4, true)
-    );
-    image_element_spawn!(commands, asset_server, image.clone(), &ImageParams::default(), "images/main_menu/screen_10_blue.png",
+        OnOffImageEffect::new(0.4, true),
+    ));
+
+    commands.spawn((
+        ImageElementBundle::new(image.clone(), &ImageParams::default(), asset_server.load("images/main_menu/screen_10_blue.png"), Vec2::default()),
         FastFlickerEffect::new(0.9, 0.75, 1.0),
         OnOffImageEffect::new(0.4, false)
-    );
-    image_element_spawn!(commands, asset_server, image.clone(), &ImageParams::default(), "images/main_menu/screen_10_blink1.png",
-        FastFlickerEffect::new(0.01, 0.2, 0.9)
-    );
-    image_element_spawn!(commands, asset_server, image.clone(), &ImageParams::default(), "images/main_menu/screen_10_blink2.png",
-        FastFlickerEffect::new(0.01, 0.9, 0.2)
-    );
+    ));
+
+    commands.spawn((
+        ImageElementBundle::new(image.clone(), &ImageParams::default(), asset_server.load("images/main_menu/screen_10_blink1.png"), Vec2::default()),
+        FastFlickerEffect::new(0.01, 0.2, 0.9),
+    ));
+    commands.spawn((
+        ImageElementBundle::new(image.clone(), &ImageParams::default(), asset_server.load("images/main_menu/screen_10_blink2.png"), Vec2::default()),
+        FastFlickerEffect::new(0.01, 0.9, 0.2),
+    ));
 
     //# Set depth to IMAGE widget so the image renders behind other widgets (All widgets start at 100 + level == Menu/Display -> 102, Menu/Display/Button -> 103)
     image.fetch_mut(system, "").unwrap().set_depth(50.0);
@@ -74,8 +82,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         scaling: SolidScale::Fit,
         ..Default::default()
     }.pack()).unwrap();
-    image_element_spawn!(commands, asset_server, board.clone(), &ImageParams::default(), "images/main_menu/board.png");
-
+    commands.spawn(ImageElementBundle::new(board.clone(), &ImageParams::default(), asset_server.load("images/main_menu/board.png"), Vec2::default()));
 
 
     //# Create 'nameless' widget in BOARD
@@ -94,7 +101,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         scaling: SolidScale::Fit,
         ..Default::default()
     }.pack()).unwrap();
-    image_element_spawn!(commands, asset_server, logo.clone(), &ImageParams::default(), "images/main_menu/logo.png", FastFlickerEffect::new(0.05, 0.9, 1.0));
+    commands.spawn((ImageElementBundle::new(logo.clone(), &ImageParams::default(), asset_server.load("images/main_menu/logo.png"), Vec2::default()), FastFlickerEffect::new(0.05, 0.9, 1.0)));
 
 
 

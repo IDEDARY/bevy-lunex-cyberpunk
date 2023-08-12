@@ -229,8 +229,8 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
             }
 
             let position = Layout::Relative {
-                relative_1: Vec2::new(47.0, 2.0),
-                relative_2: Vec2::new(95.0, 98.0),
+                relative_1: Vec2::new(47.0, 0.0),
+                relative_2: Vec2::new(95.0, 100.0),
                 ..Default::default()
             }.pack();
 
@@ -317,7 +317,7 @@ impl OptionButton {
         
         let widget = Widget::create(system, path, position).unwrap();
         image_element_spawn!(commands, asset_server, widget.clone(), &ImageParams::default(), "images/settings/button_dark.png",
-            ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.3), GLOBAL_COLOR_HOVER),
+            ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.3), GLOBAL_COLOR_HOVER.with_a(0.35)),
             ColorHighlightEffectUpdater ()
         );
 
