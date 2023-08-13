@@ -183,10 +183,11 @@ pub fn setup_profiler (commands: &mut Commands, asset_server: &Res<AssetServer>,
         font_size: 80.0,
         color: YELLOW_COLOR,
     };
-    text_element_spawn!(commands, widget.clone(), &TextParams::centerleft().styled(&style).with_height(10.0).at(10.0, 30.0), "FPS: ",
+    commands.spawn((
+        TextElementBundle::new(widget.clone(), &TextParams::centerleft().styled(&style).with_height(10.0).at(10.0, 30.0), "FPS: "),
         LiveWidgetText (),
-        Profiler::new()
-    );
+        Profiler::new(),
+    ));
 }
 pub fn profiler_update (mut systems: Query<&mut Hierarchy>, diagnostics: Res<bevy::diagnostic::DiagnosticsStore>, mut query: Query<(&mut Widget, &mut Profiler)> ) {
     let mut system = systems.single_mut();

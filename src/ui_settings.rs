@@ -65,7 +65,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         scaling: SolidScale::Fill,
         ..Default::default()
     }.pack()).unwrap();
-    image_element_spawn!(commands, asset_server, image.clone(), &ImageParams::default(), "images/settings/background.png");
+    commands.spawn(ImageElementBundle::new(image.clone(), &ImageParams::default(), asset_server.load("images/settings/background.png"), Vec2::default()));
     image.fetch_mut(system, "").unwrap().set_depth(90.0);
 
 
@@ -86,12 +86,13 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         horizontal_anchor: -1.0,
         ..Default::default()
     }.pack()).unwrap();
-    text_element_spawn!(commands, button_return, &TextParams::centerleft().styled(&style_navigation).scaled(35.0).with_height(80.0).at(10.0, 50.0), "RETURN",
+    commands.spawn((
+        TextElementBundle::new(button_return.clone(), &TextParams::centerleft().styled(&style_navigation).scaled(35.0).with_height(80.0).at(10.0, 50.0), "RETURN"),
         ColorHighlightEffect (style_navigation.color, GLOBAL_COLOR_HOVER),
         ReturnButton (),
         HoverEffectInput (),
-        ColorHighlightEffectUpdater ()
-    );
+        ColorHighlightEffectUpdater (),
+    ));
 
     //# --------------------------------------------------------------------------------------------------------------
 
@@ -110,7 +111,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         vertical_anchor: -1.0,
         ..Default::default()
     }.pack()).unwrap();
-    image_element_spawn!(commands, asset_server, line, &ImageParams::default(), "images/settings/line.png");
+    commands.spawn(ImageElementBundle::new(line.clone(), &ImageParams::default(), asset_server.load("images/settings/line.png"), Vec2::default()));
 
 
     //# --------------------------------------------------------------------------------------------------------------
@@ -141,11 +142,12 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
 
             //# Spawn image for widgets in 'nameless'
             let widget = Widget::new(&boundary.end(&names[x][y]));
-            text_element_spawn!(commands, widget, &TextParams::center().styled(&style_tab).scaled(50.0).with_height(80.0), &names[x][y].to_uppercase(),
+            commands.spawn((
+                TextElementBundle::new(widget, &TextParams::center().styled(&style_tab).scaled(50.0).with_height(80.0), &names[x][y].to_uppercase()),
                 ColorHighlightEffect (style_tab.color, GLOBAL_COLOR_HOVER),
                 HoverEffectInput (),
-                ColorHighlightEffectUpdater ()
-            );
+                ColorHighlightEffectUpdater (),
+            ));
         }
     }
 
@@ -184,8 +186,8 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         scaling: SolidScale::Fit,
         ..Default::default()
     }.pack()).unwrap();
-    image_element_spawn!(commands, asset_server, category.clone(), &ImageParams::default(), "images/settings/category.png");
-    text_element_spawn!(commands, category.clone(), &TextParams::centerleft().styled(&style_category).scaled(40.0).at(2.0, 50.0), "Display");
+    commands.spawn(ImageElementBundle::new(category.clone(), &ImageParams::default(), asset_server.load("images/settings/category.png"), Vec2::default()));
+    commands.spawn(TextElementBundle::new(category.clone(), &TextParams::centerleft().styled(&style_category).scaled(40.0).at(2.0, 50.0), "Display"));
 
 
 
@@ -206,21 +208,23 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
 
             //# Spawn text element in the grid item
             let boundary = Widget::new(&widget.end(&names[x][y]));
-            text_element_spawn!(commands, boundary.clone(), &TextParams::centerleft().styled(&style_item).scaled(40.0).at(2.0, 50.0), &names[x][y],
+            commands.spawn((
+                TextElementBundle::new(boundary.clone(), &TextParams::centerleft().styled(&style_item).scaled(40.0).at(2.0, 50.0), &names[x][y]),
                 ColorHighlightEffect (style_item.color, GLOBAL_COLOR_HOVER),
                 HoverEffectInput (),
                 ColorHighlightEffectUpdater ()
-            );
+            ));
 
             let highlight = Widget::create(system, &boundary.end(""), Layout::Relative {
                 relative_1: Vec2 { x: -5.0, y: 15.0 },
                 relative_2: Vec2 { x: 46.0, y: 85.0 },
                 ..Default::default()
             }.pack()).unwrap();
-            image_element_spawn!(commands, asset_server, highlight, &ImageParams::default(), "images/settings/selection_shadow.png",
+            commands.spawn((
+                ImageElementBundle::new(highlight.clone(), &ImageParams::default(), asset_server.load("images/settings/selection_shadow.png"), Vec2::default()),
                 ColorHighlightEffect (style_item.color.with_a(0.0), GLOBAL_COLOR_HOVER.with_a(0.15)),
-                ColorHighlightEffectUpdater ()
-            );
+                ColorHighlightEffectUpdater (),
+            ));
 
             //# Create BUTTON in the grid item
             let mut option = (textrow!["Enabled", "Disabled"], 0);
@@ -316,10 +320,12 @@ impl OptionButton {
     pub fn create (commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut Hierarchy, path: &str, position: LayoutPackage, name: &str, options: Vec<String>, current: usize) -> Widget {
         
         let widget = Widget::create(system, path, position).unwrap();
-        image_element_spawn!(commands, asset_server, widget.clone(), &ImageParams::default(), "images/settings/button_dark.png",
+        commands.spawn((
+            ImageElementBundle::new(widget.clone(), &ImageParams::default(), asset_server.load("images/settings/button_dark.png"), Vec2::default()),
             ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.3), GLOBAL_COLOR_HOVER.with_a(0.35)),
             ColorHighlightEffectUpdater ()
-        );
+        ));
+        
 
 
         let cycle_left = Widget::create(system, &widget.end("button_cycle_left"), Layout::Relative {
@@ -333,9 +339,10 @@ impl OptionButton {
             horizontal_anchor: -0.8,
             ..Default::default()
         }.pack()).unwrap();
-        image_element_spawn!(commands, asset_server, image_box, &ImageParams::default(), "images/settings/arrow_left_empty.png",
-            ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.6), GLOBAL_COLOR_HOVER)
-        );
+        commands.spawn((
+            ImageElementBundle::new(image_box.clone(), &ImageParams::default(), asset_server.load("images/settings/arrow_left_empty.png"), Vec2::default()),
+            ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.6), GLOBAL_COLOR_HOVER),
+        ));
 
 
         let cycle_right = Widget::create(system, &widget.end("button_cycle_right"), Layout::Relative {
@@ -349,19 +356,21 @@ impl OptionButton {
             horizontal_anchor: 0.8,
             ..Default::default()
         }.pack()).unwrap();
-        image_element_spawn!(commands, asset_server, image_box, &ImageParams::default(), "images/settings/arrow_right_empty.png",
-            ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.6), GLOBAL_COLOR_HOVER)
-        );
+        commands.spawn((
+            ImageElementBundle::new(image_box.clone(), &ImageParams::default(), asset_server.load("images/settings/arrow_right_empty.png"), Vec2::default()),
+            ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.6), GLOBAL_COLOR_HOVER),
+        ));
 
         let style = TextStyle {
             font: asset_server.load(GLOBAL_OPTION_BUTTON_FONT),
             font_size: 40.0,
             color: GLOBAL_COLOR_STANDBY,
         };
-        text_element_spawn!(commands, widget.clone(), &TextParams::center().styled(&style).scaled(90.0).with_height(40.0).at(50.0, 40.0), &options[current],
+        commands.spawn((
+            TextElementBundle::new(widget.clone(), &TextParams::center().styled(&style).scaled(90.0).with_height(40.0).at(50.0, 40.0), &options[current]),
             ColorHighlightEffect (GLOBAL_COLOR_STANDBY, GLOBAL_COLOR_HOVER),
             LiveWidgetText ()
-        );
+        ));
 
         let mut grid: Vec<Vec<String>> = Vec::new();
         for i in 0..options.len() {
@@ -371,17 +380,21 @@ impl OptionButton {
         let grid_widget = grid_generate(system, &widget.end("grid"), Vec2::new(50.0, 80.0), &params).unwrap();
 
         for i in 0..options.len() {
-            image_element_spawn!(commands, asset_server, Widget::new(&grid_widget.end(&format!("selector {}", i))), &ImageParams::default(), "images/settings/underline_dark.png",
-                ColorHighlightEffect (GLOBAL_COLOR_STANDBY, GLOBAL_COLOR_HOVER)
-            );
+            commands.spawn((
+                ImageElementBundle::new(Widget::new(&grid_widget.end(&format!("selector {}", i))), &ImageParams::default(), asset_server.load("images/settings/underline_dark.png"), Vec2::default()),
+                ColorHighlightEffect (GLOBAL_COLOR_STANDBY, GLOBAL_COLOR_HOVER),
+            ));
         }
-
-        widget_spawn!(commands, widget.clone(), OptionButton {
-            name: name.to_string(),
-            state_change: true,
-            current,
-            options,
-        });
+        
+        commands.spawn((
+            widget.clone(),
+            OptionButton {
+                name: name.to_string(),
+                state_change: true,
+                current,
+                options,
+            },
+        ));
 
         widget
 
