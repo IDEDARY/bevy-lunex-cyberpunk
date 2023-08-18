@@ -32,27 +32,30 @@ fn main() {
             }
         ), bevy::diagnostic::FrameTimeDiagnosticsPlugin ))
 
+        //Actual setup
         .add_systems(Startup, (setup, apply_deferred).chain())
 
         //Debug
         //.add_plugins(LunexDebugPlugin)
-        .add_systems(Update, profiler_update)
 
 
         .add_systems(Update, (hierarchy_update, cursor_update).chain().before(image_update))
-        .add_plugins(AlignPlugin)
-        .add_plugins(GeneralWidgetPlugin)
 
         //UI_Settings plugins
         .add_plugins(UISettingsPlugin)
         .add_plugins(UIMainMenuPlugin)
 
-
+        // UI widgets update
+        .add_plugins(AlignPlugin)
+        .add_plugins(GeneralWidgetPlugin)
         .add_plugins(HoverEffectPlugin)
         
 
-        //GLOBAL VFX
+        //GLOBAL VFX update
         .add_systems(Update, vfx_bloom_update)
+
+        // App functionality
+        .add_systems(Update, profiler_update)
 
 
         .run();
