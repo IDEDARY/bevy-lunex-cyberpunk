@@ -16,7 +16,7 @@ use super::style::*;
 /// Text will be synchronized with `widget_text` data value stored in the widget.
 #[derive(Component)]
 pub struct LiveWidgetText ();
-pub fn live_widget_text_update (mut systems: Query<&mut Hierarchy>, mut query: Query<(&Widget, &mut Text, &LiveWidgetText)>) {
+pub fn live_widget_text_update (mut systems: Query<&mut UITree>, mut query: Query<(&Widget, &mut Text, &LiveWidgetText)>) {
     let mut system = systems.get_single_mut().unwrap();
     for (widget, mut text, _) in &mut query {
         let widget = widget.fetch_mut(&mut system, "").unwrap();
@@ -55,7 +55,7 @@ pub struct UserInterface {
     pub offset: Vec2,
 }
 
-pub fn image_update(mut systems: Query<(&mut Hierarchy, &UserInterface)>, mut query: Query<(&mut Widget, &Handle<Image>, &mut Transform)>, assets: Res<Assets<Image>>) {
+pub fn image_update(mut systems: Query<(&mut UITree, &UserInterface)>, mut query: Query<(&mut Widget, &Handle<Image>, &mut Transform)>, assets: Res<Assets<Image>>) {
     let (mut system, ui) = systems.get_single_mut().unwrap();     //get the single hiearchy struct
     for (widget, image_handle, mut transform) in &mut query {
         match widget.fetch(&system, "") {
@@ -79,7 +79,7 @@ pub fn image_update(mut systems: Query<(&mut Hierarchy, &UserInterface)>, mut qu
         };
     }
 }
-pub fn element_update(mut systems: Query<(&mut Hierarchy, &mut UserInterface)>, mut query: Query<(&mut Widget, &Element, &mut Transform)>) {
+pub fn element_update(mut systems: Query<(&mut UITree, &mut UserInterface)>, mut query: Query<(&mut Widget, &Element, &mut Transform)>) {
     let (mut system, mut ui) = systems.get_single_mut().unwrap();
     for (widget, element, mut transform) in &mut query {
         match widget.fetch(&system, "") {
@@ -163,7 +163,7 @@ impl Profiler {
         }
     }
 }
-pub fn setup_profiler (commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut Hierarchy) {
+pub fn setup_profiler (commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut UITree) {
     let profiler = Widget::create(system, "profiler", Layout::Relative {
         relative_1: Vec2 { x: 0.0, y: 0.0 },
         relative_2: Vec2 { x: 100.0, y: 30.0 },
@@ -189,7 +189,7 @@ pub fn setup_profiler (commands: &mut Commands, asset_server: &Res<AssetServer>,
         Profiler::new(),
     ));
 }
-pub fn profiler_update (mut systems: Query<&mut Hierarchy>, diagnostics: Res<bevy::diagnostic::DiagnosticsStore>, mut query: Query<(&mut Widget, &mut Profiler)> ) {
+pub fn profiler_update (mut systems: Query<&mut UITree>, diagnostics: Res<bevy::diagnostic::DiagnosticsStore>, mut query: Query<(&mut Widget, &mut Profiler)> ) {
     let mut system = systems.single_mut();
     let (widget, mut profiler) = query.single_mut();
 

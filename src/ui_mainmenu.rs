@@ -7,7 +7,7 @@ use crate::style::*;
 // ===========================================================
 // === SETUP MAIN MENU LAYOUT ===
 
-pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut Hierarchy) {
+pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut UITree) {
 
     // ===========================================================
     // === SETUP WIDGETS AND ENTITIES ===
@@ -176,7 +176,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
 
 #[derive(Component)]
 struct MainMenuButton ();
-fn button_tick(mut systems: Query<(&mut Hierarchy, &UserInterface)>, cursors: Query<&Cursor>, mut query: Query<(&mut Widget, &MainMenuButton)>, mouse_button_input: Res<Input<MouseButton>>, mut exit: EventWriter<bevy::app::AppExit>) {
+fn button_tick(mut systems: Query<(&mut UITree, &UserInterface)>, cursors: Query<&Cursor>, mut query: Query<(&mut Widget, &MainMenuButton)>, mouse_button_input: Res<Input<MouseButton>>, mut exit: EventWriter<bevy::app::AppExit>) {
     let (mut system, placement) = systems.get_single_mut().unwrap();
     let cursor = cursors.get_single().unwrap();
     for (widget, _) in &mut query {
