@@ -1,13 +1,12 @@
 use bevy::prelude::*;
 use bevy_lunex::prelude::*;
-use crate::general::*;
 use crate::style::*;
 
 
 // ===========================================================
 // === SETUP MAIN MENU LAYOUT ===
 
-pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut UITree) {
+pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut UiTree) {
 
     // ===========================================================
     // === SETUP WIDGETS AND ENTITIES ===
@@ -176,11 +175,11 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
 
 #[derive(Component)]
 struct MainMenuButton ();
-fn button_tick(mut systems: Query<&mut UITree>, cursors: Query<&Cursor>, mut query: Query<(&mut Widget, &MainMenuButton)>, mouse_button_input: Res<Input<MouseButton>>, mut exit: EventWriter<bevy::app::AppExit>) {
+fn button_tick(mut systems: Query<&mut UiTree>, cursors: Query<&Cursor>, mut query: Query<(&mut Widget, &MainMenuButton)>, mouse_button_input: Res<Input<MouseButton>>, mut exit: EventWriter<bevy::app::AppExit>) {
     let mut system = systems.get_single_mut().unwrap();
     let cursor = cursors.get_single().unwrap();
     for (widget, _) in &mut query {
-        if widget.is_within(&system, "", &vec_convert(cursor.position_world(), &system.offset)).unwrap(){
+        if widget.is_within(&system, "", &cursor.position_world().as_lunex(system.offset)).unwrap(){
 
             widget.fetch_data_set_f32(&mut system, "#0", "color_highlight_effect_slider", 1.0).unwrap();
             widget.fetch_data_set_f32(&mut system, "#0", "animate_widget_effect_slider", 1.0).unwrap();

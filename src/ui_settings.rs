@@ -8,7 +8,7 @@ use crate::style::*;
 // ===========================================================
 // === SETUP SETTINGS LAYOUT ===
 
-pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut UITree) {
+pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut UiTree) {
 
     // ===========================================================
     // === SETUP STYLES ===
@@ -253,11 +253,11 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
 
 #[derive(Component)]
 pub struct HoverEffectInput ();
-fn hover_effect_input(mut systems: Query<&mut UITree>, cursors: Query<&Cursor>, mut query: Query<(&mut Widget, &HoverEffectInput)>) {
+fn hover_effect_input(mut systems: Query<&mut UiTree>, cursors: Query<&Cursor>, mut query: Query<(&mut Widget, &HoverEffectInput)>) {
     let mut system = systems.get_single_mut().unwrap();
     let cursor = cursors.get_single().unwrap();
     for (widget, _) in &mut query {
-        if widget.is_within(&system, "", &vec_convert(cursor.position_world(), &system.offset)).unwrap() {
+        if widget.is_within(&system, "", &cursor.position_world().as_lunex(system.offset)).unwrap() {
 
             //SET COLOR SLIDER ON SELF
             widget.fetch_data_set_f32(&mut system, "", "color_highlight_effect_slider", 1.0).unwrap();
@@ -272,11 +272,11 @@ fn hover_effect_input(mut systems: Query<&mut UITree>, cursors: Query<&Cursor>, 
 
 #[derive(Component)]
 struct ReturnButton ();
-fn return_button_update (mut systems: Query<&mut UITree>, cursors: Query<&Cursor>, mut query: Query<(&mut Widget, &ReturnButton)>, mouse_button_input: Res<Input<MouseButton>>) {
+fn return_button_update (mut systems: Query<&mut UiTree>, cursors: Query<&Cursor>, mut query: Query<(&mut Widget, &ReturnButton)>, mouse_button_input: Res<Input<MouseButton>>) {
     let mut system = systems.get_single_mut().unwrap();
     let cursor = cursors.get_single().unwrap();
     for (widget, _) in &mut query {
-        if widget.is_within(&system, "", &vec_convert(cursor.position_world(), &system.offset)).unwrap(){
+        if widget.is_within(&system, "", &cursor.position_world().as_lunex(system.offset)).unwrap(){
 
             if mouse_button_input.just_pressed(MouseButton::Left) {
                 Widget::new("main_menu").fetch_mut(&mut system, "").unwrap().set_visibility(true);
@@ -296,7 +296,7 @@ pub struct OptionButton {
     options: Vec<String>,
 }
 impl OptionButton {
-    fn update_data (&self, system: &mut UITree, widget: Widget) {
+    fn update_data (&self, system: &mut UiTree, widget: Widget) {
         let widget = widget.fetch_mut(system, "").unwrap();
         let data_option = widget.data_get_mut();
         match data_option {
@@ -317,7 +317,7 @@ impl OptionButton {
             },
         }
     }
-    pub fn create (commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut UITree, path: &str, position: LayoutPackage, name: &str, options: Vec<String>, current: usize) -> Widget {
+    pub fn create (commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut UiTree, path: &str, position: LayoutPackage, name: &str, options: Vec<String>, current: usize) -> Widget {
         
         let widget = Widget::create(system, path, position).unwrap();
         commands.spawn((
@@ -399,7 +399,7 @@ impl OptionButton {
         widget
 
     }
-    pub fn cycle_left (&mut self, system: &mut UITree, widget: Widget) {
+    pub fn cycle_left (&mut self, system: &mut UiTree, widget: Widget) {
         if self.current > 0 {
             self.current -= 1;
             self.state_change = true;
@@ -410,7 +410,7 @@ impl OptionButton {
             self.update_data(system, widget);
         }
     }
-    pub fn cycle_right (&mut self, system: &mut UITree, widget: Widget) {
+    pub fn cycle_right (&mut self, system: &mut UiTree, widget: Widget) {
         if self.current < self.options.len() - 1 {
             self.current += 1;
             self.state_change = true;
@@ -428,7 +428,7 @@ impl OptionButton {
         &self.name
     }
 }
-pub fn option_button_update (mut systems: Query<&mut UITree>, cursors: Query<&Cursor>, mut query: Query<(&Widget, &mut OptionButton)>, mouse_button_input: Res<Input<MouseButton>>, mut windows: Query<&mut Window>) {
+pub fn option_button_update (mut systems: Query<&mut UiTree>, cursors: Query<&Cursor>, mut query: Query<(&Widget, &mut OptionButton)>, mouse_button_input: Res<Input<MouseButton>>, mut windows: Query<&mut Window>) {
     
     let mut system = systems.get_single_mut().unwrap();
     let cursor = cursors.get_single().unwrap();
@@ -449,13 +449,13 @@ pub fn option_button_update (mut systems: Query<&mut UITree>, cursors: Query<&Cu
             Option::None => {},
         }
 
-        if widget.is_within(&system, "", &vec_convert(cursor.position_world(), &system.offset)).unwrap(){
+        if widget.is_within(&system, "", &cursor.position_world().as_lunex(system.offset)).unwrap(){
             if mouse_button_input.just_pressed(MouseButton::Left) {
 
-                if widget.is_within(&system, "button_cycle_left", &vec_convert(cursor.position_world(), &system.offset)).unwrap(){
+                if widget.is_within(&system, "button_cycle_left", &cursor.position_world().as_lunex(system.offset)).unwrap(){
                     button.cycle_left(&mut system, widget.clone());
                 }
-                if widget.is_within(&system, "button_cycle_right", &vec_convert(cursor.position_world(), &system.offset)).unwrap(){
+                if widget.is_within(&system, "button_cycle_right", &cursor.position_world().as_lunex(system.offset)).unwrap(){
                     button.cycle_right(&mut system, widget.clone());
                 }
 

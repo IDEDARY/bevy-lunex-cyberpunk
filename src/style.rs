@@ -37,7 +37,7 @@ pub const MAIN_MENU_BUTTON_FONT: &str = "fonts/rajdhani/Rajdhani-Medium.ttf";
 /// * Requires [`ColorHighlightEffect`] for visual data sync
 #[derive(Component)]
 pub struct ColorHighlightEffectUpdater ();
-fn color_highlight_effect_update(mut systems: Query<&mut UITree>, mut query: Query<(&Widget, &ColorHighlightEffectUpdater)>) {
+fn color_highlight_effect_update(mut systems: Query<&mut UiTree>, mut query: Query<(&Widget, &ColorHighlightEffectUpdater)>) {
     let mut system = systems.get_single_mut().unwrap();
     for (widget, _) in &mut query {
         let widget = widget.fetch_mut(&mut system, "").unwrap();
@@ -61,7 +61,7 @@ fn color_highlight_effect_update(mut systems: Query<&mut UITree>, mut query: Que
 /// * Requires [`ColorHighlightEffectUpdater`] to update 
 #[derive(Component)]
 pub struct ColorHighlightEffect (pub Color, pub Color);
-fn color_highlight_effect_update_text(mut systems: Query<&mut UITree>, mut query: Query<(&Widget, &mut Text, &ColorHighlightEffect)>) {
+fn color_highlight_effect_update_text(mut systems: Query<&mut UiTree>, mut query: Query<(&Widget, &mut Text, &ColorHighlightEffect)>) {
     let mut system = systems.get_single_mut().unwrap();
     for (widget, mut text, colors) in &mut query {
         let widget = widget.fetch_mut(&mut system, "").unwrap();
@@ -83,7 +83,7 @@ fn color_highlight_effect_update_text(mut systems: Query<&mut UITree>, mut query
         }
     }
 }
-fn color_highlight_effect_update_image(mut systems: Query<&mut UITree>, mut query: Query<(&Widget, &mut Sprite, &ColorHighlightEffect)>) {
+fn color_highlight_effect_update_image(mut systems: Query<&mut UiTree>, mut query: Query<(&Widget, &mut Sprite, &ColorHighlightEffect)>) {
     let mut system = systems.get_single_mut().unwrap();
     for (widget, mut sprite, colors) in &mut query {
         let widget = widget.fetch_mut(&mut system, "").unwrap();
@@ -111,7 +111,7 @@ fn color_highlight_effect_update_image(mut systems: Query<&mut UITree>, mut quer
 /// * Uses: `"animate_widget_effect_slider"` data variable
 #[derive(Component)]
 pub struct AnimateWidgetEffect (pub Vec2, pub Vec2);
-fn animate_widget_effect_update(mut systems: Query<&mut UITree>, mut query: Query<(&Widget, &AnimateWidgetEffect)>) {
+fn animate_widget_effect_update(mut systems: Query<&mut UiTree>, mut query: Query<(&Widget, &AnimateWidgetEffect)>) {
     let mut system = systems.get_single_mut().unwrap();
     for (widget, positions) in &mut query {
         let widget = widget.fetch_mut(&mut system, "").unwrap();
@@ -167,7 +167,7 @@ impl SmoothWiggleEffect {
         }
     }
 }
-fn smooth_wiggle_effect_update (mut systems: Query<&mut UITree>, mut query: Query<(&Widget, &mut SmoothWiggleEffect)>) {
+fn smooth_wiggle_effect_update (mut systems: Query<&mut UiTree>, mut query: Query<(&Widget, &mut SmoothWiggleEffect)>) {
     let mut system = systems.get_single_mut().unwrap();
     for (widget, mut wiggle) in &mut query {
         
