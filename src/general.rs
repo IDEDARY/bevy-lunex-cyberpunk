@@ -50,21 +50,16 @@ impl Plugin for GeneralWidgetPlugin {
 // === LUNEX SYNC TO ENTITIES ===
 //# This function is the main system that is behind aligning text and images. It querries through entities with widgets
 
-#[derive(Component)]
-pub struct UserInterface {
-    pub offset: Vec2,
-}
-
-pub fn image_update(mut systems: Query<(&mut UITree, &UserInterface)>, mut query: Query<(&mut Widget, &Handle<Image>, &mut Transform)>, assets: Res<Assets<Image>>) {
-    let (mut system, ui) = systems.get_single_mut().unwrap();     //get the single hiearchy struct
+pub fn image_update(mut systems: Query<&mut UITree>, mut query: Query<(&mut Widget, &Handle<Image>, &mut Transform)>, assets: Res<Assets<Image>>) {
+    let mut system = systems.get_single_mut().unwrap();     //get the single hiearchy struct
     for (widget, image_handle, mut transform) in &mut query {
         match widget.fetch(&system, "") {
             Result::Err(..) => {},
             Result::Ok(branch) => {
                 if branch.is_visible() {
                     let pos = widget.fetch(&mut system, "").unwrap().container_get().position_get().invert_y();      //The widget will locate itself inside the hierarchy
-                    transform.translation.x = pos.point_1.x + ui.offset.x;
-                    transform.translation.y = pos.point_1.y + ui.offset.y;
+                    transform.translation.x = pos.point_1.x + system.offset.x;
+                    transform.translation.y = pos.point_1.y + system.offset.y;
 
                     match assets.get(image_handle) {
                         Option::Some(image) => {
@@ -79,7 +74,8 @@ pub fn image_update(mut systems: Query<(&mut UITree, &UserInterface)>, mut query
         };
     }
 }
-pub fn element_update(mut systems: Query<(&mut UITree, &mut UserInterface)>, mut query: Query<(&mut Widget, &Element, &mut Transform)>) {
+
+/*pub fn element_update(mut systems: Query<(&mut UITree, &mut UserInterface)>, mut query: Query<(&mut Widget, &Element, &mut Transform)>) {
     let (mut system, mut ui) = systems.get_single_mut().unwrap();
     for (widget, element, mut transform) in &mut query {
         match widget.fetch(&system, "") {
@@ -136,7 +132,7 @@ pub fn element_update(mut systems: Query<(&mut UITree, &mut UserInterface)>, mut
             }
         };
     }
-}
+}*/
 
 pub struct AlignPlugin;
 impl Plugin for AlignPlugin {

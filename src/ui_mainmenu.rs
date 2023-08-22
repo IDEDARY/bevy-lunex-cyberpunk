@@ -176,11 +176,11 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
 
 #[derive(Component)]
 struct MainMenuButton ();
-fn button_tick(mut systems: Query<(&mut UITree, &UserInterface)>, cursors: Query<&Cursor>, mut query: Query<(&mut Widget, &MainMenuButton)>, mouse_button_input: Res<Input<MouseButton>>, mut exit: EventWriter<bevy::app::AppExit>) {
-    let (mut system, placement) = systems.get_single_mut().unwrap();
+fn button_tick(mut systems: Query<&mut UITree>, cursors: Query<&Cursor>, mut query: Query<(&mut Widget, &MainMenuButton)>, mouse_button_input: Res<Input<MouseButton>>, mut exit: EventWriter<bevy::app::AppExit>) {
+    let mut system = systems.get_single_mut().unwrap();
     let cursor = cursors.get_single().unwrap();
     for (widget, _) in &mut query {
-        if widget.is_within(&system, "", &vec_convert(cursor.position_world(), &placement.offset)).unwrap(){
+        if widget.is_within(&system, "", &vec_convert(cursor.position_world(), &system.offset)).unwrap(){
 
             widget.fetch_data_set_f32(&mut system, "#0", "color_highlight_effect_slider", 1.0).unwrap();
             widget.fetch_data_set_f32(&mut system, "#0", "animate_widget_effect_slider", 1.0).unwrap();

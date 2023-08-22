@@ -131,10 +131,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     println!("{}", system.get_map());
 
     //# spawn the finished system
-    commands.spawn ((
-        system,
-        UserInterface { offset: Vec2::default()}
-    ));
+    commands.spawn (system);
 
 }
 
