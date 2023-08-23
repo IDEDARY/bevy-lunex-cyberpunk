@@ -41,17 +41,19 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
     //# This is where the layouting magic happens. Here we declare the positions and spawn relevant entities.
 
     //# Create SETTINGS in ROOT
-    let settings = Widget::create(system, "settings", layout::Relative {
+    let settings = Widget::create(system, "settings", RelativeLayout {
         relative_1: Vec2 { x: 0.0, y: 0.0 },
         relative_2: Vec2 { x: 100.0, y: 100.0 },
         ..Default::default()
     }.pack()).unwrap();
 
+    settings.fetch_mut(system, "").unwrap().set_visibility(false);
+
 
     //# --------------------------------------------------------------------------------------------------------------
 
     //# Create BACKGROUND in SETTINGS
-    let background = Widget::create(system, &settings.end("background"), layout::Window {
+    let background = Widget::create(system, &settings.end("background"), WindowLayout {
         relative: Vec2 { x: 0.0, y: 0.0 },
         width_relative: 100.0,
         height_relative: 100.0,
@@ -59,7 +61,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
     }.pack()).unwrap();
 
     //# Create 'nameless' widget in BACKGROUND
-    let image = Widget::create(system, &background.end(""), layout::Solid {
+    let image = Widget::create(system, &background.end(""), SolidLayout {
         width: 3840.0,
         height: 2160.0,
         scaling: SolidScale::Fill,
@@ -72,14 +74,14 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
     //# --------------------------------------------------------------------------------------------------------------
 
     //# Create 'nameless' widget in SETTINGS
-    let boundary = Widget::create(system, &settings.end(""), layout::Relative {
+    let boundary = Widget::create(system, &settings.end(""), RelativeLayout {
         relative_1: Vec2 { x: 3.0, y: 1.0 },
         relative_2: Vec2 { x: 15.0, y: 8.0 },
         ..Default::default()
     }.pack()).unwrap();
 
     //# Create BUTTON widget in 'nameless'
-    let button_return = Widget::create(system, &boundary.end("return"), layout::Solid {
+    let button_return = Widget::create(system, &boundary.end("return"), SolidLayout {
         width: 3.0,
         height: 1.0,
         scaling: SolidScale::Fit,
@@ -97,14 +99,14 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
     //# --------------------------------------------------------------------------------------------------------------
 
     //# Create 'nameless' widget in SETTINGS
-    let boundary = Widget::create(system, &settings.end(""), layout::Relative {
+    let boundary = Widget::create(system, &settings.end(""), RelativeLayout {
         relative_1: Vec2 { x: 3.0, y: 9.0 },
         relative_2: Vec2 { x: 90.0, y: 13.0 },
         ..Default::default()
     }.pack()).unwrap();
 
     //# Create BUTTON widget in 'nameless'
-    let line = Widget::create(system, &boundary.end(""), layout::Solid {
+    let line = Widget::create(system, &boundary.end(""), SolidLayout {
         width: 3522.0,
         height: 4.0,
         scaling: SolidScale::Fit,
@@ -117,14 +119,14 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
     //# --------------------------------------------------------------------------------------------------------------
 
     //# Create BAR widget in SETTINGS
-    let bar = Widget::create(system, &settings.end("bar"), layout::Relative {
+    let bar = Widget::create(system, &settings.end("bar"), RelativeLayout {
         relative_1: Vec2 { x: 18.0, y: 1.0 },
         relative_2: Vec2 { x: 82.0, y: 8.0 },
         ..Default::default()
     }.pack()).unwrap();
 
     //# Create 'nameless' widget in BAR
-    let boundary = Widget::create(system, &bar.end(""), layout::Solid {
+    let boundary = Widget::create(system, &bar.end(""), SolidLayout {
         width: 28.0,
         height: 1.0,
         scaling: SolidScale::Fit,
@@ -155,14 +157,14 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
     //# --------------------------------------------------------------------------------------------------------------
     
     //# Create 'nameless' widget in SETTINGS
-    let boundary1 = Widget::create(system, &settings.end(""), layout::Relative {
+    let boundary1 = Widget::create(system, &settings.end(""), RelativeLayout {
         relative_1: Vec2 { x: 10.0, y: 14.0 },
         relative_2: Vec2 { x: 90.0, y: 100.0 },
         ..Default::default()
     }.pack()).unwrap();
 
     //# Create 'nameless' widget in 'nameless'
-    let boundary2 = Widget::create(system, &boundary1.end(""), layout::Solid {
+    let boundary2 = Widget::create(system, &boundary1.end(""), SolidLayout {
         width: 105.0,
         height: 100.0,
         scaling: SolidScale::Fit,
@@ -171,7 +173,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
     }.pack()).unwrap();
 
     //# Create DISPLAY widget in 'nameless'/'nameless' (skipping 2 nameless widgets at once)
-    let display = Widget::create(system, &settings.add(&boundary1).add(&boundary2).end("display"), layout::Window {
+    let display = Widget::create(system, &settings.add(&boundary1).add(&boundary2).end("display"), WindowLayout {
         relative: Vec2::new(0.0, 0.0),
         width_relative: 100.0,
         height_relative: 40.0,
@@ -179,7 +181,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
     }.pack()).unwrap();
 
     //# Create 'nameless' widget in DISPLAY
-    let category = Widget::create(system, &display.end(""), layout::Solid {
+    let category = Widget::create(system, &display.end(""), SolidLayout {
         width: 1934.0,
         height: 96.0,
         vertical_anchor: -1.0,
@@ -215,7 +217,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
                 ColorHighlightEffectUpdater ()
             ));
 
-            let highlight = Widget::create(system, &boundary.end(""), layout::Relative {
+            let highlight = Widget::create(system, &boundary.end(""), RelativeLayout {
                 relative_1: Vec2 { x: -5.0, y: 15.0 },
                 relative_2: Vec2 { x: 46.0, y: 85.0 },
                 ..Default::default()
@@ -232,7 +234,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
                 option = custom.clone();
             }
 
-            let position = layout::Relative {
+            let position = RelativeLayout {
                 relative_1: Vec2::new(47.0, 0.0),
                 relative_2: Vec2::new(95.0, 100.0),
                 ..Default::default()
@@ -328,12 +330,12 @@ impl OptionButton {
         
 
 
-        let cycle_left = Widget::create(system, &widget.end("button_cycle_left"), layout::Relative {
+        let cycle_left = Widget::create(system, &widget.end("button_cycle_left"), RelativeLayout {
             relative_1: Vec2::new(3.0, 18.0),
             relative_2: Vec2::new(25.0, 82.0),
             ..Default::default()
         }.pack()).unwrap();
-        let image_box = Widget::create(system, &cycle_left.end(""), layout::Solid {
+        let image_box = Widget::create(system, &cycle_left.end(""), SolidLayout {
             width: 1.0,
             height: 1.0,
             horizontal_anchor: -0.8,
@@ -345,12 +347,12 @@ impl OptionButton {
         ));
 
 
-        let cycle_right = Widget::create(system, &widget.end("button_cycle_right"), layout::Relative {
+        let cycle_right = Widget::create(system, &widget.end("button_cycle_right"), RelativeLayout {
             relative_1: Vec2::new(75.0, 18.0),
             relative_2: Vec2::new(97.0, 82.0),
             ..Default::default()
         }.pack()).unwrap();
-        let image_box = Widget::create(system, &cycle_right.end(""), layout::Solid {
+        let image_box = Widget::create(system, &cycle_right.end(""), SolidLayout {
             width: 1.0,
             height: 1.0,
             horizontal_anchor: 0.8,

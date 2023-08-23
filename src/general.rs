@@ -160,13 +160,15 @@ impl Profiler {
     }
 }
 pub fn setup_profiler (commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut UiTree) {
-    let profiler = Widget::create(system, "profiler", layout::Relative {
+    let profiler = Widget::create(system, "profiler", RelativeLayout {
         relative_1: Vec2 { x: 0.0, y: 0.0 },
         relative_2: Vec2 { x: 100.0, y: 30.0 },
         ..Default::default()
     }.pack()).unwrap();
 
-    let widget = Widget::create(system, &profiler.end(""), layout::Solid {
+    profiler.fetch_mut(system, "").unwrap().set_visibility(false);
+
+    let widget = Widget::create(system, &profiler.end(""), SolidLayout {
         width: 20.0,
         height: 10.0,
         scaling: SolidScale::Fit,
