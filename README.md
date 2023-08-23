@@ -7,7 +7,6 @@ A recreation of ***Cyberpunk 2077*** UI in ***Bevy*** using **Bevy-Lunex**. This
 ## === Showcase ===
 ![image](https://github.com/bytestring-net/bevy_lunex/assets/49441831/73d96dd1-d851-4a9f-9d58-11aba63e579d)
 
-
 ## === Licensing ===
 The **CODE** is released under both [APACHE](./LICENSE-APACHE) and [MIT](./LICENSE-MIT) licenses.
 
