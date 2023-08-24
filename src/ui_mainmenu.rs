@@ -68,7 +68,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
     ));
 
     //# Set depth to IMAGE widget so the image renders behind other widgets (All widgets start at 100 + level == Menu/Display -> 102, Menu/Display/Button -> 103)
-    image.fetch_mut(system, "").unwrap().set_depth(50.0);
+    image.fetch_mut(system).unwrap().set_depth(50.0);
 
     //# --------------------------------------------------------------------------------------------------------------
 
@@ -177,16 +177,16 @@ fn button_tick(mut systems: Query<&mut UiTree>, cursors: Query<&Cursor>, mut que
     let mut system = systems.get_single_mut().unwrap();
     let cursor = cursors.get_single().unwrap();
     for (widget, _) in &mut query {
-        if widget.is_within(&system, "", &cursor.position_world().as_lunex(system.offset)).unwrap(){
+        if widget.is_within(&system, &cursor.position_world().as_lunex(system.offset)).unwrap(){
 
-            widget.fetch_data_set_f32(&mut system, "#0", "color_highlight_effect_slider", 1.0).unwrap();
-            widget.fetch_data_set_f32(&mut system, "#0", "animate_widget_effect_slider", 1.0).unwrap();
+            widget.fetch_data_set_f32_ext(&mut system, "#0", "color_highlight_effect_slider", 1.0).unwrap();
+            widget.fetch_data_set_f32_ext(&mut system, "#0", "animate_widget_effect_slider", 1.0).unwrap();
 
             if mouse_button_input.just_pressed(MouseButton::Left) {
-                match widget.fetch(&mut system, "").unwrap().get_name().as_str() {
+                match widget.fetch(&mut system).unwrap().get_name().as_str() {
                     "settings" => {
-                        Widget::new("main_menu").fetch_mut(&mut system, "").unwrap().set_visibility(false);
-                        Widget::new("settings").fetch_mut(&mut system, "").unwrap().set_visibility(true);
+                        Widget::new("main_menu").fetch_mut(&mut system).unwrap().set_visibility(false);
+                        Widget::new("settings").fetch_mut(&mut system).unwrap().set_visibility(true);
                     },
                     "quit_game" => {
                         exit.send(bevy::app::AppExit);

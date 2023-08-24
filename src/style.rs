@@ -41,7 +41,7 @@ pub struct ColorHighlightEffectUpdater ();
 fn color_highlight_effect_update(mut systems: Query<&mut UiTree>, mut query: Query<(&Widget, &ColorHighlightEffectUpdater)>) {
     let mut system = systems.get_single_mut().unwrap();
     for (widget, _) in &mut query {
-        let widget = widget.fetch_mut(&mut system, "").unwrap();
+        let widget = widget.fetch_mut(&mut system).unwrap();
         match widget.data_get_mut() {
             Option::Some ( data ) => {
                 match data.f32s.get_mut("color_highlight_effect_slider") {
@@ -65,7 +65,7 @@ pub struct ColorHighlightEffect (pub Color, pub Color);
 fn color_highlight_effect_update_text(mut systems: Query<&mut UiTree>, mut query: Query<(&Widget, &mut Text, &ColorHighlightEffect)>) {
     let mut system = systems.get_single_mut().unwrap();
     for (widget, mut text, colors) in &mut query {
-        let widget = widget.fetch_mut(&mut system, "").unwrap();
+        let widget = widget.fetch_mut(&mut system).unwrap();
         match widget.data_get_mut() {
             Option::Some ( data ) => {
                 match data.f32s.get_mut("color_highlight_effect_slider") {
@@ -87,7 +87,7 @@ fn color_highlight_effect_update_text(mut systems: Query<&mut UiTree>, mut query
 fn color_highlight_effect_update_image(mut systems: Query<&mut UiTree>, mut query: Query<(&Widget, &mut Sprite, &ColorHighlightEffect)>) {
     let mut system = systems.get_single_mut().unwrap();
     for (widget, mut sprite, colors) in &mut query {
-        let widget = widget.fetch_mut(&mut system, "").unwrap();
+        let widget = widget.fetch_mut(&mut system).unwrap();
         match widget.data_get_mut() {
             Option::Some ( data ) => {
                 match data.f32s.get_mut("color_highlight_effect_slider") {
@@ -115,7 +115,7 @@ pub struct AnimateWidgetEffect (pub Vec2, pub Vec2);
 fn animate_widget_effect_update(mut systems: Query<&mut UiTree>, mut query: Query<(&Widget, &AnimateWidgetEffect)>) {
     let mut system = systems.get_single_mut().unwrap();
     for (widget, positions) in &mut query {
-        let widget = widget.fetch_mut(&mut system, "").unwrap();
+        let widget = widget.fetch_mut(&mut system).unwrap();
         match widget.data_get_mut() {
             Option::Some ( data ) => {
                 match data.f32s.get_mut("animate_widget_effect_slider") {
@@ -172,7 +172,7 @@ fn smooth_wiggle_effect_update (mut systems: Query<&mut UiTree>, mut query: Quer
     let mut system = systems.get_single_mut().unwrap();
     for (widget, mut wiggle) in &mut query {
         
-        let window = widget.fetch_mut(&mut system, "").unwrap().layout_get_mut().expect_window_mut();
+        let window = widget.fetch_mut(&mut system).unwrap().layout_get_mut().expect_window_mut();
 
         wiggle.x += wiggle.x_speed;
         wiggle.y += wiggle.y_speed;

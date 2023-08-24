@@ -47,7 +47,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         ..Default::default()
     }.pack()).unwrap();
 
-    settings.fetch_mut(system, "").unwrap().set_visibility(false);
+    settings.fetch_mut(system).unwrap().set_visibility(false);
 
 
     //# --------------------------------------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         ..Default::default()
     }.pack()).unwrap();
     commands.spawn(ImageElementBundle::new(image.clone(), &ImageParams::default(), asset_server.load("images/settings/background.png"), Vec2::default()));
-    image.fetch_mut(system, "").unwrap().set_depth(90.0);
+    image.fetch_mut(system).unwrap().set_depth(90.0);
 
 
     //# --------------------------------------------------------------------------------------------------------------
@@ -259,14 +259,14 @@ fn hover_effect_input(mut systems: Query<&mut UiTree>, cursors: Query<&Cursor>, 
     let mut system = systems.get_single_mut().unwrap();
     let cursor = cursors.get_single().unwrap();
     for (widget, _) in &mut query {
-        if widget.is_within(&system, "", &cursor.position_world().as_lunex(system.offset)).unwrap() {
+        if widget.is_within(&system, &cursor.position_world().as_lunex(system.offset)).unwrap() {
 
             //SET COLOR SLIDER ON SELF
-            widget.fetch_data_set_f32(&mut system, "", "color_highlight_effect_slider", 1.0).unwrap();
+            widget.fetch_data_set_f32(&mut system, "color_highlight_effect_slider", 1.0).unwrap();
 
             //THIS WILL SET THE COLOR SLIDER OF THE BUTTON, IF IT DOESNT HAVE THAT WIDGET IT WILL ERROR OUT, BUT WE DON'T CARE
-            let _ = widget.fetch_data_set_f32(&mut system, "#0", "color_highlight_effect_slider", 1.0);
-            let _ = widget.fetch_data_set_f32(&mut system, "#1", "color_highlight_effect_slider", 1.0);
+            let _ = widget.fetch_data_set_f32_ext(&mut system, "#0", "color_highlight_effect_slider", 1.0);
+            let _ = widget.fetch_data_set_f32_ext(&mut system, "#1", "color_highlight_effect_slider", 1.0);
         }
     }
 }
@@ -278,11 +278,11 @@ fn return_button_update (mut systems: Query<&mut UiTree>, cursors: Query<&Cursor
     let mut system = systems.get_single_mut().unwrap();
     let cursor = cursors.get_single().unwrap();
     for (widget, _) in &mut query {
-        if widget.is_within(&system, "", &cursor.position_world().as_lunex(system.offset)).unwrap(){
+        if widget.is_within(&system, &cursor.position_world().as_lunex(system.offset)).unwrap(){
 
             if mouse_button_input.just_pressed(MouseButton::Left) {
-                Widget::new("main_menu").fetch_mut(&mut system, "").unwrap().set_visibility(true);
-                Widget::new("settings").fetch_mut(&mut system, "").unwrap().set_visibility(false);
+                Widget::new("main_menu").fetch_mut(&mut system).unwrap().set_visibility(true);
+                Widget::new("settings").fetch_mut(&mut system).unwrap().set_visibility(false);
             }
 
         }
@@ -299,7 +299,7 @@ pub struct OptionButton {
 }
 impl OptionButton {
     fn update_data (&self, system: &mut UiTree, widget: Widget) {
-        let widget = widget.fetch_mut(system, "").unwrap();
+        let widget = widget.fetch_mut(system).unwrap();
         let data_option = widget.data_get_mut();
         match data_option {
             Option::Some ( data ) => {
@@ -439,25 +439,25 @@ pub fn option_button_update (mut systems: Query<&mut UiTree>, cursors: Query<&Cu
     for (widget, mut button) in &mut query {
 
         // Mirror the color slider value
-        match widget.fetch_data(&system, "").unwrap() {
+        match widget.fetch_data(&system).unwrap() {
             Option::Some(data) => {
                 let val = data.f32s.get("color_highlight_effect_slider").unwrap().clone();
-                widget.fetch_data_set_f32(&mut system, "button_cycle_left/#0", "color_highlight_effect_slider", val).unwrap();
-                widget.fetch_data_set_f32(&mut system, "button_cycle_right/#0", "color_highlight_effect_slider", val).unwrap();
+                widget.fetch_data_set_f32_ext(&mut system, "button_cycle_left/#0", "color_highlight_effect_slider", val).unwrap();
+                widget.fetch_data_set_f32_ext(&mut system, "button_cycle_right/#0", "color_highlight_effect_slider", val).unwrap();
                 for i in 0..button.options.len() {
-                    widget.fetch_data_set_f32(&mut system, &format!("grid/selector {}", i), "color_highlight_effect_slider", val).unwrap();
+                    widget.fetch_data_set_f32_ext(&mut system, &format!("grid/selector {}", i), "color_highlight_effect_slider", val).unwrap();
                 }
             },
             Option::None => {},
         }
 
-        if widget.is_within(&system, "", &cursor.position_world().as_lunex(system.offset)).unwrap(){
+        if widget.is_within(&system, &cursor.position_world().as_lunex(system.offset)).unwrap(){
             if mouse_button_input.just_pressed(MouseButton::Left) {
 
-                if widget.is_within(&system, "button_cycle_left", &cursor.position_world().as_lunex(system.offset)).unwrap(){
+                if widget.is_within_ext(&system, "button_cycle_left", &cursor.position_world().as_lunex(system.offset)).unwrap(){
                     button.cycle_left(&mut system, widget.clone());
                 }
-                if widget.is_within(&system, "button_cycle_right", &cursor.position_world().as_lunex(system.offset)).unwrap(){
+                if widget.is_within_ext(&system, "button_cycle_right", &cursor.position_world().as_lunex(system.offset)).unwrap(){
                     button.cycle_right(&mut system, widget.clone());
                 }
 
@@ -497,8 +497,8 @@ pub fn option_button_update (mut systems: Query<&mut UiTree>, cursors: Query<&Cu
                         },
                         "Profiler Overlay" => {
                             match button.get_current() {
-                                "Enabled" => {Widget::new("profiler").fetch_mut(&mut system, "").unwrap().set_visibility(true)},
-                                "Disabled" => {Widget::new("profiler").fetch_mut(&mut system, "").unwrap().set_visibility(false);},
+                                "Enabled" => {Widget::new("profiler").fetch_mut(&mut system).unwrap().set_visibility(true)},
+                                "Disabled" => {Widget::new("profiler").fetch_mut(&mut system).unwrap().set_visibility(false);},
                                 _ => (),
                             };
                         },

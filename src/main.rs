@@ -31,6 +31,7 @@ fn main() {
                 ..Default::default()
             }
         ), bevy::diagnostic::FrameTimeDiagnosticsPlugin ))
+        .add_plugins(LunexUiPlugin)
 
         //Actual setup
         .add_systems(Startup, (setup, apply_deferred).chain())
@@ -38,15 +39,11 @@ fn main() {
         //Debug
         //.add_plugins(LunexDebugPlugin)
 
-
-        .add_systems(Update, (hierarchy_update, cursor_update).chain().before(image_update))
-
         //UI_Settings plugins
         .add_plugins(UISettingsPlugin)
         .add_plugins(UIMainMenuPlugin)
 
         // UI widgets update
-        .add_plugins(AlignPlugin)
         .add_plugins(GeneralWidgetPlugin)
         .add_plugins(HoverEffectPlugin)
         
