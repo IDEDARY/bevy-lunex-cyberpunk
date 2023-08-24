@@ -70,7 +70,7 @@ fn color_highlight_effect_update_text(mut systems: Query<&mut UiTree>, mut query
             Option::Some ( data ) => {
                 match data.f32s.get_mut("color_highlight_effect_slider") {
                     Option::Some(slider) => {
-                        let color = tween_color_hsla_short(colors.0, colors.1, *slider);
+                        let color = tween_color_rgba(colors.0, colors.1, *slider);
                         text.sections[0].style.color = color;
                     }
                     _ => {
@@ -92,7 +92,7 @@ fn color_highlight_effect_update_image(mut systems: Query<&mut UiTree>, mut quer
             Option::Some ( data ) => {
                 match data.f32s.get_mut("color_highlight_effect_slider") {
                     Option::Some(slider) => {
-                        let color = tween_color_hsla_short(colors.0, colors.1, *slider);
+                        let color = tween_color_rgba(colors.0, colors.1, *slider);
                         sprite.color = color;
                     }
                     _ => {
