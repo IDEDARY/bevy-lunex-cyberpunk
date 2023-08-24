@@ -67,7 +67,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         scaling: SolidScale::Fill,
         ..Default::default()
     }.pack()).unwrap();
-    commands.spawn(ImageElementBundle::new(image.clone(), &ImageParams::default(), asset_server.load("images/settings/background.png"), Vec2::default()));
+    commands.spawn(ImageElementBundle::new(image.clone(), &ImageParams::default(), asset_server.load("images/settings/background.png"), Vec2::new(3840.0, 2160.0)));
     image.fetch_mut(system).unwrap().set_depth(90.0);
 
 
@@ -113,7 +113,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         vertical_anchor: -1.0,
         ..Default::default()
     }.pack()).unwrap();
-    commands.spawn(ImageElementBundle::new(line.clone(), &ImageParams::default(), asset_server.load("images/settings/line.png"), Vec2::default()));
+    commands.spawn(ImageElementBundle::new(line.clone(), &ImageParams::default(), asset_server.load("images/settings/line.png"), Vec2::new(3522.0, 4.0)));
 
 
     //# --------------------------------------------------------------------------------------------------------------
@@ -188,7 +188,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         scaling: SolidScale::Fit,
         ..Default::default()
     }.pack()).unwrap();
-    commands.spawn(ImageElementBundle::new(category.clone(), &ImageParams::default(), asset_server.load("images/settings/category.png"), Vec2::default()));
+    commands.spawn(ImageElementBundle::new(category.clone(), &ImageParams::default(), asset_server.load("images/settings/category.png"), Vec2::new(1934.0, 96.0)));
     commands.spawn(TextElementBundle::new(category.clone(), &TextParams::centerleft().styled(&style_category).scaled(40.0).at(2.0, 50.0), "Display"));
 
 
@@ -223,7 +223,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
                 ..Default::default()
             }.pack()).unwrap();
             commands.spawn((
-                ImageElementBundle::new(highlight.clone(), &ImageParams::default(), asset_server.load("images/settings/selection_shadow.png"), Vec2::default()),
+                ImageElementBundle::new(highlight.clone(), &ImageParams::default(), asset_server.load("images/settings/selection_shadow.png"), Vec2::new(1017.0, 50.0)),
                 ColorHighlightEffect (style_item.color.with_a(0.0), GLOBAL_COLOR_HOVER.with_a(0.15)),
                 ColorHighlightEffectUpdater (),
             ));
@@ -299,31 +299,13 @@ pub struct OptionButton {
 }
 impl OptionButton {
     fn update_data (&self, system: &mut UiTree, widget: Widget) {
-        let widget = widget.fetch_mut(system).unwrap();
-        let data_option = widget.data_get_mut();
-        match data_option {
-            Option::Some ( data ) => {
-                match data.strings.get_mut("widget_text") {
-                    Option::Some(txt) => {
-                        *txt = self.options[self.current].to_string();
-                    }
-                    Option::None => {
-                        data.strings.insert("widget_text".to_string(), self.options[self.current].to_string());
-                    },
-                }
-            }
-            Option::None => {
-                let mut data = Data::new();
-                data.strings.insert("widget_text".to_string(), self.options[self.current].to_string());
-                *data_option = Option::Some(data);
-            },
-        }
+        widget.fetch_data_set_string(system, "widget_text", self.options[self.current].to_string()).unwrap();
     }
     pub fn create (commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut UiTree, path: &str, position: LayoutPackage, name: &str, options: Vec<String>, current: usize) -> Widget {
         
         let widget = Widget::create(system, path, position).unwrap();
         commands.spawn((
-            ImageElementBundle::new(widget.clone(), &ImageParams::default(), asset_server.load("images/settings/button_dark.png"), Vec2::default()),
+            ImageElementBundle::new(widget.clone(), &ImageParams::default(), asset_server.load("images/settings/button_dark.png"), Vec2::new(903.0, 84.0)),
             ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.3), GLOBAL_COLOR_HOVER.with_a(0.35)),
             ColorHighlightEffectUpdater ()
         ));
@@ -342,7 +324,7 @@ impl OptionButton {
             ..Default::default()
         }.pack()).unwrap();
         commands.spawn((
-            ImageElementBundle::new(image_box.clone(), &ImageParams::default(), asset_server.load("images/settings/arrow_left_empty.png"), Vec2::default()),
+            ImageElementBundle::new(image_box.clone(), &ImageParams::default(), asset_server.load("images/settings/arrow_left_empty.png"), Vec2::new(41.0, 46.0)),
             ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.6), GLOBAL_COLOR_HOVER),
         ));
 
@@ -359,7 +341,7 @@ impl OptionButton {
             ..Default::default()
         }.pack()).unwrap();
         commands.spawn((
-            ImageElementBundle::new(image_box.clone(), &ImageParams::default(), asset_server.load("images/settings/arrow_right_empty.png"), Vec2::default()),
+            ImageElementBundle::new(image_box.clone(), &ImageParams::default(), asset_server.load("images/settings/arrow_right_empty.png"), Vec2::new(41.0, 46.0)),
             ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.6), GLOBAL_COLOR_HOVER),
         ));
 
@@ -383,7 +365,7 @@ impl OptionButton {
 
         for i in 0..options.len() {
             commands.spawn((
-                ImageElementBundle::new(Widget::new(&grid_widget.end(&format!("selector {}", i))), &ImageParams::default(), asset_server.load("images/settings/underline_dark.png"), Vec2::default()),
+                ImageElementBundle::new(Widget::new(&grid_widget.end(&format!("selector {}", i))), &ImageParams::default(), asset_server.load("images/settings/underline_dark.png"), Vec2::new(35.0, 6.0)),
                 ColorHighlightEffect (GLOBAL_COLOR_STANDBY, GLOBAL_COLOR_HOVER),
             ));
         }

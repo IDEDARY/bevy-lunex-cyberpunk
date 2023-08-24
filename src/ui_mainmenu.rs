@@ -44,26 +44,26 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         ..Default::default()
     }.pack()).unwrap();
 
-    commands.spawn(ImageElementBundle::new(image.clone(), &ImageParams::default().with_depth(-0.1), asset_server.load("images/main_menu/screen_10.png"), Vec2::default()));
+    commands.spawn(ImageElementBundle::new(image.clone(), &ImageParams::default().with_depth(-0.1), asset_server.load("images/main_menu/screen_10.png"), Vec2::new(2560.0, 1440.0)));
 
     commands.spawn((
-        ImageElementBundle::new(image.clone(), &ImageParams::default(), asset_server.load("images/main_menu/screen_10_red.png"), Vec2::default()),
-        FastFlickerEffect::new(0.9, 0.75, 1.0),
+        ImageElementBundle::new(image.clone(), &ImageParams::default(), asset_server.load("images/main_menu/screen_10_red.png"), Vec2::new(2560.0, 1440.0)),
+        FastFlickerEffect::new(0.9, 0.65, 1.3),
         OnOffImageEffect::new(0.4, true),
     ));
 
     commands.spawn((
-        ImageElementBundle::new(image.clone(), &ImageParams::default(), asset_server.load("images/main_menu/screen_10_blue.png"), Vec2::default()),
-        FastFlickerEffect::new(0.9, 0.75, 1.0),
+        ImageElementBundle::new(image.clone(), &ImageParams::default(), asset_server.load("images/main_menu/screen_10_blue.png"), Vec2::new(2560.0, 1440.0)),
+        FastFlickerEffect::new(0.9, 0.65, 1.1),
         OnOffImageEffect::new(0.4, false)
     ));
 
     commands.spawn((
-        ImageElementBundle::new(image.clone(), &ImageParams::default(), asset_server.load("images/main_menu/screen_10_blink1.png"), Vec2::default()),
+        ImageElementBundle::new(image.clone(), &ImageParams::default(), asset_server.load("images/main_menu/screen_10_blink1.png"), Vec2::new(2560.0, 1440.0)),
         FastFlickerEffect::new(0.01, 0.2, 0.9),
     ));
     commands.spawn((
-        ImageElementBundle::new(image.clone(), &ImageParams::default(), asset_server.load("images/main_menu/screen_10_blink2.png"), Vec2::default()),
+        ImageElementBundle::new(image.clone(), &ImageParams::default(), asset_server.load("images/main_menu/screen_10_blink2.png"), Vec2::new(2560.0, 1440.0)),
         FastFlickerEffect::new(0.01, 0.9, 0.2),
     ));
 
@@ -80,7 +80,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         scaling: SolidScale::Fit,
         ..Default::default()
     }.pack()).unwrap();
-    commands.spawn(ImageElementBundle::new(board.clone(), &ImageParams::default(), asset_server.load("images/main_menu/board.png"), Vec2::default()));
+    commands.spawn(ImageElementBundle::new(board.clone(), &ImageParams::default(), asset_server.load("images/main_menu/board.png"), Vec2::new(807.0, 1432.0)));
 
 
     //# Create 'nameless' widget in BOARD
@@ -99,7 +99,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         scaling: SolidScale::Fit,
         ..Default::default()
     }.pack()).unwrap();
-    commands.spawn((ImageElementBundle::new(logo.clone(), &ImageParams::default(), asset_server.load("images/main_menu/logo.png"), Vec2::default()), FastFlickerEffect::new(0.05, 0.9, 1.0)));
+    commands.spawn((ImageElementBundle::new(logo.clone(), &ImageParams::default(), asset_server.load("images/main_menu/logo.png"), Vec2::new(681.0, 166.0)), FastFlickerEffect::new(0.05, 0.9, 1.0)));
 
 
 
@@ -110,7 +110,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         ..Default::default()
     }.pack()).unwrap();
     //image_element_spawn!(commands, asset_server, logo_shadow.clone(), &ImageParams::default(), "images/main_menu/logo_shadow.png");
-    commands.spawn(ImageElementBundle::new(logo_shadow.clone(), &ImageParams::default(), asset_server.load("images/main_menu/logo_shadow.png"), Vec2::default()));
+    commands.spawn(ImageElementBundle::new(logo_shadow.clone(), &ImageParams::default(), asset_server.load("images/main_menu/logo_shadow.png"), Vec2::new(858.0, 209.0)));
 
     //# --------------------------------------------------------------------------------------------------------------
 
@@ -157,7 +157,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
                 AnimateWidgetEffect (Vec2::default(), Vec2::new(5.0, 0.0)),
             ));
             commands.spawn((
-                ImageElementBundle::new(widget.clone(), &ImageParams::default(), asset_server.load("images/main_menu/button.png"), Vec2::default()),
+                ImageElementBundle::new(widget.clone(), &ImageParams::default(), asset_server.load("images/main_menu/button.png"), Vec2::new(532.0, 75.0)),
                 ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.0), GLOBAL_COLOR_HOVER.with_a(0.8)),
                 ColorHighlightEffectUpdater (),
             ));
