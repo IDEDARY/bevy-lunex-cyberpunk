@@ -44,8 +44,9 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         ..Default::default()
     }.pack()).unwrap();
 
-    commands.spawn(ImageElementBundle::new(image.clone(), &ImageParams::default().with_depth(-0.1), asset_server.load("images/main_menu/screen_10.png"), Vec2::new(2560.0, 1440.0)));
-
+    commands.spawn(ImageElementBundle::new(image.clone(), &ImageParams::default().with_depth(-0.1), asset_server.load("images/main_menu/53_.png"), Vec2::new(1920.0, 1080.0)));
+    //commands.spawn(ImageElementBundle::new(image.clone(), &ImageParams::default().with_depth(-0.1), asset_server.load("images/main_menu/screen_10.png"), Vec2::new(2560.0, 1440.0)));
+    /*
     commands.spawn((
         ImageElementBundle::new(image.clone(), &ImageParams::default(), asset_server.load("images/main_menu/screen_10_red.png"), Vec2::new(2560.0, 1440.0)),
         FastFlickerEffect::new(0.9, 0.65, 1.3),
@@ -65,7 +66,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
     commands.spawn((
         ImageElementBundle::new(image.clone(), &ImageParams::default(), asset_server.load("images/main_menu/screen_10_blink2.png"), Vec2::new(2560.0, 1440.0)),
         FastFlickerEffect::new(0.01, 0.9, 0.2),
-    ));
+    ));*/
 
     //# Set depth to IMAGE widget so the image renders behind other widgets (All widgets start at 100 + level == Menu/Display -> 102, Menu/Display/Button -> 103)
     image.fetch_mut(system).unwrap().set_depth(50.0);
