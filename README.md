@@ -1,6 +1,7 @@
 # Bevy Lunex Cyberpunk Example
 
 A recreation of ***Cyberpunk 2077*** UI in ***Bevy*** using **Bevy-Lunex**. This repo is intended to showcase how to use Bevy-Lunex in more complicated manner.
+Currently it doesn't use the most up-to-date practices, but it works. For the latest stuff look for examples folder in the original repository.
 
 *Note: The development is still on-going, this example is NOT finished and is subject of change.*
 

@@ -114,7 +114,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     ));
 
 
-    let mut system = UiTree::new();
+    let mut system = UiTree::new("UI");
     setup_main_menu(&mut commands, &asset_server, &mut system);
     setup_menu_settings(&mut commands, &asset_server, &mut system);
     setup_profiler(&mut commands, &asset_server, &mut system);
@@ -124,8 +124,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     //# This will print out both "normal" and "debug" maps (It's like "ls" command on Linux). The difference is that "debug" will also print out "nameless" widgets.
     //# "Nameless" widgets are hidden because they are NOT IMPORTANT to the main functionality of the system, but are there only for layout purposes.
     //# Displaying them would be considered overwhelming.
-    println!("{}", system.get_map_debug());
-    println!("{}", system.get_map());
+    println!("{}", system.generate_map_debug());
+    println!("{}", system.generate_map());
 
     //# spawn the finished system
     commands.spawn (system);

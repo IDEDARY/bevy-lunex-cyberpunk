@@ -45,7 +45,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         relative_1: Vec2 { x: 0.0, y: 0.0 },
         relative_2: Vec2 { x: 100.0, y: 100.0 },
         ..Default::default()
-    }.pack()).unwrap();
+    }).unwrap();
 
     settings.fetch_mut(system).unwrap().set_visibility(false);
 
@@ -58,7 +58,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         width_relative: 100.0,
         height_relative: 100.0,
         ..Default::default()
-    }.pack()).unwrap();
+    }).unwrap();
 
     //# Create 'nameless' widget in BACKGROUND
     let image = Widget::create(system, &background.end(""), SolidLayout {
@@ -66,7 +66,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         height: 2160.0,
         scaling: SolidScale::Fill,
         ..Default::default()
-    }.pack()).unwrap();
+    }).unwrap();
     commands.spawn(ImageElementBundle::new(image.clone(), &ImageParams::default(), asset_server.load("images/settings/background.png"), Vec2::new(3840.0, 2160.0)));
     image.fetch_mut(system).unwrap().set_depth(90.0);
 
@@ -78,7 +78,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         relative_1: Vec2 { x: 3.0, y: 1.0 },
         relative_2: Vec2 { x: 15.0, y: 8.0 },
         ..Default::default()
-    }.pack()).unwrap();
+    }).unwrap();
 
     //# Create BUTTON widget in 'nameless'
     let button_return = Widget::create(system, &boundary.end("return"), SolidLayout {
@@ -87,9 +87,9 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         scaling: SolidScale::Fit,
         horizontal_anchor: -1.0,
         ..Default::default()
-    }.pack()).unwrap();
+    }).unwrap();
     commands.spawn((
-        TextElementBundle::new(button_return.clone(), &TextParams::centerleft().styled(&style_navigation).scaled(35.0).with_height(80.0).at(10.0, 50.0), "RETURN"),
+        TextElementBundle::new(button_return.clone(), &TextParams::centerleft().with_style(&style_navigation).with_scale(35.0).with_height(Some(80.0)).at(10.0, 50.0), "RETURN"),
         ColorHighlightEffect (style_navigation.color, GLOBAL_COLOR_HOVER),
         ReturnButton (),
         HoverEffectInput (),
@@ -103,7 +103,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         relative_1: Vec2 { x: 3.0, y: 9.0 },
         relative_2: Vec2 { x: 90.0, y: 13.0 },
         ..Default::default()
-    }.pack()).unwrap();
+    }).unwrap();
 
     //# Create BUTTON widget in 'nameless'
     let line = Widget::create(system, &boundary.end(""), SolidLayout {
@@ -112,7 +112,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         scaling: SolidScale::Fit,
         vertical_anchor: -1.0,
         ..Default::default()
-    }.pack()).unwrap();
+    }).unwrap();
     commands.spawn(ImageElementBundle::new(line.clone(), &ImageParams::default(), asset_server.load("images/settings/line.png"), Vec2::new(3522.0, 4.0)));
 
 
@@ -123,7 +123,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         relative_1: Vec2 { x: 18.0, y: 1.0 },
         relative_2: Vec2 { x: 82.0, y: 8.0 },
         ..Default::default()
-    }.pack()).unwrap();
+    }).unwrap();
 
     //# Create 'nameless' widget in BAR
     let boundary = Widget::create(system, &bar.end(""), SolidLayout {
@@ -131,7 +131,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         height: 1.0,
         scaling: SolidScale::Fit,
         ..Default::default()
-    }.pack()).unwrap();
+    }).unwrap();
 
     //# Generate grid of widgets in 'nameless'
     let names = textgrid![["Display"], ["Sound"], ["tab 3"], ["tab 4"], ["tab 5"], ["tab 6"], ["tab 7"], ["tab 8"]];
@@ -145,7 +145,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
             //# Spawn image for widgets in 'nameless'
             let widget = Widget::new(&boundary.end(&names[x][y]));
             commands.spawn((
-                TextElementBundle::new(widget, &TextParams::center().styled(&style_tab).scaled(50.0).with_height(80.0), &names[x][y].to_uppercase()),
+                TextElementBundle::new(widget, &TextParams::center().with_style(&style_tab).with_scale(50.0).with_height(Some(80.0)), &names[x][y].to_uppercase()),
                 ColorHighlightEffect (style_tab.color, GLOBAL_COLOR_HOVER),
                 HoverEffectInput (),
                 ColorHighlightEffectUpdater (),
@@ -161,7 +161,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         relative_1: Vec2 { x: 10.0, y: 14.0 },
         relative_2: Vec2 { x: 90.0, y: 100.0 },
         ..Default::default()
-    }.pack()).unwrap();
+    }).unwrap();
 
     //# Create 'nameless' widget in 'nameless'
     let boundary2 = Widget::create(system, &boundary1.end(""), SolidLayout {
@@ -170,7 +170,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         scaling: SolidScale::Fit,
         vertical_anchor: -1.0,
         ..Default::default()
-    }.pack()).unwrap();
+    }).unwrap();
 
     //# Create DISPLAY widget in 'nameless'/'nameless' (skipping 2 nameless widgets at once)
     let display = Widget::create(system, &settings.add(&boundary1).add(&boundary2).end("display"), WindowLayout {
@@ -178,7 +178,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         width_relative: 100.0,
         height_relative: 40.0,
         ..Default::default()
-    }.pack()).unwrap();
+    }).unwrap();
 
     //# Create 'nameless' widget in DISPLAY
     let category = Widget::create(system, &display.end(""), SolidLayout {
@@ -187,9 +187,9 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
         vertical_anchor: -1.0,
         scaling: SolidScale::Fit,
         ..Default::default()
-    }.pack()).unwrap();
+    }).unwrap();
     commands.spawn(ImageElementBundle::new(category.clone(), &ImageParams::default(), asset_server.load("images/settings/category.png"), Vec2::new(1934.0, 96.0)));
-    commands.spawn(TextElementBundle::new(category.clone(), &TextParams::centerleft().styled(&style_category).scaled(40.0).at(2.0, 50.0), "Display"));
+    commands.spawn(TextElementBundle::new(category.clone(), &TextParams::centerleft().with_style(&style_category).with_scale(40.0).at(2.0, 50.0), "Display"));
 
 
 
@@ -211,7 +211,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
             //# Spawn text element in the grid item
             let boundary = Widget::new(&widget.end(&names[x][y]));
             commands.spawn((
-                TextElementBundle::new(boundary.clone(), &TextParams::centerleft().styled(&style_item).scaled(40.0).at(2.0, 50.0), &names[x][y]),
+                TextElementBundle::new(boundary.clone(), &TextParams::centerleft().with_style(&style_item).with_scale(40.0).at(2.0, 50.0), &names[x][y]),
                 ColorHighlightEffect (style_item.color, GLOBAL_COLOR_HOVER),
                 HoverEffectInput (),
                 ColorHighlightEffectUpdater ()
@@ -221,7 +221,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
                 relative_1: Vec2 { x: -5.0, y: 15.0 },
                 relative_2: Vec2 { x: 46.0, y: 85.0 },
                 ..Default::default()
-            }.pack()).unwrap();
+            }).unwrap();
             commands.spawn((
                 ImageElementBundle::new(highlight.clone(), &ImageParams::default(), asset_server.load("images/settings/selection_shadow.png"), Vec2::new(1017.0, 50.0)),
                 ColorHighlightEffect (style_item.color.with_a(0.0), GLOBAL_COLOR_HOVER.with_a(0.15)),
@@ -238,7 +238,7 @@ pub fn setup_menu_settings (commands: &mut Commands, asset_server: &Res<AssetSer
                 relative_1: Vec2::new(47.0, 0.0),
                 relative_2: Vec2::new(95.0, 100.0),
                 ..Default::default()
-            }.pack();
+            };
 
             let _ = OptionButton::create(commands, asset_server, system, &boundary.end(&format!("{} button", &names[x][y])), position, &names[x][y], option.0, option.1);
 
@@ -259,7 +259,7 @@ fn hover_effect_input(mut systems: Query<&mut UiTree>, cursors: Query<&Cursor>, 
     let mut system = systems.get_single_mut().unwrap();
     let cursor = cursors.get_single().unwrap();
     for (widget, _) in &mut query {
-        if widget.is_within(&system, &cursor.position_world().as_lunex(system.offset)).unwrap() {
+        if widget.contains_position(&system, &cursor.position_world().as_lunex(system.offset)).unwrap() {
 
             //SET COLOR SLIDER ON SELF
             widget.fetch_data_set_f32(&mut system, "color_highlight_effect_slider", 1.0).unwrap();
@@ -278,7 +278,7 @@ fn return_button_update (mut systems: Query<&mut UiTree>, cursors: Query<&Cursor
     let mut system = systems.get_single_mut().unwrap();
     let cursor = cursors.get_single().unwrap();
     for (widget, _) in &mut query {
-        if widget.is_within(&system, &cursor.position_world().as_lunex(system.offset)).unwrap(){
+        if widget.contains_position(&system, &cursor.position_world().as_lunex(system.offset)).unwrap(){
 
             if mouse_button_input.just_pressed(MouseButton::Left) {
                 Widget::new("main_menu").fetch_mut(&mut system).unwrap().set_visibility(true);
@@ -301,7 +301,7 @@ impl OptionButton {
     fn update_data (&self, system: &mut UiTree, widget: Widget) {
         widget.fetch_data_set_string(system, "widget_text", self.options[self.current].to_string()).unwrap();
     }
-    pub fn create (commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut UiTree, path: &str, position: LayoutPackage, name: &str, options: Vec<String>, current: usize) -> Widget {
+    pub fn create (commands: &mut Commands, asset_server: &Res<AssetServer>, system: &mut UiTree, path: &str, position: impl Into<LayoutPackage>, name: &str, options: Vec<String>, current: usize) -> Widget {
         
         let widget = Widget::create(system, path, position).unwrap();
         commands.spawn((
@@ -316,13 +316,13 @@ impl OptionButton {
             relative_1: Vec2::new(3.0, 18.0),
             relative_2: Vec2::new(25.0, 82.0),
             ..Default::default()
-        }.pack()).unwrap();
+        }).unwrap();
         let image_box = Widget::create(system, &cycle_left.end(""), SolidLayout {
             width: 1.0,
             height: 1.0,
             horizontal_anchor: -0.8,
             ..Default::default()
-        }.pack()).unwrap();
+        }).unwrap();
         commands.spawn((
             ImageElementBundle::new(image_box.clone(), &ImageParams::default(), asset_server.load("images/settings/arrow_left_empty.png"), Vec2::new(41.0, 46.0)),
             ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.6), GLOBAL_COLOR_HOVER),
@@ -333,13 +333,13 @@ impl OptionButton {
             relative_1: Vec2::new(75.0, 18.0),
             relative_2: Vec2::new(97.0, 82.0),
             ..Default::default()
-        }.pack()).unwrap();
+        }).unwrap();
         let image_box = Widget::create(system, &cycle_right.end(""), SolidLayout {
             width: 1.0,
             height: 1.0,
             horizontal_anchor: 0.8,
             ..Default::default()
-        }.pack()).unwrap();
+        }).unwrap();
         commands.spawn((
             ImageElementBundle::new(image_box.clone(), &ImageParams::default(), asset_server.load("images/settings/arrow_right_empty.png"), Vec2::new(41.0, 46.0)),
             ColorHighlightEffect (GLOBAL_COLOR_STANDBY.with_a(0.6), GLOBAL_COLOR_HOVER),
@@ -351,7 +351,7 @@ impl OptionButton {
             color: GLOBAL_COLOR_STANDBY,
         };
         commands.spawn((
-            TextElementBundle::new(widget.clone(), &TextParams::center().styled(&style).scaled(90.0).with_height(40.0).at(50.0, 40.0), &options[current]),
+            TextElementBundle::new(widget.clone(), &TextParams::center().with_style(&style).with_scale(90.0).with_height(Some(40.0)).at(50.0, 40.0), &options[current]),
             ColorHighlightEffect (GLOBAL_COLOR_STANDBY, GLOBAL_COLOR_HOVER),
             LiveWidgetText ()
         ));
@@ -433,13 +433,13 @@ pub fn option_button_update (mut systems: Query<&mut UiTree>, cursors: Query<&Cu
             Option::None => {},
         }
 
-        if widget.is_within(&system, &cursor.position_world().as_lunex(system.offset)).unwrap(){
+        if widget.contains_position(&system, &cursor.position_world().as_lunex(system.offset)).unwrap(){
             if mouse_button_input.just_pressed(MouseButton::Left) {
 
-                if widget.is_within_ext(&system, "button_cycle_left", &cursor.position_world().as_lunex(system.offset)).unwrap(){
+                if widget.contains_position_ext(&system, "button_cycle_left", &cursor.position_world().as_lunex(system.offset)).unwrap(){
                     button.cycle_left(&mut system, widget.clone());
                 }
-                if widget.is_within_ext(&system, "button_cycle_right", &cursor.position_world().as_lunex(system.offset)).unwrap(){
+                if widget.contains_position_ext(&system, "button_cycle_right", &cursor.position_world().as_lunex(system.offset)).unwrap(){
                     button.cycle_right(&mut system, widget.clone());
                 }
 

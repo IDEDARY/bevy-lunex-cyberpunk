@@ -68,7 +68,7 @@ pub fn setup_profiler (commands: &mut Commands, asset_server: &Res<AssetServer>,
         relative_1: Vec2 { x: 0.0, y: 0.0 },
         relative_2: Vec2 { x: 100.0, y: 30.0 },
         ..Default::default()
-    }.pack()).unwrap();
+    }).unwrap();
 
     profiler.fetch_mut(system).unwrap().set_visibility(false);
 
@@ -78,7 +78,7 @@ pub fn setup_profiler (commands: &mut Commands, asset_server: &Res<AssetServer>,
         scaling: SolidScale::Fit,
         horizontal_anchor: -1.0,
         ..Default::default()
-    }.pack()).unwrap();
+    }).unwrap();
 
     let style = TextStyle {
         font: asset_server.load(GLOBAL_ITEM_BUTTON_FONT),
@@ -86,7 +86,7 @@ pub fn setup_profiler (commands: &mut Commands, asset_server: &Res<AssetServer>,
         color: YELLOW_COLOR,
     };
     commands.spawn((
-        TextElementBundle::new(widget.clone(), &TextParams::centerleft().styled(&style).with_height(10.0).at(10.0, 30.0), "FPS: "),
+        TextElementBundle::new(widget.clone(), &TextParams::centerleft().with_style(&style).with_height(Some(10.0)).at(10.0, 30.0), "FPS: "),
         LiveWidgetText (),
         Profiler::new(),
     ));

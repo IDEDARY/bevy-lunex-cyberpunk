@@ -25,4 +25,4 @@ bevy = { version = "0.11.2", features = ["dynamic_linking"] }
 
 #bevy_lunex = { git = "https://github.com/bytestring-net/bevy-lunex", branch = "main" }
 #bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy-lunex" }
-bevy_lunex = "0.0.1"
+bevy_lunex = "0.0.4"

@@ -17,7 +17,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         relative_1: Vec2 { x: 0.0, y: 0.0 },
         relative_2: Vec2 { x: 100.0, y: 100.0 },
         ..Default::default()
-    }.pack()).unwrap();
+    }).unwrap();
 
     
     //# --------------------------------------------------------------------------------------------------------------
@@ -28,7 +28,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         width_relative: 100.0 + 2.6*2.0,
         height_relative: 100.0 + 2.0*2.0,
         ..Default::default()
-    }.pack()).unwrap();
+    }).unwrap();
     
     //# Spawn entity with widget for querying
     commands.spawn((
@@ -42,9 +42,9 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         height: 1440.0,
         scaling: SolidScale::Fill,
         ..Default::default()
-    }.pack()).unwrap();
+    }).unwrap();
 
-    commands.spawn(ImageElementBundle::new(image.clone(), &ImageParams::default().with_depth(-0.1), asset_server.load("images/main_menu/53_.png"), Vec2::new(1920.0, 1080.0)));
+    commands.spawn(ImageElementBundle::new(image.clone(), &ImageParams::default().with_depth(-0.5), asset_server.load("images/main_menu/53_.png"), Vec2::new(1920.0, 1080.0)));
     //commands.spawn(ImageElementBundle::new(image.clone(), &ImageParams::default().with_depth(-0.1), asset_server.load("images/main_menu/screen_10.png"), Vec2::new(2560.0, 1440.0)));
     /*
     commands.spawn((
@@ -69,7 +69,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
     ));*/
 
     //# Set depth to IMAGE widget so the image renders behind other widgets (All widgets start at 100 + level == Menu/Display -> 102, Menu/Display/Button -> 103)
-    image.fetch_mut(system).unwrap().set_depth(50.0);
+    background.fetch_mut(system).unwrap().set_depth(51.0);
 
     //# --------------------------------------------------------------------------------------------------------------
 
@@ -80,7 +80,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         horizontal_anchor: -0.80,
         scaling: SolidScale::Fit,
         ..Default::default()
-    }.pack()).unwrap();
+    }).unwrap();
     commands.spawn(ImageElementBundle::new(board.clone(), &ImageParams::default(), asset_server.load("images/main_menu/board.png"), Vec2::new(807.0, 1432.0)));
 
 
@@ -89,7 +89,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         relative_1: Vec2 { x: -5.0, y: 15.0 },
         relative_2: Vec2 { x: 105.0, y: 30.0 },
         ..Default::default()
-    }.pack()).unwrap();
+    }).unwrap();
 
 
 
@@ -99,7 +99,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         height: 166.0,
         scaling: SolidScale::Fit,
         ..Default::default()
-    }.pack()).unwrap();
+    }).unwrap();
     commands.spawn((ImageElementBundle::new(logo.clone(), &ImageParams::default(), asset_server.load("images/main_menu/logo.png"), Vec2::new(681.0, 166.0)), FastFlickerEffect::new(0.05, 0.9, 1.0)));
 
 
@@ -109,7 +109,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         relative_1: Vec2 { x: -5.0, y: -10.0 },
         relative_2: Vec2 { x: 105.0, y: 110.0 },
         ..Default::default()
-    }.pack()).unwrap();
+    }).unwrap();
     //image_element_spawn!(commands, asset_server, logo_shadow.clone(), &ImageParams::default(), "images/main_menu/logo_shadow.png");
     commands.spawn(ImageElementBundle::new(logo_shadow.clone(), &ImageParams::default(), asset_server.load("images/main_menu/logo_shadow.png"), Vec2::new(858.0, 209.0)));
 
@@ -123,7 +123,7 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
         relative_1: Vec2 { x: 17.0, y: 33.0 },
         relative_2: Vec2 { x: 82.0, y: 79.0 },
         ..Default::default()
-    }.pack()).unwrap();
+    }).unwrap();
 
 
     let text_style = TextStyle {
@@ -151,9 +151,9 @@ pub fn setup_main_menu(commands: &mut Commands, asset_server: &Res<AssetServer>,
                 width_relative: 100.0,
                 height_relative: 100.0,
                 ..Default::default()
-            }.pack()).unwrap();
+            }).unwrap();
             commands.spawn((
-                TextElementBundle::new(widget.clone(), &TextParams::centerleft().at(5.0, 50.0).scaled(35.0).styled(&text_style).with_height(90.0), &names_display[x][y]),
+                TextElementBundle::new(widget.clone(), &TextParams::centerleft().at(5.0, 50.0).with_scale(35.0).with_style(&text_style).with_height(Some(90.0)), &names_display[x][y]),
                 ColorHighlightEffect (text_style.color, GLOBAL_COLOR_HOVER),
                 AnimateWidgetEffect (Vec2::default(), Vec2::new(5.0, 0.0)),
             ));
@@ -178,7 +178,7 @@ fn button_tick(mut systems: Query<&mut UiTree>, cursors: Query<&Cursor>, mut que
     let mut system = systems.get_single_mut().unwrap();
     let cursor = cursors.get_single().unwrap();
     for (widget, _) in &mut query {
-        if widget.is_within(&system, &cursor.position_world().as_lunex(system.offset)).unwrap(){
+        if widget.contains_position(&system, &cursor.position_world().as_lunex(system.offset)).unwrap(){
 
             widget.fetch_data_set_f32_ext(&mut system, "#0", "color_highlight_effect_slider", 1.0).unwrap();
             widget.fetch_data_set_f32_ext(&mut system, "#0", "animate_widget_effect_slider", 1.0).unwrap();
