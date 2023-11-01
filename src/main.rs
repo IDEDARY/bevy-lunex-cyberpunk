@@ -63,8 +63,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>) {
     //# Start playing the main menu music
     commands.spawn(
         AudioBundle {
-            //source: asset_server.load("sounds/main_menu.ogg"),
-            source: asset_server.load("sounds/AffectEffect_VThemeCover.ogg"),
+            source: asset_server.load("sounds/main_menu.ogg"),
+            //source: asset_server.load("sounds/AffectEffect_VThemeCover.ogg"),
             settings: PlaybackSettings::LOOP.with_volume(Volume::new_relative(0.5)),
         }
     );
