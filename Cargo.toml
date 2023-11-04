@@ -19,10 +19,5 @@ ahash = "0.8.3"
 rand = "0.8.5"
 mathio = "0.2.1"
 
-#bevy = { git = "https://github.com/bevyengine/bevy", default-features = false, features = ["bevy_sprite", "bevy_render", "bevy_text", "bevy_audio", "png", "vorbis", "bevy_winit", "x11"] }
-#bevy = { git = "https://github.com/bevyengine/bevy", features = ["dynamic_linking"] }
-bevy = { version = "0.11.2", features = ["dynamic_linking"] }
-
-#bevy_lunex = { git = "https://github.com/bytestring-net/bevy-lunex", branch = "main" }
-#bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy-lunex" }
-bevy_lunex = "0.0.4"
+bevy = { version = "0.11.3", features = ["dynamic_linking"] }
+bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy-lunex" }
