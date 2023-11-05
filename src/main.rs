@@ -30,7 +30,7 @@ fn main() {
         
         // Lunex boilerplate
         .add_plugins(LunexUiPlugin2D)
-        //.add_plugins(LunexUiDebugPlugin2D)
+        .add_plugins(LunexUiDebugPlugin2D)
 
         // Lunex logic
         .add_plugins(lg::LogicPlugin)
@@ -48,8 +48,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, mut window: Que
     // Start playing the main menu music
     commands.spawn(
         AudioBundle {
-            //source: asset_server.load("sounds/main_menu.ogg"),
-            source: asset_server.load("sounds/AffectEffect_VThemeCover.ogg"),
+            source: asset_server.load("sounds/main_menu.ogg"),
+            //source: asset_server.load("sounds/AffectEffect_VThemeCover.ogg"),
             settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new_relative(0.5)),
         }
     );

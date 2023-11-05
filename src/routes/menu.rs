@@ -18,7 +18,7 @@ impl UiComponent for Menu {
             .with_scaling(SolidScale::Fill)
             .with_size(2560.0, 1440.0)
             .build(tree, menu.end(".background image"))?;
-        commands.spawn(ImageElementBundle::new(image, ImageParams::default().with_depth(-0.5), asset_server.load("images/main_menu/screen_10.png"), Vec2::new(1920.0, 1080.0)));
+        commands.spawn(ImageElementBundle::new(image, ImageParams::default().with_depth(-0.5), asset_server.load("images/main_menu/53_.png"), Vec2::new(1920.0, 1080.0)));
         
         let board = SolidLayout::new()
             .with_size(807.0, 1432.0)
@@ -69,7 +69,7 @@ impl UiComponent for Menu {
             commands.spawn((
                 x,
                 array[i],
-                lg::AnimateWindowPosition::new(Vec2::new(0.0, 0.0), Vec2::new(10.0, 0.0)),
+                lg::AnimateWindowPosition::new(Vec2::new(0.0, 0.0), Vec2::new(5.0, 0.0), ".Button"),
                 lg::InputMouseHover::new()
             ));
             i += 1;
@@ -81,10 +81,10 @@ impl UiComponent for Menu {
 }
 impl Plugin for Menu {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, main_menu_button_system);
+        app.add_systems(Update, main_menu_button_system)
+           .add_systems(Update, main_menu_button_position);
     }
 }
-
 
 
 #[derive(Component, Clone, Copy)]
@@ -128,5 +128,10 @@ fn main_menu_button_system(
                 }
             }
         }
+    }
+}
+fn main_menu_button_position(mut query: Query<(&mut lg::AnimateWindowSlider, &lg::InputMouseHover), With<MainMenuButton>>) {
+    for (mut source1, source2) in &mut query {
+        if source2.hover { source1.value = 1.0 }
     }
 }
