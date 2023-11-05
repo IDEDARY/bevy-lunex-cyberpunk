@@ -7,6 +7,6 @@ pub struct RoutePlugin;
 impl Plugin for RoutePlugin {
     fn build(&self, app: &mut App) {
         #![allow(path_statements)]
-        app;
+        app.add_plugins(Menu);
     }
 }

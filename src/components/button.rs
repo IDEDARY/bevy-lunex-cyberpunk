@@ -16,7 +16,7 @@ impl Button {
     }
 }
 impl UiComponent for Button {
-    fn construct(self, commands: &mut Commands, asset_server: &Res<AssetServer>, tree: &mut UiTree, path: impl Borrow<str>) -> Result<(), LunexError> {
+    fn construct(self, commands: &mut Commands, asset_server: &Res<AssetServer>, tree: &mut UiTree, path: impl Borrow<str>) -> Result<Widget, LunexError> {
 
         let text_style = TextStyle {
             font: asset_server.load("fonts/rajdhani/Rajdhani-Medium.ttf"),
@@ -30,16 +30,15 @@ impl UiComponent for Button {
             TextElementBundle::new(&widget, TextParams::centerleft().at(5.0, 50.0).with_scale(35.0).with_style(&text_style).with_height(Some(90.0)), &self.display),
         ));
         commands.spawn((
-            ImageElementBundle::new(widget, ImageParams::default().with_width(Some(100.0)).with_height(Some(100.0)), asset_server.load("images/main_menu/button.png"), Vec2::new(532.0, 75.0)),
+            ImageElementBundle::new(&widget, ImageParams::default().with_width(Some(100.0)).with_height(Some(100.0)), asset_server.load("images/main_menu/button.png"), Vec2::new(532.0, 75.0)),
         ));
 
-        Ok(())
+        Ok(widget)
     }
 }
 impl Plugin for Button {
     fn build(&self, app: &mut App) {
+        #![allow(path_statements)]
         app;
     }
 }
-
-fn 

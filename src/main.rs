@@ -28,7 +28,7 @@ fn main() {
         
         // Lunex boilerplate
         .add_plugins(LunexUiPlugin2D)
-        .add_plugins(LunexUiDebugPlugin2D)
+        //.add_plugins(LunexUiDebugPlugin2D)
 
         // Lunex logic
         .add_plugins(rt::RoutePlugin)
@@ -79,5 +79,5 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, mut window: Que
 
 
 pub trait UiComponent: Plugin + Default {
-    fn construct(self, commands: &mut Commands, asset_server: &Res<AssetServer>, tree: &mut UiTree, path: impl Borrow<str>) -> Result<(), LunexError>;
+    fn construct(self, commands: &mut Commands, asset_server: &Res<AssetServer>, tree: &mut UiTree, path: impl Borrow<str>) -> Result<Widget, LunexError>;
 }
