@@ -1,5 +1,5 @@
 pub mod menu;
-pub use menu::Menu;
+pub use menu::*;
 
 
 use bevy::prelude::{Plugin, App};

@@ -5,8 +5,10 @@ use bevy::prelude::*;
 mod vfx;
 use vfx::*;
 
+mod logic;
 mod routes;
 mod components;
+use logic as lg;
 use routes as rt;
 use components as ui;
 
@@ -31,6 +33,7 @@ fn main() {
         //.add_plugins(LunexUiDebugPlugin2D)
 
         // Lunex logic
+        .add_plugins(lg::LogicPlugin)
         .add_plugins(rt::RoutePlugin)
         .add_plugins(ui::ComponentPlugin)
 

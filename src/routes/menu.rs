@@ -4,6 +4,7 @@ use bevy::prelude::*;
 
 use crate::UiComponent;
 use crate::components as ui;
+use crate::logic as lg;
 
 
 #[derive(Default)]
@@ -65,7 +66,12 @@ impl UiComponent for Menu {
         let mut i = 0;
         for x in widget_list {
             ui::Button::new(x.name()).construct(commands, asset_server, tree, x.end(".Button"))?;
-            commands.spawn((x, array[i]));
+            commands.spawn((
+                x,
+                array[i],
+                lg::AnimateWindowPosition::new(Vec2::new(0.0, 0.0), Vec2::new(10.0, 0.0)),
+                lg::InputMouseHover::new()
+            ));
             i += 1;
         }
 
