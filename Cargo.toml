@@ -19,5 +19,5 @@ ahash = "0.8.3"
 rand = "0.8.5"
 mathio = "0.2.1"
 
-bevy = { version = "0.11.3", features = ["dynamic_linking"] }
+bevy = { version = "0.12.0", features = ["dynamic_linking"] }
 bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy-lunex" }
