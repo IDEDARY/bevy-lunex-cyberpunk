@@ -14,8 +14,8 @@ impl InputMouseHover {
         }
     }
 }
-pub (super) fn input_mouse_hover_system(
-    mut trees: Query<&mut UiTree>,
+pub (super) fn input_mouse_hover_system<T:Component + Default>(
+    mut trees: Query<&mut UiTree<T>>,
     cursors: Query<&Cursor>,
     mut query: Query<(&Widget, &mut InputMouseHover)>,
 ) {

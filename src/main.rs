@@ -1,16 +1,12 @@
-use std::borrow::Borrow;
+use std::{borrow::Borrow, marker::PhantomData};
 use bevy_lunex::prelude::*;
 use bevy::prelude::*;
 
 mod vfx;
 use vfx::*;
 
-mod logic;
-mod routes;
-mod components;
-use logic as lg;
-use routes as rt;
-use components as ui;
+mod interface;
+use interface::*;
 
 
 fn main() {
@@ -29,13 +25,11 @@ fn main() {
         .add_plugins(bevy::diagnostic::FrameTimeDiagnosticsPlugin)
         
         // Lunex boilerplate
-        .add_plugins(LunexUiPlugin2D)
-        .add_plugins(LunexUiDebugPlugin2D)
+        .add_plugins(LunexUiPlugin2D::<MyData>(PhantomData))
+        //.add_plugins(LunexUiDebugPlugin2D::<MyData>(PhantomData))
 
         // Lunex logic
-        .add_plugins(lg::LogicPlugin)
-        .add_plugins(rt::RoutePlugin)
-        .add_plugins(ui::ComponentPlugin)
+        .add_plugins(InterfacePlugin::<MyData>(PhantomData))
 
         // Game logic
         .add_plugins(VFXPlugin)
@@ -72,7 +66,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, mut window: Que
         }
     ));
 
-    let mut tree = UiTree::new("Interface");
+    let mut tree: UiTree<MyData> = UiTree::new("Interface");
 
     rt::Menu.construct(&mut commands, &asset_server, &mut tree, ".").unwrap();
 
@@ -80,7 +74,10 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, mut window: Que
     commands.entity(_window.1).insert((tree, Transform::default(), Size::default()));
 }
 
-
-pub trait UiComponent: Plugin + Default {
-    fn construct(self, commands: &mut Commands, asset_server: &Res<AssetServer>, tree: &mut UiTree, path: impl Borrow<str>) -> Result<Widget, LunexError>;
+#[derive(Component, Default)]
+pub struct MyData {
+    pub animate: bool,
+}
+pub trait UiComponent: {
+    fn construct<T:Component + Default>(self, commands: &mut Commands, asset_server: &Res<AssetServer>, tree: &mut UiTree<T>, path: impl Borrow<str>) -> Result<Widget, LunexError>;
 }

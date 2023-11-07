@@ -6,11 +6,12 @@ use crate::UiComponent;
 use crate::components as ui;
 use crate::logic as lg;
 
+// COMPONENT
 
 #[derive(Default)]
 pub struct Menu;
 impl UiComponent for Menu {
-    fn construct(self, commands: &mut Commands, asset_server: &Res<AssetServer>, tree: &mut UiTree, path: impl Borrow<str>) -> Result<Widget, LunexError> {
+    fn construct<T: Component + Default>(self, commands: &mut Commands, asset_server: &Res<AssetServer>, tree: &mut UiTree<T>, path: impl Borrow<str>) -> Result<Widget, LunexError> {
 
         let menu = RelativeLayout::new().build(tree, "Menu")?;
 
@@ -69,7 +70,7 @@ impl UiComponent for Menu {
             commands.spawn((
                 x,
                 array[i],
-                lg::AnimateWindowPosition::new(Vec2::new(0.0, 0.0), Vec2::new(5.0, 0.0), ".Button"),
+                lg::AnimateWindowPosition::new(Vec2::new(0.0, 0.0), Vec2::new(5.0, 0.0)),
                 lg::InputMouseHover::new()
             ));
             i += 1;
@@ -79,13 +80,21 @@ impl UiComponent for Menu {
         Ok(Widget::new(""))
     }
 }
-impl Plugin for Menu {
+
+
+
+
+// BOILERPLATE
+
+pub (super) struct MenuPlugin<T:Component + Default>(pub std::marker::PhantomData<T>);
+impl <T:Component + Default> Plugin for MenuPlugin<T> {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, main_menu_button_system)
+        app.add_systems(Update, main_menu_button_system::<T>)
            .add_systems(Update, main_menu_button_position);
     }
 }
 
+// SCRIPT
 
 #[derive(Component, Clone, Copy)]
 enum MainMenuButton {
@@ -97,8 +106,8 @@ enum MainMenuButton {
     Credits,
     QuitGame,
 }
-fn main_menu_button_system(
-    mut trees: Query<&mut UiTree>,
+fn main_menu_button_system<T:Component + Default>(
+    mut trees: Query<&mut UiTree<T>>,
     cursors: Query<&Cursor>,
     mut query: Query<(&Widget, &MainMenuButton)>,
 
@@ -130,7 +139,7 @@ fn main_menu_button_system(
         }
     }
 }
-fn main_menu_button_position(mut query: Query<(&mut lg::AnimateWindowSlider, &lg::InputMouseHover), With<MainMenuButton>>) {
+fn main_menu_button_position(mut query: Query<(&mut lg::Animate, &lg::InputMouseHover), With<MainMenuButton>>) {
     for (mut source1, source2) in &mut query {
         if source2.hover { source1.value = 1.0 }
     }
