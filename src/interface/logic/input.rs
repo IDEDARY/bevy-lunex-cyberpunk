@@ -3,12 +3,12 @@ use bevy::prelude::*;
 
 /// # Input Mouse Hover
 /// Component that checks if cursor hovers over widget
-#[derive(Component)]
+#[derive(Component, Clone)]
 pub struct InputMouseHover {
     pub hover: bool,
 }
 impl InputMouseHover {
-    pub fn new() -> impl Component {
+    pub fn new() -> Self {
         InputMouseHover {
             hover: false,
         }
@@ -39,13 +39,13 @@ pub (super) fn input_mouse_hover_system<T:Component + Default>(
 
 /// # Input Mouse Click
 /// Component that checks if widget was clicked on
-#[derive(Component)]
+#[derive(Component, Clone)]
 pub struct InputMouseClick {
     pub left: bool,
     pub right: bool,
 }
 impl InputMouseClick {
-    pub fn new() -> impl Bundle {
+    pub fn new() -> (InputMouseClick, InputMouseHover) {
         (
             InputMouseClick {
                 left: false,

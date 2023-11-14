@@ -5,7 +5,7 @@ use mathio::tween;
 
 /// # Animate
 /// Holds control values that other components use.
-#[derive(Component)]
+#[derive(Component, Clone)]
 pub struct Animate {
     /// If true, `value` will move to 1.0, else it will move to 0.0
     pub trigger: bool,
@@ -13,7 +13,7 @@ pub struct Animate {
     pub value: f32,
 }
 impl Animate {
-    pub fn new() -> impl Bundle {
+    pub fn new() -> Self {
         Animate {
             trigger: false,
             value: 0.0,
@@ -33,13 +33,13 @@ pub (super) fn animate_system(mut query: Query<&mut Animate>) {
 /// # Animate Window Position
 /// Takes control value from [`Animate`] component and updates
 /// window position. Will panic if the container is not a window layout.
-#[derive(Component)]
+#[derive(Component, Clone)]
 pub struct AnimateWindowPosition {
     pub pos1: Vec2,
     pub pos2: Vec2,
 }
 impl AnimateWindowPosition {
-    pub fn new(pos1: Vec2, pos2: Vec2) -> impl Bundle {
+    pub fn new(pos1: Vec2, pos2: Vec2) -> Self {
         AnimateWindowPosition {
             pos1,
             pos2
@@ -63,13 +63,13 @@ pub (super) fn animate_window_position_system<T:Component + Default>(mut trees: 
 /// # Animate Color
 /// Takes control value from [`Animate`] component and updates
 /// color values of image and text.
-#[derive(Component)]
+#[derive(Component, Clone)]
 pub struct AnimateColor {
     color1: Color,
     color2: Color,
 }
 impl AnimateColor {
-    pub fn new(color1: Color, color2: Color) -> impl Bundle {
+    pub fn new(color1: Color, color2: Color) -> Self {
         AnimateColor {
             color1,
             color2,

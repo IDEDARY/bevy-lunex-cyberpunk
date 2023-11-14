@@ -2,6 +2,7 @@ use std::borrow::Borrow;
 use bevy_lunex::prelude::*;
 use bevy::prelude::*;
 
+use crate::MyData;
 use crate::UiComponent;
 use crate::components as ui;
 use crate::logic as lg;
@@ -11,7 +12,7 @@ use crate::logic as lg;
 #[derive(Default)]
 pub struct Menu;
 impl UiComponent for Menu {
-    fn construct<T: Component + Default>(self, commands: &mut Commands, asset_server: &Res<AssetServer>, tree: &mut UiTree<T>, path: impl Borrow<str>) -> Result<Widget, LunexError> {
+    fn construct<T: Component + Default>(self, commands: &mut Commands, asset_server: &Res<AssetServer>, tree: &mut UiTree<T>, path: impl Borrow<str>, bundle: impl Bundle + Clone) -> Result<Widget, LunexError> {
 
         let menu = RelativeLayout::new().build(tree, "Menu")?;
 
@@ -66,13 +67,23 @@ impl UiComponent for Menu {
 
         let mut i = 0;
         for x in widget_list {
-            ui::Button::new(x.name()).construct(commands, asset_server, tree, x.end(".Button"))?;
+
+            // These components will get passed to the button entities
+            let button_components = (
+                lg::AnimateWindowPosition::new(Vec2::new(0.0, 0.0), Vec2::new(5.0, 0.0)),
+                SyncAnimationInput
+            );
+
+            // This will create a new widget with preset logic components + custom button_components
+            ui::Button::new(x.name()).construct(commands, asset_server, tree, x.end(".Button"), button_components)?;
+            
+            // Spawn logic for the stationary widget, the one that owns ".Button"
             commands.spawn((
                 x,
                 array[i],
-                lg::AnimateWindowPosition::new(Vec2::new(0.0, 0.0), Vec2::new(5.0, 0.0)),
                 lg::InputMouseHover::new()
             ));
+
             i += 1;
         }
 
@@ -89,8 +100,9 @@ impl UiComponent for Menu {
 pub (super) struct MenuPlugin<T:Component + Default>(pub std::marker::PhantomData<T>);
 impl <T:Component + Default> Plugin for MenuPlugin<T> {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, main_menu_button_system::<T>)
-           .add_systems(Update, main_menu_button_position);
+        app.add_systems(Update, main_menu_button_actions::<T>)
+           .add_systems(Update, main_menu_button_position)
+           .add_systems(Update, synchronize_animation_input);
     }
 }
 
@@ -106,7 +118,8 @@ enum MainMenuButton {
     Credits,
     QuitGame,
 }
-fn main_menu_button_system<T:Component + Default>(
+/// What to do when the button is pressed
+fn main_menu_button_actions<T:Component + Default>(
     mut trees: Query<&mut UiTree<T>>,
     cursors: Query<&Cursor>,
     mut query: Query<(&Widget, &MainMenuButton)>,
@@ -139,8 +152,25 @@ fn main_menu_button_system<T:Component + Default>(
         }
     }
 }
-fn main_menu_button_position(mut query: Query<(&mut lg::Animate, &lg::InputMouseHover), With<MainMenuButton>>) {
-    for (mut source1, source2) in &mut query {
-        if source2.hover { source1.value = 1.0 }
+
+/// Trigger the hover effects of the owned button
+fn main_menu_button_position(mut trees: Query<&mut UiTree<MyData>>, query: Query<(&Widget, &lg::InputMouseHover), With<MainMenuButton>>) {
+    for mut tree in &mut trees {
+        for (source, input) in &query {
+            let data: &mut MyData = source.fetch_mut_ext(&mut tree, ".Button").unwrap().get_data_mut();
+            data.animate = input.hover
+        }
+    }
+}
+
+
+#[derive(Component, Clone)]
+struct SyncAnimationInput;
+fn synchronize_animation_input(mut trees: Query<&mut UiTree<MyData>>, mut query: Query<(&Widget, &mut lg::Animate), With<SyncAnimationInput>>) {
+    for mut tree in &mut trees {
+        for (source, mut destination) in &mut query {
+            let data: &MyData = source.fetch_mut(&mut tree).unwrap().get_data();
+            destination.trigger = data.animate;
+        }
     }
 }

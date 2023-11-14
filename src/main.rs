@@ -68,7 +68,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, mut window: Que
 
     let mut tree: UiTree<MyData> = UiTree::new("Interface");
 
-    rt::Menu.construct(&mut commands, &asset_server, &mut tree, ".").unwrap();
+    rt::Menu.construct(&mut commands, &asset_server, &mut tree, ".", ()).unwrap();
 
     let _window = window.get_single_mut().unwrap();
     commands.entity(_window.1).insert((tree, Transform::default(), Size::default()));
@@ -79,5 +79,5 @@ pub struct MyData {
     pub animate: bool,
 }
 pub trait UiComponent: {
-    fn construct<T:Component + Default>(self, commands: &mut Commands, asset_server: &Res<AssetServer>, tree: &mut UiTree<T>, path: impl Borrow<str>) -> Result<Widget, LunexError>;
+    fn construct<T:Component + Default>(self, commands: &mut Commands, asset_server: &Res<AssetServer>, tree: &mut UiTree<T>, path: impl Borrow<str>, bundle: impl Bundle + Clone) -> Result<Widget, LunexError>;
 }
