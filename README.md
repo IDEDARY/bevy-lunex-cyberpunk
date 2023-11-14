@@ -1,9 +1,10 @@
-# Bevy Lunex Cyberpunk Example
+# Bevypunk - Bevy Lunex
 
-A recreation of ***Cyberpunk 2077*** UI in ***Bevy*** using **Bevy-Lunex**. This repo is intended to showcase how to use Bevy-Lunex in more complicated manner.
-Currently it doesn't use the most up-to-date practices, but it works. For the latest stuff look for examples folder in the original repository.
+Bevypunk is a recreation of ***Cyberpunk*** UI in ***Bevy*** using **Bevy-Lunex**.
 
-*Note: The development is still on-going, this example is NOT finished and is subject of change.*
+This project showcases advanced workflow and complex use of **Bevy-Lunex** library.
+
+*Note: Bevy-Lunex is WIP, so this example is subject of change.*
 
 ## === Showcase ===
 ![image](https://github.com/bytestring-net/bevy_lunex/assets/49441831/73d96dd1-d851-4a9f-9d58-11aba63e579d)
