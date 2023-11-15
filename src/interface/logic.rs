@@ -5,7 +5,14 @@ pub use input::*;
 
 
 use bevy::prelude::{Plugin, App, Update, IntoSystemConfigs, Component};
-pub struct LogicPlugin<T: Component + Default>(pub std::marker::PhantomData<T>);
+use std::marker::PhantomData;
+#[derive(Debug, Clone, Default)]
+pub struct LogicPlugin<T: Component + Default>(pub PhantomData<T>);
+impl <T:Component + Default>LogicPlugin<T> {
+    pub fn new() -> Self {
+        LogicPlugin::<T>(PhantomData)
+    }
+}
 impl <T: Component + Default> Plugin for LogicPlugin<T> {
     fn build(&self, app: &mut App) {
         #![allow(path_statements)]

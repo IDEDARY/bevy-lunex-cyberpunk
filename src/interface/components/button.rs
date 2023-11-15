@@ -3,7 +3,6 @@ use std::borrow::Borrow;
 use bevy_lunex::prelude::*;
 use bevy::prelude::*;
 
-use crate::MyData;
 use crate::UiComponent;
 use crate::logic as lg;
 
@@ -48,9 +47,15 @@ impl UiComponent for Button {
 }
 
 
-
 // MACRO logic![]
-pub (super) struct ButtonPlugin<T:Component + Default>(pub std::marker::PhantomData<T>);
+use std::marker::PhantomData;
+#[derive(Debug, Clone, Default)]
+pub (super) struct ButtonPlugin<T:Component + Default>(pub PhantomData<T>);
+impl <T:Component + Default>ButtonPlugin<T> {
+    pub fn new() -> Self {
+        ButtonPlugin::<T>(PhantomData)
+    }
+}
 impl <T:Component + Default> Plugin for ButtonPlugin<T> {
     fn build(&self, app: &mut App) {
         #![allow(path_statements)]

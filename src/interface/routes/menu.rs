@@ -96,8 +96,14 @@ impl UiComponent for Menu {
 
 
 // BOILERPLATE
-
-pub (super) struct MenuPlugin<T:Component + Default>(pub std::marker::PhantomData<T>);
+use std::marker::PhantomData;
+#[derive(Debug, Clone, Default)]
+pub (super) struct MenuPlugin<T:Component + Default>(pub PhantomData<T>);
+impl <T:Component + Default>MenuPlugin<T> {
+    pub fn new() -> Self {
+        MenuPlugin::<T>(PhantomData)
+    }
+}
 impl <T:Component + Default> Plugin for MenuPlugin<T> {
     fn build(&self, app: &mut App) {
         app.add_systems(Update, main_menu_button_actions::<T>)
@@ -106,8 +112,8 @@ impl <T:Component + Default> Plugin for MenuPlugin<T> {
     }
 }
 
-// SCRIPT
 
+// SCRIPT
 #[derive(Component, Clone, Copy)]
 enum MainMenuButton {
     Continue,

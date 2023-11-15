@@ -23,7 +23,7 @@ impl Animate {
 pub (super) fn animate_system(mut query: Query<&mut Animate>) {
     for mut source in &mut query {
         if source.trigger {
-            if source.value < 1.0 {source.value += 0.05} else {source.value = 1.0}
+            if source.value < 1.0 {source.value += 0.25} else {source.value = 1.0}
         } else {
             if source.value > 0.0 {source.value -= 0.05} else {source.value = 0.0}
         }

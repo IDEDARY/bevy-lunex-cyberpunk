@@ -8,12 +8,18 @@ pub use components as ui;
 
 use bevy::prelude::{Plugin, App, Component};
 use std::marker::PhantomData;
-pub struct InterfacePlugin<T:Component + Default>(pub std::marker::PhantomData<T>);
+#[derive(Debug, Clone, Default)]
+pub struct InterfacePlugin<T:Component + Default>(pub PhantomData<T>);
+impl <T:Component + Default>InterfacePlugin<T> {
+    pub fn new() -> Self {
+        InterfacePlugin::<T>(PhantomData)
+    }
+}
 impl <T:Component + Default> Plugin for InterfacePlugin<T> {
     fn build(&self, app: &mut App) {
         #![allow(path_statements)]
-        app.add_plugins(lg::LogicPlugin::<T>(PhantomData))
-           .add_plugins(rt::RoutePlugin::<T>(PhantomData))
-           .add_plugins(ui::ComponentPlugin::<T>(PhantomData));
+        app.add_plugins(lg::LogicPlugin::<T>::new())
+           .add_plugins(rt::RoutePlugin::<T>::new())
+           .add_plugins(ui::ComponentPlugin::<T>::new());
     }
 }

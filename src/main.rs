@@ -1,6 +1,7 @@
-use std::{borrow::Borrow, marker::PhantomData};
+use std::borrow::Borrow;
 use bevy_lunex::prelude::*;
 use bevy::prelude::*;
+use bevy::diagnostic::FrameTimeDiagnosticsPlugin;
 
 mod vfx;
 use vfx::*;
@@ -22,14 +23,14 @@ fn main() {
                 ..default()
             }
         ))
-        .add_plugins(bevy::diagnostic::FrameTimeDiagnosticsPlugin)
+        .add_plugins(FrameTimeDiagnosticsPlugin)
         
         // Lunex boilerplate
-        .add_plugins(LunexUiPlugin2D::<MyData>(PhantomData))
-        .add_plugins(LunexUiDebugPlugin2D::<MyData>(PhantomData))
+        .add_plugins(LunexUiPlugin2D::<MyData>::new())
+        //.add_plugins(LunexUiDebugPlugin2D::<MyData>::new())
 
         // Lunex logic
-        .add_plugins(InterfacePlugin::<MyData>(PhantomData))
+        .add_plugins(InterfacePlugin::<MyData>::new())
 
         // Game logic
         .add_plugins(VFXPlugin)
@@ -74,7 +75,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, mut window: Que
     commands.entity(_window.1).insert((tree, Transform::default(), Size::default()));
 }
 
-#[derive(Component, Default)]
+
+#[derive(Debug, Clone, Component, Default)]
 pub struct MyData {
     pub animate: bool,
 }
