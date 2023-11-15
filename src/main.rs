@@ -26,7 +26,7 @@ fn main() {
         
         // Lunex boilerplate
         .add_plugins(LunexUiPlugin2D::<MyData>(PhantomData))
-        //.add_plugins(LunexUiDebugPlugin2D::<MyData>(PhantomData))
+        .add_plugins(LunexUiDebugPlugin2D::<MyData>(PhantomData))
 
         // Lunex logic
         .add_plugins(InterfacePlugin::<MyData>(PhantomData))

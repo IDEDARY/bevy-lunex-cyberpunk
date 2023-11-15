@@ -39,7 +39,7 @@ impl UiComponent for Button {
         commands.spawn((
             ImageElementBundle::new(&widget, ImageParams::default().with_width(Some(100.0)).with_height(Some(100.0)), asset_server.load("images/main_menu/button.png"), Vec2::new(532.0, 75.0)),
             lg::Animate::new(),
-            lg::AnimateColor::new(Color::rgba(255./255., 98./255., 81./255., 1.0), Color::rgba(252./255., 226./255., 8./255., 1.2).with_l(0.65)),
+            lg::AnimateColor::new(Color::rgba(255./255., 98./255., 81./255., 0.0), Color::rgba(252./255., 226./255., 8./255., 1.2).with_l(0.65)),
             bundle
         ));
 
