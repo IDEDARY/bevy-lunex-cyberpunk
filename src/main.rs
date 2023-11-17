@@ -1,4 +1,5 @@
 use std::borrow::Borrow;
+use bevy::window::PrimaryWindow;
 use bevy_lunex::prelude::*;
 use bevy::prelude::*;
 use bevy::diagnostic::FrameTimeDiagnosticsPlugin;
@@ -27,7 +28,7 @@ fn main() {
         
         // Lunex boilerplate
         .add_plugins(LunexUiPlugin2D::<MyData>::new())
-        .add_plugins(LunexUiDebugPlugin2D::<MyData>::new())
+        //.add_plugins(LunexUiDebugPlugin2D::<MyData>::new())
 
         // Lunex logic
         .add_plugins(InterfacePlugin::<MyData>::new())
@@ -38,7 +39,7 @@ fn main() {
 
         .run();
 }
-fn setup(mut commands: Commands, asset_server: Res<AssetServer>, mut window: Query<(&mut Window, Entity)>) {
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>, window: Query<Entity, (With<Window>, With<PrimaryWindow>)>) {
 
     // Start playing the main menu music
     commands.spawn(
@@ -57,7 +58,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, mut window: Que
         Cursor::new(10.0).with_hide_os_cursor(true),
         SpriteBundle {
             texture: asset_server.load("cursor_mouse.png"),
-            transform: Transform { translation: Vec3 { x: 0., y: 0., z: 800. }, scale: Vec3 { x: 0.4, y: 0.4, z: 1. }, ..default() },
+            transform: Transform { translation: Vec3::new(0.0, 0.0, 800.0), scale: Vec3::new(0.4, 0.4, 1.0), ..default() },
             sprite: Sprite {
                 color: Color::rgba(1., 1., 1., 2.0),
                 anchor: bevy::sprite::Anchor::TopLeft,
@@ -71,8 +72,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, mut window: Que
 
     rt::Menu.construct(&mut commands, &asset_server, &mut tree, ".", ()).unwrap();
 
-    let _window = window.get_single_mut().unwrap();
-    commands.entity(_window.1).insert(tree.bundle());
+    let window = window.single();
+    commands.entity(window).insert(tree.bundle());
 }
 
 
