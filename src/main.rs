@@ -27,7 +27,7 @@ fn main() {
         
         // Lunex boilerplate
         .add_plugins(LunexUiPlugin2D::<MyData>::new())
-        //.add_plugins(LunexUiDebugPlugin2D::<MyData>::new())
+        .add_plugins(LunexUiDebugPlugin2D::<MyData>::new())
 
         // Lunex logic
         .add_plugins(InterfacePlugin::<MyData>::new())
@@ -72,7 +72,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, mut window: Que
     rt::Menu.construct(&mut commands, &asset_server, &mut tree, ".", ()).unwrap();
 
     let _window = window.get_single_mut().unwrap();
-    commands.entity(_window.1).insert((tree, Transform::default(), Size::default()));
+    commands.entity(_window.1).insert(tree.bundle());
 }
 
 

@@ -27,7 +27,7 @@ impl UiComponent for Button {
             color: Color::rgba(255./255., 98./255., 81./255., 1.1),
         };
 
-        let widget = WindowLayout::new().build(tree, path)?;
+        let widget = WindowLayout::new().build_as(tree, path)?;
 
         commands.spawn((
             TextElementBundle::new(&widget, TextParams::centerleft().at(5.0, 50.0).with_scale(35.0).with_style(&text_style).with_height(Some(90.0)), &self.display),

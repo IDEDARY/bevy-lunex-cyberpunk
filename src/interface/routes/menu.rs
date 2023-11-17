@@ -14,35 +14,35 @@ pub struct Menu;
 impl UiComponent for Menu {
     fn construct<T: Component + Default>(self, commands: &mut Commands, asset_server: &Res<AssetServer>, tree: &mut UiTree<T>, path: impl Borrow<str>, bundle: impl Bundle + Clone) -> Result<Widget, LunexError> {
 
-        let menu = RelativeLayout::new().build(tree, "Menu")?;
+        let menu = RelativeLayout::new().build_as(tree, "Menu")?;
 
         let image = SolidLayout::new()
             .with_scaling(SolidScale::Fill)
             .with_size(2560.0, 1440.0)
-            .build(tree, menu.end(".background image"))?;
+            .build_as(tree, menu.end(".background image"))?;
         commands.spawn(ImageElementBundle::new(image, ImageParams::default().with_depth(-0.5), asset_server.load("images/main_menu/53_.png"), Vec2::new(1920.0, 1080.0)));
         
         let board = SolidLayout::new()
             .with_size(807.0, 1432.0)
             .with_horizontal_anchor(-0.8)
-            .build(tree, menu.end("Board"))?;
+            .build_as(tree, menu.end("Board"))?;
         commands.spawn(ImageElementBundle::new(&board, ImageParams::default(), asset_server.load("images/main_menu/board.png"), Vec2::new(807.0, 1432.0)));
         
         let boundary = RelativeLayout::new()
             .with_rel_1(Vec2::new(-5.0, 12.0))
             .with_rel_2(Vec2::new(105.0, 32.0))
-            .build(tree, board.end("boundary"))?;
+            .build_as(tree, board.end("boundary"))?;
 
         let logo = SolidLayout::new()
             .with_size(1240.0, 381.0)
-            .build(tree, boundary.end("Logo"))?;
+            .build_as(tree, boundary.end("Logo"))?;
         commands.spawn(ImageElementBundle::new(logo, ImageParams::default(), asset_server.load("images/main_menu/bevypunk2.png"), Vec2::new(1240.0, 381.0)));
 
 
         let list = RelativeLayout::new()
             .with_rel_1(Vec2::new(17.0, 33.0))
             .with_rel_2(Vec2::new(82.0, 79.0))
-            .build(tree, board.end("list"))?;
+            .build_as(tree, board.end("list"))?;
 
 
         let mut segment = GridSegment::new();
