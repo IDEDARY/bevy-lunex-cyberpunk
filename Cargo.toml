@@ -1,5 +1,5 @@
 [package]
-name = "bevy-lunex-cyberpunk"
+name = "bevypunk"
 version = "0.1.0"
 edition = "2021"
 
@@ -18,7 +18,7 @@ lto = "fat"
 ahash = "0.8.3"
 rand = "0.8.5"
 mathio = "0.2.1"
-
-bevy = { version = "0.12.0", features = ["dynamic_linking"] }
 #bevy_lunex = "0.0.7"
 bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy-lunex" }
+bevy = { version = "0.12.0", features = ["dynamic_linking"] }
+#bevy = { version = "0.12.0" }

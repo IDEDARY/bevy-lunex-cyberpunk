@@ -17,7 +17,7 @@ fn main() {
         .add_plugins(DefaultPlugins.set (
             WindowPlugin {
                 primary_window: Some(Window {
-                    title: "Bevy Lunex Cyberpunk".into(),
+                    title: "Bevypunk".into(),
                     mode: bevy::window::WindowMode::BorderlessFullscreen,
                     ..default()
                 }),
