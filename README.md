@@ -13,7 +13,7 @@ This project showcases advanced workflow and complex use of **Bevy-Lunex** libra
 ## === Licensing ===
 The **CODE** is released under both [APACHE](./LICENSE-APACHE) and [MIT](./LICENSE-MIT) licenses.
 
-**THE ASSETS ARE NOT INCLUDED IN THE LICENSES!**
+**THE ASSETS ARE NOT INCLUDED!**
 
 ## == Credits ===
 Assets used:
