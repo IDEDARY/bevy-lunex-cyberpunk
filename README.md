@@ -13,10 +13,10 @@ This project showcases advanced workflow and complex use of **Bevy-Lunex** libra
 ## === Licensing ===
 The **CODE** is released under both [APACHE](./LICENSE-APACHE) and [MIT](./LICENSE-MIT) licenses.
 
-**THE ASSETS ARE NOT INCLUDED UNDER BOTH LICENSES!**
+**THE ASSETS ARE NOT INCLUDED IN THE LICENSES!**
 
 ## == Credits ===
-Credits for assets used:
+Assets used:
  * Logo svg : [Nicola Papale](https://github.com/nicopap)
  * Images   : Recreated by myself in Krita + CSP and Aseprite + picture from game as background
  * Fonts    : [Rajdhani](https://fonts.google.com/specimen/Rajdhani) - provided by *Google Fonts*
