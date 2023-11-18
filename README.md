@@ -7,13 +7,17 @@ This project showcases advanced workflow and complex use of **Bevy-Lunex** libra
 *Note: Bevy-Lunex is WIP, so this example is subject of change.*
 
 ## === Showcase ===
-![image](https://github.com/IDEDARY/bevy-lunex-cyberpunk/assets/49441831/6ae16864-c566-4180-8ec3-03953dbbc6ec)
+
+![image](https://github.com/bytestring-net/bevy-lunex/assets/49441831/b12bdfd6-2942-40ce-995a-729bcba57e77)
 
 ## === Licensing ===
 The **CODE** is released under both [APACHE](./LICENSE-APACHE) and [MIT](./LICENSE-MIT) licenses.
 
-**THE ASSETS ARE NOT INCLUDED!** Even though the assets are either kit-bashed/screenshoted or straight up recreated by me, I do ***NOT INCLUDE*** them under the license for obvious reasons. I don't claim any responsibility for them.
+**THE ASSETS ARE NOT INCLUDED UNDER BOTH LICENSES!**
 
-Their whole purpose is to be used as an example for this showcase. If you use them in your own projects outside of testing this example, you claim the responsibility for your own actions and you understand that they are intelectual property of [CD PROJEKT RED](https://www.cdprojekt.com/en/).
-
-Reach out to me: idedary@gmail.com
+## == Credits ===
+Credits for assets used:
+ * Logo svg : [Nicola Papale](https://github.com/nicopap)
+ * Images   : Recreated by myself in Krita + CSP and Aseprite + picture from game as background
+ * Fonts    : [Rajdhani](https://fonts.google.com/specimen/Rajdhani) - provided by *Google Fonts*
+ * Music    : [AffectEffect - V Theme cover on Youtube](https://youtu.be/t4XllslwbYc?si=yOS-MXzFvecrIgNc)

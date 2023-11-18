@@ -45,7 +45,6 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, window: Query<E
     commands.spawn(
         AudioBundle {
             source: asset_server.load("sounds/main_menu.ogg"),
-            //source: asset_server.load("sounds/AffectEffect_VThemeCover.ogg"),
             settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new_relative(0.5)),
         }
     );
