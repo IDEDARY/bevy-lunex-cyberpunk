@@ -20,7 +20,7 @@ impl UiComponent for Menu {
             .with_scaling(SolidScale::Fill)
             .with_size(2560.0, 1440.0)
             .build_as(tree, menu.end(".background image"))?;
-        commands.spawn(ImageElementBundle::new(image, ImageParams::default().with_depth(-0.5), asset_server.load("images/main_menu/53_.png"), Vec2::new(1920.0, 1080.0)));
+        commands.spawn(ImageElementBundle::new(image, ImageParams::default().with_depth(-0.5), asset_server.load("images/main_menu/background.png"), Vec2::new(1920.0, 1080.0)));
         
         let board = SolidLayout::new()
             .with_size(807.0, 1432.0)
@@ -36,7 +36,7 @@ impl UiComponent for Menu {
         let logo = SolidLayout::new()
             .with_size(1240.0, 381.0)
             .build_as(tree, boundary.end("Logo"))?;
-        commands.spawn(ImageElementBundle::new(logo, ImageParams::default(), asset_server.load("images/main_menu/bevypunk2.png"), Vec2::new(1240.0, 381.0)));
+        commands.spawn(ImageElementBundle::new(logo, ImageParams::default(), asset_server.load("images/main_menu/bevypunk.png"), Vec2::new(1240.0, 381.0)));
 
 
         let list = RelativeLayout::new()
