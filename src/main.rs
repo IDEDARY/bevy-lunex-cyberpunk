@@ -1,20 +1,20 @@
-use std::borrow::Borrow;
-use bevy::window::PrimaryWindow;
-use bevy_lunex::prelude::*;
-use bevy::prelude::*;
-use bevy::diagnostic::FrameTimeDiagnosticsPlugin;
+pub mod prelude {
+    pub use std::borrow::Borrow;
+    pub use bevy_lunex::prelude::*;
+    pub use bevy::prelude::*;
+    pub use bevy::window::PrimaryWindow;
 
-mod vfx;
-use vfx::*;
-
-mod interface;
-use interface::*;
-
+    pub use crate::UiComponent;
+    pub use crate::MyData;
+    pub use crate::interface::*;
+}
+use prelude::*;
+import_use!(vfx, interface);
 
 fn main() {
     App::new()
         // Game boilerplate
-        .add_plugins(DefaultPlugins.set (
+        .add_plugins((DefaultPlugins.set (
             WindowPlugin {
                 primary_window: Some(Window {
                     title: "Bevypunk".into(),
@@ -23,8 +23,7 @@ fn main() {
                 }),
                 ..default()
             }
-        ))
-        .add_plugins(FrameTimeDiagnosticsPlugin)
+        ), bevy::diagnostic::FrameTimeDiagnosticsPlugin))
         
         // Lunex boilerplate
         .add_plugins(LunexUiPlugin2D::<MyData>::new())
@@ -75,11 +74,16 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, window: Query<E
     commands.entity(window).insert(tree.bundle());
 }
 
-
+/// # My Data
+/// This struct is used to define which data my widgets will need to access and share across the UiTree
 #[derive(Debug, Clone, Component, Default)]
 pub struct MyData {
     pub animate: bool,
 }
+
+
+/// # My Data
+/// This struct is used to define which data my widgets will need to access and share across the UiTree
 pub trait UiComponent: {
     fn construct<T:Component + Default>(self, commands: &mut Commands, asset_server: &Res<AssetServer>, tree: &mut UiTree<T>, path: impl Borrow<str>, bundle: impl Bundle + Clone) -> Result<Widget, LunexError>;
 }

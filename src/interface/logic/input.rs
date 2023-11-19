@@ -1,5 +1,4 @@
-use bevy_lunex::prelude::*;
-use bevy::prelude::*;
+use crate::prelude::*;
 
 /// # Input Mouse Hover
 /// Component that checks if cursor hovers over widget
@@ -60,7 +59,7 @@ pub (super) fn input_mouse_click_system(
     mouse_button_input: Res<Input<MouseButton>>,
 ) {
     for (hover, mut source) in &mut query {
-        if !hover.hover {return;}
+        if !hover.hover {continue;}
         source.left = mouse_button_input.just_pressed(MouseButton::Left);
         source.right = mouse_button_input.just_pressed(MouseButton::Right);
     }

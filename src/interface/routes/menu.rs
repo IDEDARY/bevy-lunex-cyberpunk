@@ -1,18 +1,11 @@
-use std::borrow::Borrow;
-use bevy_lunex::prelude::*;
-use bevy::prelude::*;
+use crate::prelude::*;
 
-use crate::MyData;
-use crate::UiComponent;
-use crate::components as ui;
-use crate::logic as lg;
-
-// COMPONENT
-
+/// # Main Menu
+/// The callable UiComponent struct containing the whole main menu.
 #[derive(Default)]
 pub struct Menu;
 impl UiComponent for Menu {
-    fn construct<T: Component + Default>(self, commands: &mut Commands, asset_server: &Res<AssetServer>, tree: &mut UiTree<T>, path: impl Borrow<str>, bundle: impl Bundle + Clone) -> Result<Widget, LunexError> {
+    fn construct<T:Component + Default>(self, commands: &mut Commands, asset_server: &Res<AssetServer>, tree: &mut UiTree<T>, _path: impl Borrow<str>, _bundle: impl Bundle + Clone) -> Result<Widget, LunexError> {
 
         let menu = RelativeLayout::new().build_as(tree, "Menu")?;
 
@@ -71,7 +64,7 @@ impl UiComponent for Menu {
             // These components will get passed to the button entities
             let button_components = (
                 lg::AnimateWindowPosition::new(Vec2::new(0.0, 0.0), Vec2::new(5.0, 0.0)),
-                SyncAnimationInput
+                PullAnimationInput
             );
 
             // This will create a new widget with preset logic components + custom button_components
@@ -81,7 +74,7 @@ impl UiComponent for Menu {
             commands.spawn((
                 x,
                 array[i],
-                lg::InputMouseHover::new()
+                lg::InputMouseClick::new()
             ));
 
             i += 1;
@@ -93,61 +86,27 @@ impl UiComponent for Menu {
 }
 
 
+/// All of custom Main Menu logic
+mod script {
+    use bevy::prelude::*;
+    use bevy_lunex::prelude::*;
+    use crate::MyData;
+    use crate::logic as lg;
 
-
-// BOILERPLATE
-use std::marker::PhantomData;
-#[derive(Debug, Clone, Default)]
-pub (super) struct MenuPlugin<T:Component + Default>(pub PhantomData<T>);
-impl <T:Component + Default>MenuPlugin<T> {
-    pub fn new() -> Self {
-        MenuPlugin::<T>(PhantomData)
+    #[derive(Component, Clone, Copy)]
+    pub(super) enum MainMenuButton {
+        Continue,
+        NewGame,
+        LoadGame,
+        Settings,
+        AdditionalContent,
+        Credits,
+        QuitGame,
     }
-}
-impl <T:Component + Default> Plugin for MenuPlugin<T> {
-    fn build(&self, app: &mut App) {
-        app.add_systems(Update, main_menu_button_actions::<T>)
-           .add_systems(Update, main_menu_button_position)
-           .add_systems(Update, synchronize_animation_input);
-    }
-}
-
-
-// SCRIPT
-#[derive(Component, Clone, Copy)]
-enum MainMenuButton {
-    Continue,
-    NewGame,
-    LoadGame,
-    Settings,
-    AdditionalContent,
-    Credits,
-    QuitGame,
-}
-/// What to do when the button is pressed
-fn main_menu_button_actions<T:Component + Default>(
-    mut trees: Query<&mut UiTree<T>>,
-    cursors: Query<&Cursor>,
-    mut query: Query<(&Widget, &MainMenuButton)>,
-
-    mouse_button_input: Res<Input<MouseButton>>,
-    mut exit: EventWriter<bevy::app::AppExit>
-) {
-    for tree in &mut trees {
-        for (widget, category) in &mut query {
-
-            if !widget.fetch(&tree).unwrap().is_visible() {return;}
-            if !mouse_button_input.just_pressed(MouseButton::Left) {return;}
-
-            let mut trigger = false;
-            for cursor in &cursors {
-                if widget.contains_position(&tree, &cursor.position_world().invert_y()).unwrap() {
-                    trigger = true;
-                    break;
-                }
-            }
-
-            if trigger {
+    /// What to do when the button is pressed
+    pub(super) fn main_menu_button_actions(mut query: Query<(&MainMenuButton, &lg::InputMouseClick), With<Widget>>, mut exit: EventWriter<bevy::app::AppExit>) {
+        for (category, clicked) in &mut query {
+            if clicked.left {
                 match category {
                     MainMenuButton::QuitGame => {
                         exit.send(bevy::app::AppExit);
@@ -157,26 +116,32 @@ fn main_menu_button_actions<T:Component + Default>(
             }
         }
     }
-}
 
-/// Trigger the hover effects of the owned button
-fn main_menu_button_position(mut trees: Query<&mut UiTree<MyData>>, query: Query<(&Widget, &lg::InputMouseHover), With<MainMenuButton>>) {
-    for mut tree in &mut trees {
-        for (source, input) in &query {
-            let data: &mut MyData = source.fetch_mut_ext(&mut tree, ".Button").unwrap().get_data_mut();
-            data.animate = input.hover
+    /// Send trigger bool to the MyData of ./.Button widget
+    pub(super) fn main_menu_button_trigger_animation(mut trees: Query<&mut UiTree<MyData>>, query: Query<(&Widget, &lg::InputMouseHover), With<MainMenuButton>>) {
+        for mut tree in &mut trees {
+            for (source, input) in &query {
+                let data: &mut MyData = source.fetch_mut_ext(&mut tree, ".Button").unwrap().get_data_mut();
+                data.animate = input.hover
+            }
+        }
+    }
+
+    /// Pull trigger bool from MyData (used by ./Button widget)
+    #[derive(Component, Clone)]
+    pub(super) struct PullAnimationInput;
+    pub(super) fn pull_animation_from_main_menu_button(mut trees: Query<&mut UiTree<MyData>>, mut query: Query<(&Widget, &mut lg::Animate), With<PullAnimationInput>>) {
+        for mut tree in &mut trees {
+            for (source, mut destination) in &mut query {
+                let data: &MyData = source.fetch_mut(&mut tree).unwrap().get_data();
+                destination.trigger = data.animate;
+            }
         }
     }
 }
-
-
-#[derive(Component, Clone)]
-struct SyncAnimationInput;
-fn synchronize_animation_input(mut trees: Query<&mut UiTree<MyData>>, mut query: Query<(&Widget, &mut lg::Animate), With<SyncAnimationInput>>) {
-    for mut tree in &mut trees {
-        for (source, mut destination) in &mut query {
-            let data: &MyData = source.fetch_mut(&mut tree).unwrap().get_data();
-            destination.trigger = data.animate;
-        }
-    }
-}
+use script::*;
+script_plugin!(MenuPlugin,
+    add_systems(Update, main_menu_button_actions),
+    add_systems(Update, main_menu_button_trigger_animation),
+    add_systems(Update, pull_animation_from_main_menu_button)
+);
