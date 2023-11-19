@@ -27,7 +27,7 @@ fn main() {
         
         // Lunex boilerplate
         .add_plugins(LunexUiPlugin2D::<MyData>::new())
-        .add_plugins(LunexUiDebugPlugin2D::<MyData>::new())
+        //.add_plugins(LunexUiDebugPlugin2D::<MyData>::new())
 
         // Lunex logic
         .add_plugins(InterfacePlugin::<MyData>::new())
@@ -38,7 +38,7 @@ fn main() {
 
         .run();
 }
-fn setup(mut commands: Commands, asset_server: Res<AssetServer>, window: Query<Entity, (With<Window>, With<PrimaryWindow>)>) {
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>, mut textures: ResMut<Assets<TextureAtlas>>, window: Query<Entity, (With<Window>, With<PrimaryWindow>)>) {
 
     // Start playing the main menu music
     commands.spawn(
@@ -53,11 +53,11 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, window: Query<E
 
     // Spawn cursor
     commands.spawn ((
-        Cursor::new(60.0).with_hide_os_cursor(false),
-        SpriteBundle {
-            texture: asset_server.load("cursor1.png"),
+        Cursor::new().with_os_cursor(false).add_sprite_offset(Vec2::splat(14.0)).add_sprite_offset(Vec2::new(10.0, 12.0)).add_sprite_offset(Vec2::splat(40.0)).with_cursor_index(2),
+        SpriteSheetBundle {
+            texture_atlas: textures.add(TextureAtlas::from_grid(asset_server.load("cursor.png"), Vec2::splat(80.0), 3, 1, None, None)),
             transform: Transform { translation: Vec3::new(0.0, 0.0, 800.0), scale: Vec3::new(0.4, 0.4, 1.0), ..default() },
-            sprite: Sprite {
+            sprite: TextureAtlasSprite {
                 color: Color::rgba(252./255., 226./255., 8./255., 2.0).with_l(0.68),
                 anchor: bevy::sprite::Anchor::TopLeft,
                 ..default()

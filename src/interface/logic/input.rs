@@ -25,7 +25,7 @@ pub (super) fn input_mouse_hover_system<T:Component + Default>(
 
             let mut trigger = false;
             for cursor in &cursors {
-                if widget.contains_position(&tree, &cursor.position_world().invert_y()).unwrap() {
+                if widget.contains_position(&tree, &cursor.location_world().invert_y()).unwrap() {
                     trigger = true;
                     break;
                 }
