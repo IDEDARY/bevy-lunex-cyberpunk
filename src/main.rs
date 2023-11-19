@@ -27,7 +27,7 @@ fn main() {
         
         // Lunex boilerplate
         .add_plugins(LunexUiPlugin2D::<MyData>::new())
-        //.add_plugins(LunexUiDebugPlugin2D::<MyData>::new())
+        .add_plugins(LunexUiDebugPlugin2D::<MyData>::new())
 
         // Lunex logic
         .add_plugins(InterfacePlugin::<MyData>::new())
@@ -53,12 +53,12 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, window: Query<E
 
     // Spawn cursor
     commands.spawn ((
-        Cursor::new(10.0).with_hide_os_cursor(true),
+        Cursor::new(60.0).with_hide_os_cursor(false),
         SpriteBundle {
-            texture: asset_server.load("cursor_mouse.png"),
+            texture: asset_server.load("cursor1.png"),
             transform: Transform { translation: Vec3::new(0.0, 0.0, 800.0), scale: Vec3::new(0.4, 0.4, 1.0), ..default() },
             sprite: Sprite {
-                color: Color::rgba(1., 1., 1., 2.0),
+                color: Color::rgba(252./255., 226./255., 8./255., 2.0).with_l(0.68),
                 anchor: bevy::sprite::Anchor::TopLeft,
                 ..default()
             },
