@@ -118,11 +118,13 @@ mod script {
     }
 
     /// Send trigger bool to the MyData of ./.Button widget
-    pub(super) fn main_menu_button_trigger_animation(mut trees: Query<&mut UiTree<MyData>>, query: Query<(&Widget, &lg::InputMouseHover), With<MainMenuButton>>) {
+    pub(super) fn main_menu_button_trigger_animation(mut trees: Query<&mut UiTree<MyData>>, mut cursors: Query<&mut Cursor>, query: Query<(&Widget, &lg::InputMouseHover), With<MainMenuButton>>) {
+        let mut cursor = cursors.single_mut();
         for mut tree in &mut trees {
             for (source, input) in &query {
                 let data: &mut MyData = source.fetch_mut_ext(&mut tree, ".Button").unwrap().get_data_mut();
-                data.animate = input.hover
+                data.animate = input.hover;
+                if input.hover { cursor.request_cursor_index(1); }
             }
         }
     }

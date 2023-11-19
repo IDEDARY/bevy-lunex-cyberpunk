@@ -53,7 +53,7 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, mut textures: R
 
     // Spawn cursor
     commands.spawn ((
-        Cursor::new().with_os_cursor(false).add_sprite_offset(Vec2::splat(14.0)).add_sprite_offset(Vec2::new(10.0, 12.0)).add_sprite_offset(Vec2::splat(40.0)).with_cursor_index(2),
+        Cursor::new().with_os_cursor(false).add_sprite_offset(Vec2::splat(14.0)).add_sprite_offset(Vec2::new(10.0, 12.0)).add_sprite_offset(Vec2::splat(40.0)),
         SpriteSheetBundle {
             texture_atlas: textures.add(TextureAtlas::from_grid(asset_server.load("cursor.png"), Vec2::splat(80.0), 3, 1, None, None)),
             transform: Transform { translation: Vec3::new(0.0, 0.0, 800.0), scale: Vec3::new(0.4, 0.4, 1.0), ..default() },
