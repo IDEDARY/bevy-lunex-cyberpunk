@@ -1,3 +1,4 @@
+use std::f32::consts::PI;
 use crate::prelude::*;
 
 /// # Main Menu
@@ -9,10 +10,23 @@ impl UiComponent for Menu {
 
         let menu = RelativeLayout::new().build_as(tree, "Menu")?;
 
+        let wiggle_amplitude = Vec2::new(2.5, 4.0);
+        let background = WindowLayout::new().with_size_rel(100.0 + wiggle_amplitude.x * 2.0, 100.0 + wiggle_amplitude.y * 2.0).build_in(tree, &menu)?;
+        commands.spawn((
+            background.clone(),
+            WiggleBackgroundWidget {
+                speed: Vec2::new(0.007, 0.003),
+                amplitude: wiggle_amplitude,
+                degree: Vec2::new(PI/6., PI/4.),
+            }
+        ));
+
         let image = SolidLayout::new()
             .with_scaling(SolidScale::Fill)
-            .with_size(2560.0, 1440.0)
-            .build_as(tree, menu.end(".background image"))?;
+            .with_size(1920.0, 1080.0)
+            .build_in(tree, &background)?;
+
+        image.fetch_mut(tree)?.get_container_mut().set_render_depth(Modifier::Set(90.0));
         commands.spawn(ImageElementBundle::new(image, ImageParams::default().with_depth(-0.5), asset_server.load("images/main_menu/background.png"), Vec2::new(1920.0, 1080.0)));
         
         let board = SolidLayout::new()
@@ -88,10 +102,8 @@ impl UiComponent for Menu {
 
 /// All of custom Main Menu logic
 mod script {
-    use bevy::prelude::*;
-    use bevy_lunex::prelude::*;
-    use crate::MyData;
-    use crate::logic as lg;
+    use std::f32::consts::TAU;
+    use crate::prelude::*;
 
     #[derive(Component, Clone, Copy)]
     pub(super) enum MainMenuButton {
@@ -140,10 +152,35 @@ mod script {
             }
         }
     }
+
+    /// Pull trigger bool from MyData (used by ./Button widget)
+    #[derive(Component, Clone, Default)]
+    pub(super) struct WiggleBackgroundWidget {
+        pub speed: Vec2,
+        pub amplitude: Vec2,
+        pub degree: Vec2,
+    }
+    pub(super) fn wiggle_background_widget_animation<T:Component + Default>(mut trees: Query<&mut UiTree<T>>, mut query: Query<(&Widget, &mut WiggleBackgroundWidget)>) {
+        for mut tree in &mut trees {
+            for (widget, mut animation) in &mut query {
+                animation.degree.x += animation.speed.x;
+                animation.degree.y += animation.speed.y;
+
+                if animation.degree.x >= TAU { animation.degree.x -= TAU; }
+                if animation.degree.y >= TAU { animation.degree.y -= TAU; }
+
+                let container = widget.fetch_mut(&mut tree).unwrap().get_container_mut();
+                let window = container.get_layout_mut().expect_window_mut();
+                window.relative.x = animation.degree.x.sin()*animation.amplitude.x - animation.amplitude.x;
+                window.relative.y = animation.degree.y.sin()*animation.amplitude.y - animation.amplitude.y;
+            }
+        }
+    }
 }
 use script::*;
 script_plugin!(MenuPlugin,
     add_systems(Update, main_menu_button_actions),
-    add_systems(Update, main_menu_button_trigger_animation),
-    add_systems(Update, pull_animation_from_main_menu_button)
+    add_systems(Update, main_menu_button_trigger_animation.before(bevy_lunex::cursor_update)),
+    add_systems(Update, pull_animation_from_main_menu_button),
+    add_systems(Update, wiggle_background_widget_animation::<T>)
 );
