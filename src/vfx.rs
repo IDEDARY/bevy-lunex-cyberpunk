@@ -1,3 +1,4 @@
+use std::f32::consts::TAU;
 use bevy::prelude::*;
 use bevy::core_pipeline::bloom::{BloomSettings, BloomPrefilterSettings, BloomCompositeMode};
 use bevy::core_pipeline::tonemapping::Tonemapping;
@@ -29,6 +30,15 @@ pub fn camera() -> impl Bundle {
                 threshold_softness: 0.1,
             },
             composite_mode: BloomCompositeMode::Additive,
+        },
+        VfxWiggleCamera {
+            sinusoid: vec![
+                Sine {
+                    speed: 0.001,
+                    amplitude: 0.003,
+                    degree: 0.0,
+                }
+            ]
         }
     )
 }
@@ -36,7 +46,7 @@ pub fn camera() -> impl Bundle {
 
 /// # VFX Bloom Animate
 /// System that generates random values in specific pattern to get nice bloom threshold flickering
-fn vfx_bloom_animate (mut query: Query<&mut BloomSettings>) {
+fn vfx_bloom_animate(mut query: Query<&mut BloomSettings>) {
     for mut bloom in &mut query {
         let mut rng = rand::thread_rng();
         if rng.gen_range(0..100) < 20 {
@@ -46,12 +56,41 @@ fn vfx_bloom_animate (mut query: Query<&mut BloomSettings>) {
     }
 }
 
+#[derive(Clone, Default)]
+pub struct Sine {
+    pub speed: f32,
+    pub amplitude: f32,
+    pub degree: f32,
+}
+impl Sine {
+    fn tick(&mut self) {
+        self.degree += self.speed; 
+        if self.degree >= TAU { self.degree -= TAU; }
+        if self.degree < 0.0 { self.degree += TAU; }
+    }
+    fn get_pure(&self) -> f32 {
+        self.degree.sin()*self.amplitude
+    }
+}
+
+#[derive(Component, Clone, Default)]
+pub(super) struct VfxWiggleCamera {
+    pub sinusoid: Vec<Sine>
+}
+fn vfx_camera_wiggle(mut query: Query<(&mut VfxWiggleCamera, &mut Transform)>) {
+    for (mut animation, mut transform) in &mut query {
+        for sine in &mut animation.sinusoid {
+            sine.tick()
+        }
+        transform.rotation.z = animation.sinusoid[0].get_pure();
+    }
+}
 
 /// # VFX Plugin
 /// Plugin adding visual effects systems to our app
 pub struct VFXPlugin;
 impl Plugin for VFXPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, vfx_bloom_animate);
+        app.add_systems(Update, (vfx_bloom_animate, vfx_camera_wiggle));
     }
 }

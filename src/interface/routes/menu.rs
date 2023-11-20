@@ -8,14 +8,14 @@ pub struct Menu;
 impl UiComponent for Menu {
     fn construct<T:Component + Default>(self, commands: &mut Commands, asset_server: &Res<AssetServer>, tree: &mut UiTree<T>, _path: impl Borrow<str>, _bundle: impl Bundle + Clone) -> Result<Widget, LunexError> {
 
-        let menu = RelativeLayout::new().build_as(tree, "Menu")?;
+        let menu = RelativeLayout::new().with_rel_1(Vec2::splat(-2.0)).with_rel_2(Vec2::splat(102.0)).build_as(tree, "Menu")?;
 
-        let wiggle_amplitude = Vec2::new(2.5, 4.0);
+        let wiggle_amplitude = Vec2::new(2.4, 4.0);
         let background = WindowLayout::new().with_size_rel(100.0 + wiggle_amplitude.x * 2.0, 100.0 + wiggle_amplitude.y * 2.0).build_in(tree, &menu)?;
         commands.spawn((
             background.clone(),
             WiggleBackgroundWidget {
-                speed: Vec2::new(0.007, 0.003),
+                speed: Vec2::new(0.005, 0.003),
                 amplitude: wiggle_amplitude,
                 degree: Vec2::new(PI/6., PI/4.),
             }
