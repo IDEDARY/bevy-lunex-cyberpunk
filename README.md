@@ -8,7 +8,8 @@ This project showcases advanced workflow and complex use of **Bevy-Lunex** libra
 
 ## === Showcase ===
 
-![image](https://github.com/bytestring-net/bevy-lunex/assets/49441831/b12bdfd6-2942-40ce-995a-729bcba57e77)
+![image](https://github.com/IDEDARY/Bevypunk/assets/49441831/21ee1d0e-68ff-4268-8ea1-59399a10b63b)
+
 
 ## === Licensing ===
 The **CODE** is released under both [APACHE](./LICENSE-APACHE) and [MIT](./LICENSE-MIT) licenses.
