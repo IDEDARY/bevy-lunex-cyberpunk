@@ -48,7 +48,7 @@ impl UiComponent for Menu {
 
         let list = RelativeLayout::new()
             .with_rel_1(Vec2::new(17.0, 33.0))
-            .with_rel_2(Vec2::new(79.0, 79.0))
+            .with_rel_2(Vec2::new(79.0, 78.0))
             .build_as(tree, board.end("list"))?;
 
 

@@ -18,7 +18,7 @@ fn main() {
             WindowPlugin {
                 primary_window: Some(Window {
                     title: "Bevypunk".into(),
-                    mode: bevy::window::WindowMode::Windowed,
+                    mode: bevy::window::WindowMode::BorderlessFullscreen,
                     ..default()
                 }),
                 ..default()
