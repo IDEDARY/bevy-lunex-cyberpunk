@@ -19,8 +19,8 @@ ahash = "0.8.3"
 rand = "0.8.5"
 mathio = "0.2.1"
 
-#bevy_lunex = "0.0.8"
-#bevy = { version = "0.12.0" }
+bevy_lunex = "0.0.9"
+bevy = { version = "0.12.0" }
 
-bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy-lunex" }
-bevy = { version = "0.12.0", features = ["dynamic_linking"] }
+#bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy-lunex" }
+#bevy = { version = "0.12.0", features = ["dynamic_linking"] }
