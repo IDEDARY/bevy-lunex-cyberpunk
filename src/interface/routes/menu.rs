@@ -31,7 +31,7 @@ impl UiComponent for Menu {
         
         let board = SolidLayout::new()
             .with_size(807.0, 1432.0)
-            .with_horizontal_anchor(-0.8)
+            .with_horizontal_anchor(-0.75)
             .build_as(tree, menu.end("Board"))?;
         commands.spawn(ImageElementBundle::new(&board, ImageParams::default(), asset_server.load("images/main_menu/board.png"), Vec2::new(807.0, 1432.0)));
         
@@ -153,7 +153,7 @@ mod script {
         }
     }
 
-    /// Pull trigger bool from MyData (used by ./Button widget)
+    /// Wiggle the background widget
     #[derive(Component, Clone, Default)]
     pub(super) struct WiggleBackgroundWidget {
         pub speed: Vec2,

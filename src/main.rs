@@ -82,8 +82,8 @@ pub struct MyData {
 }
 
 
-/// # My Data
-/// This struct is used to define which data my widgets will need to access and share across the UiTree
+/// # Ui Component
+/// All UI components derive this trait so I can build them
 pub trait UiComponent: {
     fn construct<T:Component + Default>(self, commands: &mut Commands, asset_server: &Res<AssetServer>, tree: &mut UiTree<T>, path: impl Borrow<str>, bundle: impl Bundle + Clone) -> Result<Widget, LunexError>;
 }
