@@ -9,6 +9,8 @@ script_plugin!(LogicPlugin,
     add_systems(Update, animate_window_position_system::<T>.after(animate_system)),
     add_systems(Update, animate_color_text_system.after(animate_system)),
     add_systems(Update, animate_color_image_system.after(animate_system)),
+    add_systems(Update, animate_send_input_to_tree.before(bevy_lunex::cursor_update)),
+    add_systems(Update, animate_pull_input_from_tree),
     add_systems(Update, input_mouse_hover_system::<T>),
     add_systems(Update, input_mouse_click_system)
 );

@@ -78,7 +78,7 @@ impl Menu {
             // These components will get passed to the button entities
             let button_components = (
                 lg::AnimateWindowPosition::new(Vec2::new(0.0, 0.0), Vec2::new(5.0, 0.0)),
-                PullAnimationInput
+                lg::AnimatePullInputFromTree
             );
 
             // This will create a new widget with preset logic components + custom button_components
@@ -88,7 +88,8 @@ impl Menu {
             commands.spawn((
                 x,
                 array[i],
-                lg::InputMouseClick::new()
+                lg::InputMouseClick::new(),
+                lg::AnimateSendInputToTree(".Button".into()),
             ));
 
             i += 1;
@@ -137,36 +138,6 @@ mod script {
         }
     }
 
-    /// Send trigger bool to the MyData of ./.Button widget
-    pub(super) fn main_menu_button_trigger_animation(mut trees: Query<&mut UiTree<MyData>>, mut cursors: Query<&mut Cursor>, query: Query<(&Widget, &lg::InputMouseHover), With<MainMenuButton>>) {
-        let mut cursor = cursors.single_mut();
-        for mut tree in &mut trees {
-            for (source, input) in &query {
-                let data: &mut MyData = match source.fetch_mut_ext(&mut tree, ".Button") {
-                    Ok(d) => d,
-                    Err(_) => continue,
-                }.get_data_mut();
-                data.animate = input.hover;
-                if input.hover { cursor.request_cursor_index(1); }
-            }
-        }
-    }
-
-    /// Pull trigger bool from MyData (used by ./Button widget)
-    #[derive(Component, Clone)]
-    pub(super) struct PullAnimationInput;
-    pub(super) fn pull_animation_from_main_menu_button(mut trees: Query<&mut UiTree<MyData>>, mut query: Query<(&Widget, &mut lg::Animate), With<PullAnimationInput>>) {
-        for mut tree in &mut trees {
-            for (source, mut destination) in &mut query {
-                let data: &MyData = match source.fetch_mut(&mut tree) {
-                    Ok(d) => d,
-                    Err(_) => continue,
-                }.get_data();
-                destination.trigger = data.animate;
-            }
-        }
-    }
-
     /// Wiggle the background widget
     #[derive(Component, Clone, Default)]
     pub(super) struct WiggleBackgroundWidget {
@@ -197,7 +168,5 @@ mod script {
 use script::*;
 script_plugin!(MenuPlugin,
     add_systems(Update, main_menu_button_actions),
-    add_systems(Update, main_menu_button_trigger_animation.before(bevy_lunex::cursor_update)),
-    add_systems(Update, pull_animation_from_main_menu_button),
     add_systems(Update, wiggle_background_widget_animation::<T>)
 );

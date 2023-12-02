@@ -90,3 +90,36 @@ pub (super) fn animate_color_image_system(mut query: Query<(&mut Sprite, &Animat
         sprite.color = color;
     }
 }
+
+
+/// Send trigger bool to the MyData of specified widget
+#[derive(Component, Clone)]
+pub struct AnimateSendInputToTree(pub String);
+pub(super) fn animate_send_input_to_tree(mut trees: Query<&mut UiTree<MyData>>, mut cursors: Query<&mut Cursor>, query: Query<(&Widget, &lg::InputMouseHover, &AnimateSendInputToTree)>) {
+    let mut cursor = cursors.single_mut();
+    for mut tree in &mut trees {
+        for (source, input, location) in &query {
+            let data: &mut MyData = match source.fetch_mut_ext(&mut tree, &*location.0) {
+                Ok(d) => d,
+                Err(_) => continue,
+            }.get_data_mut();
+            data.animate = input.hover;
+            if input.hover { cursor.request_cursor_index(1); }
+        }
+    }
+}
+
+/// Pull trigger bool from widget's MyData
+#[derive(Component, Clone)]
+pub struct AnimatePullInputFromTree;
+pub(super) fn animate_pull_input_from_tree(mut trees: Query<&mut UiTree<MyData>>, mut query: Query<(&Widget, &mut lg::Animate), With<AnimatePullInputFromTree>>) {
+    for mut tree in &mut trees {
+        for (source, mut destination) in &mut query {
+            let data: &MyData = match source.fetch_mut(&mut tree) {
+                Ok(d) => d,
+                Err(_) => continue,
+            }.get_data();
+            destination.trigger = data.animate;
+        }
+    }
+}

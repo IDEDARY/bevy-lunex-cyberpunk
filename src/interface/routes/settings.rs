@@ -17,7 +17,9 @@ impl Settings {
         image.fetch_mut(tree)?.get_container_mut().set_render_depth(Modifier::Set(90.0));
         commands.spawn(ImageElementBundle::new(image, ImageParams::default().with_depth(-0.5), assets.settings_background.clone(), Vec2::new(1920.0, 1080.0)));
         
-        let return_button = WindowLayout::empty().rel((5., 5.)).build_as(tree, settings.end("Return"));
+        let return_button = WindowLayout::empty().rel((5., 5.)).size_rel((10.0, 5.0)).build_as(tree, settings.end("Return"))?;
+
+        ui::Button::new("Return").construct(commands, assets, tree, return_button.end("g"), ())?;
 
         Ok(())
     }

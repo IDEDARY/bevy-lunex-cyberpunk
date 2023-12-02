@@ -27,7 +27,7 @@ impl Button {
         let widget = WindowLayout::new().build_as(tree, path)?;
 
         commands.spawn((
-            TextElementBundle::new(&widget, TextParams::center().with_scale(35.0).with_style(&text_style).with_height(Some(90.0)), &self.display),
+            TextElementBundle::new(&widget, TextParams::center().with_scale(55.0).with_style(&text_style).with_height(Some(90.0)), &self.display),
             lg::Animate::new(),
             lg::AnimateColor::new(self.text_color, self.text_hover_color),
             bundle.clone()
