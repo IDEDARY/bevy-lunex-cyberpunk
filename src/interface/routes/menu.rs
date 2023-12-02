@@ -2,7 +2,7 @@ use std::f32::consts::PI;
 use crate::prelude::*;
 
 /// # Main Menu
-/// The callable UiComponent struct containing the whole main menu.
+/// The callable route struct containing the whole main menu.
 #[derive(Default)]
 pub struct Menu;
 impl Menu {
@@ -45,13 +45,15 @@ impl Menu {
             .build_as(tree, boundary.end("Logo"))?;
         commands.spawn(ImageElementBundle::new(logo, ImageParams::default(), assets.main_logo.clone(), Vec2::new(1240.0, 381.0)));
 
-
+        
+        // Define grid boundary
         let list = RelativeLayout::new()
             .with_rel_1(Vec2::new(17.0, 33.0))
             .with_rel_2(Vec2::new(79.0, 78.0))
             .build_as(tree, board.end("list"))?;
 
 
+        // Define the grid layout
         let mut segment = GridSegment::new();
         segment.add_cell(GridCell::named(Vec2::new(10.0, 10.0), "CONTINUE"));
         segment.add_cell(GridCell::named(Vec2::new(10.0, 10.0), "NEW GAME"));
@@ -60,9 +62,13 @@ impl Menu {
         segment.add_cell(GridCell::named(Vec2::new(10.0, 10.0), "ADDITIONAL CONTENT"));
         segment.add_cell(GridCell::named(Vec2::new(10.0, 10.0), "CREDITS"));
         segment.add_cell(GridCell::named(Vec2::new(10.0, 10.0), "QUIT GAME"));
-        let widget_list = segment.add_gaps(1.0).build_in(tree, list, GridOrientation::Vertical)?;
+        
 
-        let array = [
+        // Build the grid
+        let button_widget_list = segment.add_gaps(1.0).build_in(tree, list, GridOrientation::Vertical)?;
+
+        // Create an array of components to append to each widget in button_widget_list 
+        let component_array = [
             MainMenuButton::Continue,
             MainMenuButton::NewGame,
             MainMenuButton::LoadGame,
@@ -72,28 +78,27 @@ impl Menu {
             MainMenuButton::QuitGame
         ];
 
-        let mut i = 0;
-        for x in widget_list {
+        // Loop over the button widgets and append logic to them
+        for i in 0..button_widget_list.len() {
 
-            // These components will get passed to the button entities
+            // These components will get passed to the new button entities
             let button_components = (
                 lg::AnimateWindowPosition::new(Vec2::new(0.0, 0.0), Vec2::new(5.0, 0.0)),
                 lg::AnimatePullInputFromTree
             );
 
             // This will create a new widget with preset logic components + custom button_components
-            ui::MainMenuButton::new(x.name()).construct(commands, assets, tree, x.end(".Button"), button_components)?;
+            ui::MainMenuButton::new(button_widget_list[i].name())
+                .construct(commands, assets, tree, button_widget_list[i].end(".Button"), button_components)?;
             
             // Spawn logic for the stationary widget, the one that owns ".Button"
             commands.spawn((
-                x,
-                array[i],
+                button_widget_list[i].to_owned(),
+                component_array[i],
                 lg::InputCursorHover::new().request_cursor(1),
                 lg::InputMouseClick::new(),
                 lg::AnimateSendInputToTree(".Button".into()),
             ));
-
-            i += 1;
         }
 
         Ok(())
@@ -124,7 +129,7 @@ mod script {
                     match category {
                         MainMenuButton::Settings => {
                             tree.drop_branch("Menu").unwrap();
-                            rt::Settings::construct(&mut tree, &mut commands, &assets).unwrap();
+                            rt::Settings::construct(&mut commands, &assets, &mut tree).unwrap();
                             return;
                             //tree.borrow_branch_mut("Menu").unwrap().set_visibility(false);
                             //tree.borrow_branch_mut("Settings").unwrap().set_visibility(true);
@@ -168,6 +173,6 @@ mod script {
 }
 use script::*;
 script_plugin!(MenuPlugin,
-    add_systems(Update, main_menu_button_actions),
+    add_systems(Update, main_menu_button_actions.after(lg::InputSystemSet).before(LunexUiSystemSet2D)),
     add_systems(Update, wiggle_background_widget_animation::<T>)
 );

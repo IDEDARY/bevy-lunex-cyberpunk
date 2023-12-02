@@ -1,5 +1,14 @@
 use crate::prelude::*;
 
+/// # Lunex Input System Set
+/// All systems dealing with input for:
+/// * [`InputCursorHover`]
+/// * [`InputMouseClick`]
+/// 
+/// Make sure you run your logic correspondingly to this set, if you use these components
+#[derive(SystemSet, Hash, Debug, Eq, PartialEq, Copy, Clone)]
+pub struct InputSystemSet;
+
 /// # Input Cursor Hover
 /// Component that checks if cursor hovers over widget
 #[derive(Component, Clone)]

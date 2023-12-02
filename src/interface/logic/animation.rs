@@ -1,6 +1,16 @@
 use crate::prelude::*;
 use mathio::tween;
 
+/// # Lunex Animation System Set
+/// All systems dealing with input for:
+/// * [`AnimateCursorInput`]
+/// * [`AnimateControl`]
+/// * [`AnimateWindowPosition`]
+/// * [`AnimateColor`]
+/// 
+/// Make sure you run your logic correspondingly to this set, if you use these components
+#[derive(SystemSet, Hash, Debug, Eq, PartialEq, Copy, Clone)]
+pub struct AnimateSystemSet;
 
 /// # Animate Control
 /// Holds control values that other animation components use.

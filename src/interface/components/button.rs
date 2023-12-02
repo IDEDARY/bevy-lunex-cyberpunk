@@ -25,8 +25,8 @@ impl Button {
     pub fn construct<T: Component + Default>(self, commands: &mut Commands, assets: &MenuAssetCache, tree: &mut UiTree<T>, path: impl Borrow<str>, bundle: impl Bundle) -> Result<Widget, LunexError> {
 
         let text_style = TextStyle {
-            font: assets.font.clone(),
-            font_size: 40.0,
+            font: assets.font_bold.clone(),
+            font_size: 80.0,
             color: Color::default(),
         };
 

@@ -56,6 +56,7 @@ fn presetup(mut commands: Commands, asset_server: Res<AssetServer>) {
     // LOAD ALL ASSETS INTO CACHE
     commands.insert_resource(MenuAssetCache {
         font: asset_server.load("fonts/rajdhani/Rajdhani-Medium.ttf"),
+        font_bold: asset_server.load("fonts/rajdhani/Rajdhani-Bold.ttf"),
         button: asset_server.load("images/main_menu/button.png"),
         main_background: asset_server.load("images/main_menu/background.png"),
         main_board: asset_server.load("images/main_menu/board.png"),
@@ -121,6 +122,7 @@ pub struct MyData {
 #[derive(Resource)]
 pub struct MenuAssetCache {
     pub font: Handle<Font>,
+    pub font_bold: Handle<Font>,
     pub button: Handle<Image>,
     pub main_background: Handle<Image>,
     pub main_board: Handle<Image>,
