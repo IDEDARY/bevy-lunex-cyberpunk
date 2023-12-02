@@ -88,6 +88,7 @@ impl Menu {
             commands.spawn((
                 x,
                 array[i],
+                lg::InputCursorHover::new().request_cursor(1),
                 lg::InputMouseClick::new(),
                 lg::AnimateSendInputToTree(".Button".into()),
             ));

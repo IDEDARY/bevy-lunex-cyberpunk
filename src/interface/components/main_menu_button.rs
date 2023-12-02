@@ -32,13 +32,13 @@ impl MainMenuButton {
 
         commands.spawn((
             TextElementBundle::new(&widget, TextParams::centerleft().at(5.0, 50.0).with_scale(35.0).with_style(&text_style).with_height(Some(90.0)), &self.display),
-            lg::Animate::new(),
+            lg::AnimateControl::new(),
             lg::AnimateColor::new(self.text_color, self.text_hover_color),
             bundle.clone()
         ));
         commands.spawn((
             ImageElementBundle::new(&widget, ImageParams::default().with_width(Some(100.0)).with_height(Some(100.0)), assets.button.clone(), Vec2::new(532.0, 75.0)),
-            lg::Animate::new(),
+            lg::AnimateControl::new(),
             lg::AnimateColor::new(self.object_color, self.object_hover_color),
             bundle
         ));

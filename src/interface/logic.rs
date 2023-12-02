@@ -5,6 +5,7 @@ import_use!(animation, input);
 
 // Bundle all utility logic to LogicPlugin
 script_plugin!(LogicPlugin,
+    add_systems(Update, animate_cursor_input.before(animate_system)),
     add_systems(Update, animate_system),
     add_systems(Update, animate_window_position_system::<T>.after(animate_system)),
     add_systems(Update, animate_color_text_system.after(animate_system)),

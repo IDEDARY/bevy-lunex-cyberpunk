@@ -1,22 +1,28 @@
 use crate::prelude::*;
 
-/// # Input Mouse Hover
+/// # Input Cursor Hover
 /// Component that checks if cursor hovers over widget
 #[derive(Component, Clone)]
-pub struct InputMouseHover {
+pub struct InputCursorHover {
     pub hover: bool,
+    request_cursor_to: Option<usize>,
 }
-impl InputMouseHover {
+impl InputCursorHover {
     pub fn new() -> Self {
-        InputMouseHover {
+        InputCursorHover {
             hover: false,
+            request_cursor_to: None,
         }
+    }
+    pub fn request_cursor(mut self, index: usize) -> Self {
+        self.request_cursor_to = Some(index);
+        self
     }
 }
 pub (super) fn input_mouse_hover_system<T:Component + Default>(
     mut trees: Query<&mut UiTree<T>>,
-    cursors: Query<&Cursor>,
-    mut query: Query<(&Widget, &mut InputMouseHover)>,
+    mut cursors: Query<&mut Cursor>,
+    mut query: Query<(&Widget, &mut InputCursorHover)>,
 ) {
     for tree in &mut trees {
         for (widget, mut source) in &mut query {
@@ -27,9 +33,12 @@ pub (super) fn input_mouse_hover_system<T:Component + Default>(
             }.is_visible() {return;}
 
             let mut trigger = false;
-            for cursor in &cursors {
+            for mut cursor in &mut cursors {
                 if widget.contains_position(&tree, &cursor.location_world().invert_y()).unwrap() {
                     trigger = true;
+                    if let Some(index) = source.request_cursor_to {
+                        cursor.request_cursor_index(index);
+                    }
                     break;
                 }
             }
@@ -47,18 +56,28 @@ pub struct InputMouseClick {
     pub right: bool,
 }
 impl InputMouseClick {
-    pub fn new() -> (InputMouseClick, InputMouseHover) {
+    /// # New
+    /// WARINING: This component is not enough, requires additional components to work as expected. See `new_bundle()` method.
+    pub fn new() -> InputMouseClick {
+        InputMouseClick {
+            left: false,
+            right: false
+        }
+    }
+    /// # New Bundle
+    /// Returns a bundle of components, that are required for this component to work as expected
+    pub fn new_bundle() -> (InputMouseClick, InputCursorHover) {
         (
             InputMouseClick {
                 left: false,
                 right: false
             },
-            InputMouseHover::new()
+            InputCursorHover::new()
         )
     }
 }
 pub (super) fn input_mouse_click_system(
-    mut query: Query<(&InputMouseHover, &mut InputMouseClick), With<Widget>>,
+    mut query: Query<(&InputCursorHover, &mut InputMouseClick), With<Widget>>,
     mouse_button_input: Res<Input<MouseButton>>,
 ) {
     for (hover, mut source) in &mut query {

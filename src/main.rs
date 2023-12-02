@@ -38,13 +38,13 @@ fn main() {
         
         // Lunex boilerplate
         .add_plugins(LunexUiPlugin2D::<MyData>::new())
-        .add_plugins(LunexUiDebugPlugin2D::<MyData>::new())
+        //.add_plugins(LunexUiDebugPlugin2D::<MyData>::new())
 
         // Lunex logic
         .add_plugins(InterfacePlugin::<MyData>::new())
 
         // Game logic
-        //.add_plugins(VFXPlugin)
+        .add_plugins(VFXPlugin)
         .add_systems(PreStartup, presetup)
         .add_systems(Startup, setup)
 

@@ -19,7 +19,7 @@ impl Settings {
         
         let return_button = WindowLayout::empty().rel((5., 5.)).size_rel((10.0, 5.0)).build_as(tree, settings.end("Return"))?;
 
-        ui::Button::new("Return").construct(commands, assets, tree, return_button.end("g"), ())?;
+        ui::Button::new("Return").construct(commands, assets, tree, return_button.end("g"), lg::InputMouseClick::new())?;
 
         Ok(())
     }

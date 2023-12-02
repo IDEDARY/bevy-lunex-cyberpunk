@@ -2,24 +2,24 @@ use crate::prelude::*;
 use mathio::tween;
 
 
-/// # Animate
-/// Holds control values that other components use.
+/// # Animate Control
+/// Holds control values that other animation components use.
 #[derive(Component, Clone)]
-pub struct Animate {
+pub struct AnimateControl {
     /// If true, `value` will move to 1.0, else it will move to 0.0
     pub trigger: bool,
     /// The value representing state of the animation. Range: 0.0 - 1.0
     pub value: f32,
 }
-impl Animate {
+impl AnimateControl {
     pub fn new() -> Self {
-        Animate {
+        AnimateControl {
             trigger: false,
             value: 0.0,
         }
     }
 }
-pub (super) fn animate_system(mut query: Query<&mut Animate>) {
+pub (super) fn animate_system(mut query: Query<&mut AnimateControl>) {
     for mut source in &mut query {
         if source.trigger {
             if source.value < 1.0 {source.value += 0.25} else {source.value = 1.0}
@@ -30,8 +30,10 @@ pub (super) fn animate_system(mut query: Query<&mut Animate>) {
 }
 
 /// # Animate Window Position
-/// Takes control value from [`Animate`] component and updates
+/// Takes control values from [`AnimateControl`] component and updates
 /// window position. Will panic if the container is not a window layout.
+/// ## Requires:
+/// * [`lg::AnimateControl`]
 #[derive(Component, Clone)]
 pub struct AnimateWindowPosition {
     pub pos1: Vec2,
@@ -45,7 +47,7 @@ impl AnimateWindowPosition {
         }
     }
 }
-pub (super) fn animate_window_position_system<T:Component + Default>(mut trees: Query<&mut UiTree<T>>, query: Query<(&Widget, &AnimateWindowPosition, &Animate)>) {
+pub (super) fn animate_window_position_system<T:Component + Default>(mut trees: Query<&mut UiTree<T>>, query: Query<(&Widget, &AnimateWindowPosition, &AnimateControl)>) {
     for mut tree in &mut trees {
         for (widget, source1, source2) in &query {
 
@@ -63,8 +65,10 @@ pub (super) fn animate_window_position_system<T:Component + Default>(mut trees: 
 }
 
 /// # Animate Color
-/// Takes control value from [`Animate`] component and updates
+/// Takes control values from [`AnimateControl`] component and updates
 /// color values of image and text.
+/// ## Requires:
+/// * [`lg::AnimateControl`]
 #[derive(Component, Clone)]
 pub struct AnimateColor {
     color1: Color,
@@ -78,13 +82,13 @@ impl AnimateColor {
         }
     }
 }
-pub (super) fn animate_color_text_system(mut query: Query<(&mut Text, &AnimateColor, &Animate)>) {
+pub (super) fn animate_color_text_system(mut query: Query<(&mut Text, &AnimateColor, &AnimateControl)>) {
     for (mut text, source1, source2) in &mut query {
         let color = tween_color_hsla_short(source1.color1, source1.color2, source2.value);
         text.sections[0].style.color = color;
     }
 }
-pub (super) fn animate_color_image_system(mut query: Query<(&mut Sprite, &AnimateColor, &Animate)>) {
+pub (super) fn animate_color_image_system(mut query: Query<(&mut Sprite, &AnimateColor, &AnimateControl)>) {
     for (mut sprite, source1, source2) in &mut query {
         let color = tween_color_hsla_short(source1.color1, source1.color2, source2.value);
         sprite.color = color;
@@ -92,11 +96,33 @@ pub (super) fn animate_color_image_system(mut query: Query<(&mut Sprite, &Animat
 }
 
 
+/// # Animate Mouse Input
+/// Updates values from [`AnimateControl`] component by values from [`lg::InputCursorHover`]
+/// ## Requires:
+/// * [`lg::AnimateControl`]
+/// * [`lg::InputCursorHover`]
+#[derive(Component, Clone)]
+pub struct AnimateCursorInput;
+impl AnimateCursorInput {
+    pub fn new() -> Self {
+        AnimateCursorInput
+    }
+}
+pub(super) fn animate_cursor_input(mut query: Query<(&mut lg::AnimateControl, &lg::InputCursorHover), With<AnimateCursorInput>>) {
+    for (mut control, input) in &mut query {
+        control.trigger = input.hover
+    }
+}
+
+
+// =========================
+// SCOPED TO <T> = MyData
+
+
 /// Send trigger bool to the MyData of specified widget
 #[derive(Component, Clone)]
 pub struct AnimateSendInputToTree(pub String);
-pub(super) fn animate_send_input_to_tree(mut trees: Query<&mut UiTree<MyData>>, mut cursors: Query<&mut Cursor>, query: Query<(&Widget, &lg::InputMouseHover, &AnimateSendInputToTree)>) {
-    let mut cursor = cursors.single_mut();
+pub(super) fn animate_send_input_to_tree(mut trees: Query<&mut UiTree<MyData>>, query: Query<(&Widget, &lg::InputCursorHover, &AnimateSendInputToTree)>) {
     for mut tree in &mut trees {
         for (source, input, location) in &query {
             let data: &mut MyData = match source.fetch_mut_ext(&mut tree, &*location.0) {
@@ -104,7 +130,6 @@ pub(super) fn animate_send_input_to_tree(mut trees: Query<&mut UiTree<MyData>>, 
                 Err(_) => continue,
             }.get_data_mut();
             data.animate = input.hover;
-            if input.hover { cursor.request_cursor_index(1); }
         }
     }
 }
@@ -112,7 +137,7 @@ pub(super) fn animate_send_input_to_tree(mut trees: Query<&mut UiTree<MyData>>, 
 /// Pull trigger bool from widget's MyData
 #[derive(Component, Clone)]
 pub struct AnimatePullInputFromTree;
-pub(super) fn animate_pull_input_from_tree(mut trees: Query<&mut UiTree<MyData>>, mut query: Query<(&Widget, &mut lg::Animate), With<AnimatePullInputFromTree>>) {
+pub(super) fn animate_pull_input_from_tree(mut trees: Query<&mut UiTree<MyData>>, mut query: Query<(&Widget, &mut lg::AnimateControl), With<AnimatePullInputFromTree>>) {
     for mut tree in &mut trees {
         for (source, mut destination) in &mut query {
             let data: &MyData = match source.fetch_mut(&mut tree) {
