@@ -1,6 +1,7 @@
 use bevy_lunex::prelude::*;
 
 import_use!(menu);
+import_use!(settings);
 
 // Bundle all route logic to RoutePlugin
 script_plugin!(RoutePlugin,

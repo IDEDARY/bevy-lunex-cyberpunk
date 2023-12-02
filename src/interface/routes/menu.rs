@@ -5,13 +5,13 @@ use crate::prelude::*;
 /// The callable UiComponent struct containing the whole main menu.
 #[derive(Default)]
 pub struct Menu;
-impl UiComponent for Menu {
-    fn construct<T:Component + Default>(self, commands: &mut Commands, asset_server: &Res<AssetServer>, tree: &mut UiTree<T>, _path: impl Borrow<str>, _bundle: impl Bundle + Clone) -> Result<Widget, LunexError> {
+impl Menu {
+    pub fn construct<T:Component + Default>(commands: &mut Commands, assets: &MenuAssetCache, tree: &mut UiTree<T>) -> Result<(), LunexError> {
 
-        let menu = RelativeLayout::new().with_rel_1(Vec2::splat(-2.0)).with_rel_2(Vec2::splat(102.0)).build_as(tree, "Menu")?;
+        let menu = RelativeLayout::new().with_rel_1(Vec2::splat(-1.0)).with_rel_2(Vec2::splat(101.0)).build_as(tree, "Menu")?;
 
         let wiggle_amplitude = Vec2::new(2.4, 4.0);
-        let background = WindowLayout::new().with_size_rel(100.0 + wiggle_amplitude.x * 2.0, 100.0 + wiggle_amplitude.y * 2.0).build_in(tree, &menu)?;
+        let background = WindowLayout::new().size_rel((100.0 + wiggle_amplitude.x * 2.0, 100.0 + wiggle_amplitude.y * 2.0)).build_in(tree, &menu)?;
         commands.spawn((
             background.clone(),
             WiggleBackgroundWidget {
@@ -27,13 +27,13 @@ impl UiComponent for Menu {
             .build_in(tree, &background)?;
 
         image.fetch_mut(tree)?.get_container_mut().set_render_depth(Modifier::Set(90.0));
-        commands.spawn(ImageElementBundle::new(image, ImageParams::default().with_depth(-0.5), asset_server.load("images/main_menu/background.png"), Vec2::new(1920.0, 1080.0)));
+        commands.spawn(ImageElementBundle::new(image, ImageParams::default().with_depth(-0.5), assets.main_background.clone(), Vec2::new(1920.0, 1080.0)));
         
         let board = SolidLayout::new()
             .with_size(807.0, 1432.0)
             .with_horizontal_anchor(-0.75)
             .build_as(tree, menu.end("Board"))?;
-        commands.spawn(ImageElementBundle::new(&board, ImageParams::default(), asset_server.load("images/main_menu/board.png"), Vec2::new(807.0, 1432.0)));
+        commands.spawn(ImageElementBundle::new(&board, ImageParams::default(), assets.main_board.clone(), Vec2::new(807.0, 1432.0)));
         
         let boundary = RelativeLayout::new()
             .with_rel_1(Vec2::new(-5.0, 12.0))
@@ -43,7 +43,7 @@ impl UiComponent for Menu {
         let logo = SolidLayout::new()
             .with_size(1240.0, 381.0)
             .build_as(tree, boundary.end("Logo"))?;
-        commands.spawn(ImageElementBundle::new(logo, ImageParams::default(), asset_server.load("images/main_menu/bevypunk.png"), Vec2::new(1240.0, 381.0)));
+        commands.spawn(ImageElementBundle::new(logo, ImageParams::default(), assets.main_logo.clone(), Vec2::new(1240.0, 381.0)));
 
 
         let list = RelativeLayout::new()
@@ -82,7 +82,7 @@ impl UiComponent for Menu {
             );
 
             // This will create a new widget with preset logic components + custom button_components
-            ui::Button::new(x.name()).construct(commands, asset_server, tree, x.end(".Button"), button_components)?;
+            ui::MainMenuButton::new(x.name()).construct(commands, assets, tree, x.end(".Button"), button_components)?;
             
             // Spawn logic for the stationary widget, the one that owns ".Button"
             commands.spawn((
@@ -94,8 +94,7 @@ impl UiComponent for Menu {
             i += 1;
         }
 
-        println!("{}", tree.tree());
-        Ok(Widget::new(""))
+        Ok(())
     }
 }
 
@@ -116,14 +115,23 @@ mod script {
         QuitGame,
     }
     /// What to do when the button is pressed
-    pub(super) fn main_menu_button_actions(mut query: Query<(&MainMenuButton, &lg::InputMouseClick), With<Widget>>, mut exit: EventWriter<bevy::app::AppExit>) {
-        for (category, clicked) in &mut query {
-            if clicked.left {
-                match category {
-                    MainMenuButton::QuitGame => {
-                        exit.send(bevy::app::AppExit);
-                    },
-                    _ => {},
+    pub(super) fn main_menu_button_actions(mut commands: Commands, assets: Res<MenuAssetCache>, mut trees: Query<&mut UiTree<MyData>>, mut query: Query<(&MainMenuButton, &lg::InputMouseClick), With<Widget>>, mut exit: EventWriter<bevy::app::AppExit>) {
+        for mut tree in &mut trees {
+            for (category, clicked) in &mut query {
+                if clicked.left {
+                    match category {
+                        MainMenuButton::Settings => {
+                            tree.drop_branch("Menu").unwrap();
+                            rt::Settings::construct(&mut tree, &mut commands, &assets).unwrap();
+                            return;
+                            //tree.borrow_branch_mut("Menu").unwrap().set_visibility(false);
+                            //tree.borrow_branch_mut("Settings").unwrap().set_visibility(true);
+                        },
+                        MainMenuButton::QuitGame => {
+                            exit.send(bevy::app::AppExit);
+                        },
+                        _ => {},
+                    }
                 }
             }
         }
@@ -134,7 +142,10 @@ mod script {
         let mut cursor = cursors.single_mut();
         for mut tree in &mut trees {
             for (source, input) in &query {
-                let data: &mut MyData = source.fetch_mut_ext(&mut tree, ".Button").unwrap().get_data_mut();
+                let data: &mut MyData = match source.fetch_mut_ext(&mut tree, ".Button") {
+                    Ok(d) => d,
+                    Err(_) => continue,
+                }.get_data_mut();
                 data.animate = input.hover;
                 if input.hover { cursor.request_cursor_index(1); }
             }
@@ -147,7 +158,10 @@ mod script {
     pub(super) fn pull_animation_from_main_menu_button(mut trees: Query<&mut UiTree<MyData>>, mut query: Query<(&Widget, &mut lg::Animate), With<PullAnimationInput>>) {
         for mut tree in &mut trees {
             for (source, mut destination) in &mut query {
-                let data: &MyData = source.fetch_mut(&mut tree).unwrap().get_data();
+                let data: &MyData = match source.fetch_mut(&mut tree) {
+                    Ok(d) => d,
+                    Err(_) => continue,
+                }.get_data();
                 destination.trigger = data.animate;
             }
         }
@@ -169,10 +183,13 @@ mod script {
                 if animation.degree.x >= TAU { animation.degree.x -= TAU; }
                 if animation.degree.y >= TAU { animation.degree.y -= TAU; }
 
-                let container = widget.fetch_mut(&mut tree).unwrap().get_container_mut();
+                let container = match widget.fetch_mut(&mut tree){
+                    Ok(d) => d,
+                    Err(_) => continue,
+                }.get_container_mut();
                 let window = container.get_layout_mut().expect_window_mut();
-                window.relative.x = animation.degree.x.sin()*animation.amplitude.x - animation.amplitude.x;
-                window.relative.y = animation.degree.y.sin()*animation.amplitude.y - animation.amplitude.y;
+                window.pos_relative.x = animation.degree.x.sin()*animation.amplitude.x - animation.amplitude.x;
+                window.pos_relative.y = animation.degree.y.sin()*animation.amplitude.y - animation.amplitude.y;
             }
         }
     }

@@ -1,15 +1,26 @@
 pub mod prelude {
-    pub use std::borrow::Borrow;
-    pub use bevy_lunex::prelude::*;
+    // Bevy + Bevy_Lunex
     pub use bevy::prelude::*;
+    pub use bevy_lunex::prelude::*;
+    
+    // STD + Usefull stuff
+    pub use std::borrow::Borrow;
     pub use bevy::window::PrimaryWindow;
 
-    pub use crate::UiComponent;
+    // Global access to this data
     pub use crate::MyData;
+    pub use crate::MenuAssetCache;
     pub use crate::interface::*;
+    pub use crate::{COLOR_PRIMARY, COLOR_SECONDARY};
 }
 use prelude::*;
 import_use!(vfx, interface);
+
+pub const BEVYPUNK_RED: Color = Color::rgba(255./255., 98./255., 81./255., 1.0);
+pub const BEVYPUNK_YELLOW: Color = Color::rgba(252./255., 226./255., 8./255., 1.0);
+
+pub const COLOR_PRIMARY: Color = BEVYPUNK_RED;
+pub const COLOR_SECONDARY: Color = BEVYPUNK_YELLOW;
 
 fn main() {
     App::new()
@@ -34,11 +45,27 @@ fn main() {
 
         // Game logic
         .add_plugins(VFXPlugin)
-        .add_systems(Startup, (setup, apply_deferred).chain())
+        .add_systems(PreStartup, presetup)
+        .add_systems(Startup, setup)
 
         .run();
 }
-fn setup(mut commands: Commands, asset_server: Res<AssetServer>, mut textures: ResMut<Assets<TextureAtlas>>, window: Query<Entity, (With<Window>, With<PrimaryWindow>)>) {
+
+/// This function loads all big assets into memory to awoid waiting for async load times
+fn presetup(mut commands: Commands, asset_server: Res<AssetServer>) {
+    // LOAD ALL ASSETS INTO CACHE
+    commands.insert_resource(MenuAssetCache {
+        font: asset_server.load("fonts/rajdhani/Rajdhani-Medium.ttf"),
+        button: asset_server.load("images/main_menu/button.png"),
+        main_background: asset_server.load("images/main_menu/background.png"),
+        main_board: asset_server.load("images/main_menu/board.png"),
+        main_logo: asset_server.load("images/main_menu/bevypunk.png"),
+        settings_background: asset_server.load("images/settings/background.png"),
+    });
+}
+
+/// This function is RUN on start of the app
+fn setup(mut commands: Commands, asset_server: Res<AssetServer>, assets: Res<MenuAssetCache>, mut textures: ResMut<Assets<TextureAtlas>>, window: Query<Entity, (With<Window>, With<PrimaryWindow>)>) {
 
     // Start playing the main menu music
     commands.spawn(
@@ -56,9 +83,9 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, mut textures: R
         Cursor::new().with_os_cursor(false).add_sprite_offset(Vec2::splat(14.0)).add_sprite_offset(Vec2::new(10.0, 12.0)).add_sprite_offset(Vec2::splat(40.0)),
         SpriteSheetBundle {
             texture_atlas: textures.add(TextureAtlas::from_grid(asset_server.load("images/cursor.png"), Vec2::splat(80.0), 3, 1, None, None)),
-            transform: Transform { translation: Vec3::new(0.0, 0.0, 800.0), scale: Vec3::new(0.4, 0.4, 1.0), ..default() },
+            transform: Transform { translation: Vec3::new(0.0, 0.0, 800.0), scale: Vec3::new(0.5, 0.5, 1.0), ..default() },
             sprite: TextureAtlasSprite {
-                color: Color::rgba(252./255., 226./255., 8./255., 2.0).with_l(0.68),
+                color: COLOR_SECONDARY.with_a(2.0).with_l(0.68),
                 anchor: bevy::sprite::Anchor::TopLeft,
                 ..default()
             },
@@ -66,10 +93,16 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, mut textures: R
         }
     ));
 
+    // Create new UiTree (a UI context / DOM)
     let mut tree: UiTree<MyData> = UiTree::new("Interface");
 
-    rt::Menu.construct(&mut commands, &asset_server, &mut tree, ".", ()).unwrap();
+    // Construct the route Menu first
+    rt::Menu::construct(&mut commands, &assets, &mut tree).unwrap();
 
+    // Print nice debug tree in console
+    println!("{}", tree.tree());
+
+    // Insert the UI into the window
     let window = window.single();
     commands.entity(window).insert(tree.bundle());
 }
@@ -81,9 +114,16 @@ pub struct MyData {
     pub animate: bool,
 }
 
-
-/// # Ui Component
-/// All UI components derive this trait so I can build them
-pub trait UiComponent: {
-    fn construct<T:Component + Default>(self, commands: &mut Commands, asset_server: &Res<AssetServer>, tree: &mut UiTree<T>, path: impl Borrow<str>, bundle: impl Bundle + Clone) -> Result<Widget, LunexError>;
+/// # Menu Asset Cache
+/// On PreStartup, load all UI assets ahead of time.
+/// 
+/// Makes it more smooth when dynamically building UI.
+#[derive(Resource)]
+pub struct MenuAssetCache {
+    pub font: Handle<Font>,
+    pub button: Handle<Image>,
+    pub main_background: Handle<Image>,
+    pub main_board: Handle<Image>,
+    pub main_logo: Handle<Image>,
+    pub settings_background: Handle<Image>,
 }

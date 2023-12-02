@@ -1,18 +1,22 @@
 use crate::prelude::*;
 
-/// # Button
-/// simple button
+/// # Main Menu Button
+/// Main menu button
 #[derive(Default)]
-pub struct Button {
+pub struct MainMenuButton {
     pub display: String,
+    pub object_color: Color,
     pub text_color: Color,
+    pub object_hover_color: Color,
     pub text_hover_color: Color,
 }
-impl Button {
-    pub fn new(text: impl Borrow<str>) -> Button {
-        Button {
+impl MainMenuButton {
+    pub fn new(text: impl Borrow<str>) -> MainMenuButton {
+        MainMenuButton {
             display: text.borrow().into(),
+            object_color: COLOR_PRIMARY.with_a(0.0),
             text_color: COLOR_PRIMARY.with_a(1.0),
+            object_hover_color: COLOR_SECONDARY.with_a(1.2).with_l(0.68),
             text_hover_color: COLOR_SECONDARY.with_a(1.2).with_l(0.68),
         }
     }
@@ -27,13 +31,19 @@ impl Button {
         let widget = WindowLayout::new().build_as(tree, path)?;
 
         commands.spawn((
-            TextElementBundle::new(&widget, TextParams::center().with_scale(35.0).with_style(&text_style).with_height(Some(90.0)), &self.display),
+            TextElementBundle::new(&widget, TextParams::centerleft().at(5.0, 50.0).with_scale(35.0).with_style(&text_style).with_height(Some(90.0)), &self.display),
             lg::Animate::new(),
             lg::AnimateColor::new(self.text_color, self.text_hover_color),
             bundle.clone()
+        ));
+        commands.spawn((
+            ImageElementBundle::new(&widget, ImageParams::default().with_width(Some(100.0)).with_height(Some(100.0)), assets.button.clone(), Vec2::new(532.0, 75.0)),
+            lg::Animate::new(),
+            lg::AnimateColor::new(self.object_color, self.object_hover_color),
+            bundle
         ));
 
         Ok(widget)
     }
 }
-script_plugin!(ButtonPlugin);
+script_plugin!(MainMenuButtonPlugin);

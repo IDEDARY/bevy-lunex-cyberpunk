@@ -49,11 +49,14 @@ pub (super) fn animate_window_position_system<T:Component + Default>(mut trees: 
     for mut tree in &mut trees {
         for (widget, source1, source2) in &query {
 
-            let container = widget.fetch_mut(&mut tree).unwrap().get_container_mut();
+            let container = match widget.fetch_mut(&mut tree) {
+                Ok(d) => d,
+                Err(_) => continue,
+            }.get_container_mut();
 
             let window = container.get_layout_mut().expect_window_mut();
-            window.relative.x = tween(source1.pos1.x, source1.pos2.x, source2.value);
-            window.relative.y = tween(source1.pos1.y, source1.pos2.y, source2.value);
+            window.pos_relative.x = tween(source1.pos1.x, source1.pos2.x, source2.value);
+            window.pos_relative.y = tween(source1.pos1.y, source1.pos2.y, source2.value);
 
         }
     }

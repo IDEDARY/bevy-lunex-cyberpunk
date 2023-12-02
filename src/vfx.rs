@@ -1,5 +1,6 @@
 use std::f32::consts::TAU;
 use bevy::prelude::*;
+use bevy_lunex::LunexUiDebugSystemSet2D;
 use bevy::core_pipeline::bloom::{BloomSettings, BloomPrefilterSettings, BloomCompositeMode};
 use bevy::core_pipeline::tonemapping::Tonemapping;
 use rand::Rng;
@@ -91,6 +92,6 @@ fn vfx_camera_wiggle(mut query: Query<(&mut VfxWiggleCamera, &mut Transform)>) {
 pub struct VFXPlugin;
 impl Plugin for VFXPlugin {
     fn build(&self, app: &mut App) {
-        app.add_systems(Update, (vfx_bloom_animate, vfx_camera_wiggle));
+        app.add_systems(Update, (vfx_bloom_animate, vfx_camera_wiggle.after(LunexUiDebugSystemSet2D)));
     }
 }

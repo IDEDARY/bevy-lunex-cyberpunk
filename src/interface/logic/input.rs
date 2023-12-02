@@ -21,7 +21,10 @@ pub (super) fn input_mouse_hover_system<T:Component + Default>(
     for tree in &mut trees {
         for (widget, mut source) in &mut query {
 
-            if !widget.fetch(&tree).unwrap().is_visible() {return;}
+            if ! match widget.fetch(&tree) {
+                Ok(d) => d,
+                Err(_) => continue,
+            }.is_visible() {return;}
 
             let mut trigger = false;
             for cursor in &cursors {
