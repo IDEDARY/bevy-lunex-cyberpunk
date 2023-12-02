@@ -58,6 +58,10 @@ fn presetup(mut commands: Commands, asset_server: Res<AssetServer>) {
         font: asset_server.load("fonts/rajdhani/Rajdhani-Medium.ttf"),
         font_bold: asset_server.load("fonts/rajdhani/Rajdhani-Bold.ttf"),
         button: asset_server.load("images/main_menu/button.png"),
+
+        switch_base: asset_server.load("images/settings/switch_base.png"),
+        switch_head: asset_server.load("images/settings/switch_head.png"),
+
         main_background: asset_server.load("images/main_menu/background.png"),
         main_board: asset_server.load("images/main_menu/board.png"),
         main_logo: asset_server.load("images/main_menu/bevypunk.png"),
@@ -112,7 +116,8 @@ fn setup(mut commands: Commands, asset_server: Res<AssetServer>, assets: Res<Men
 /// This struct is used to define which data my widgets will need to access and share across the UiTree
 #[derive(Debug, Clone, Component, Default)]
 pub struct MyData {
-    pub animate: bool,
+    pub animate_trigger: bool,
+    pub animate_slider : f32,
 }
 
 /// # Menu Asset Cache
@@ -124,6 +129,10 @@ pub struct MenuAssetCache {
     pub font: Handle<Font>,
     pub font_bold: Handle<Font>,
     pub button: Handle<Image>,
+
+    pub switch_base: Handle<Image>,
+    pub switch_head: Handle<Image>,
+
     pub main_background: Handle<Image>,
     pub main_board: Handle<Image>,
     pub main_logo: Handle<Image>,

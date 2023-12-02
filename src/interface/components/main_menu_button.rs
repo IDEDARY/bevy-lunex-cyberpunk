@@ -11,7 +11,7 @@ pub struct MainMenuButton {
     pub text_hover_color: Color,
 }
 impl MainMenuButton {
-    pub fn new(text: impl Borrow<str>) -> MainMenuButton {
+    pub fn new(text: impl Borrow<str>) -> Self {
         MainMenuButton {
             display: text.borrow().into(),
             object_color: COLOR_PRIMARY.with_a(0.0),
@@ -32,14 +32,18 @@ impl MainMenuButton {
 
         commands.spawn((
             TextElementBundle::new(&widget, TextParams::centerleft().at(5.0, 50.0).with_scale(35.0).with_style(&text_style).with_height(Some(90.0)), &self.display),
-            lg::AnimateControl::new(),
+            lg::Animate::new(),
+            lg::AnimateControl::new(0.25, 0.05),
             lg::AnimateColor::new(self.text_color, self.text_hover_color),
+            lg::PipeAnimateInputFromTree,
             bundle.clone()
         ));
         commands.spawn((
             ImageElementBundle::new(&widget, ImageParams::default().with_width(Some(100.0)).with_height(Some(100.0)), assets.button.clone(), Vec2::new(532.0, 75.0)),
-            lg::AnimateControl::new(),
+            lg::Animate::new(),
+            lg::AnimateControl::new(0.25, 0.05),
             lg::AnimateColor::new(self.object_color, self.object_hover_color),
+            lg::PipeAnimateInputFromTree,
             bundle
         ));
 

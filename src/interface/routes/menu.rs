@@ -82,10 +82,7 @@ impl Menu {
         for i in 0..button_widget_list.len() {
 
             // These components will get passed to the new button entities
-            let button_components = (
-                lg::AnimateWindowPosition::new(Vec2::new(0.0, 0.0), Vec2::new(5.0, 0.0)),
-                lg::AnimatePullInputFromTree
-            );
+            let button_components = lg::AnimateWindowPosition::new(Vec2::new(0.0, 0.0), Vec2::new(5.0, 0.0));
 
             // This will create a new widget with preset logic components + custom button_components
             ui::MainMenuButton::new(button_widget_list[i].name())
@@ -97,7 +94,7 @@ impl Menu {
                 component_array[i],
                 lg::InputCursorHover::new().request_cursor(1),
                 lg::InputMouseClick::new(),
-                lg::AnimateSendInputToTree(".Button".into()),
+                lg::PipeCursorHoverAsAnimateInput(".Button".into()),
             ));
         }
 

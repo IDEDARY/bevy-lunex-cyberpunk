@@ -11,6 +11,7 @@ script_plugin!(LogicPlugin,
             animate_cursor_input.after(InputSystemSet),
             animate_system,
             animate_window_position_system::<T>,
+            animate_into_solid_layout_system::<T>,
             animate_color_text_system,
             animate_color_image_system
         ).chain().in_set(AnimateSystemSet)
@@ -20,6 +21,13 @@ script_plugin!(LogicPlugin,
         (input_mouse_hover_system::<T>.before(bevy_lunex::cursor_update), input_mouse_click_system).chain().in_set(InputSystemSet)
     ),
 
-    add_systems(Update, (animate_send_input_to_tree, animate_pull_input_from_tree).chain().after(InputSystemSet).before(AnimateSystemSet))
+    add_systems(Update,
+        (
+            pipe_cursor_hover_as_animate_input,
+            pipe_animate_input_from_tree,
+            pipe_animate_to_tree,
+            pipe_animate_from_tree
+        ).chain().after(InputSystemSet).before(AnimateSystemSet)
+    )
 
 );

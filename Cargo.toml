@@ -15,9 +15,9 @@ lto = "fat"
 
 
 [dependencies]
-ahash = "0.8.3"
-rand = "0.8.5"
-mathio = "0.2.1"
+ahash = "^0.8"
+rand = "^0.8"
+mathio = "^0.2"
 
 #bevy_lunex = "0.0.9"
 #bevy = { version = "0.12.0" }

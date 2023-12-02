@@ -19,7 +19,10 @@ impl Settings {
         
         let return_button = WindowLayout::empty().rel((5., 5.)).size_rel((10.0, 5.0)).build_as(tree, settings.end("Return"))?;
 
-        ui::Button::new("Return").construct(commands, assets, tree, return_button.end("g"), (lg::InputMouseClick::new(), ReturnButton))?;
+        ui::Button::new("Return").construct(commands, assets, tree, return_button.end(".Button"), (lg::InputMouseClick::new(), ReturnButton))?;
+
+        let switch_button = WindowLayout::empty().rel((50., 50.)).size_rel((10.0, 5.0)).build_as(tree, settings.end("Switch"))?;
+        ui::Switch::new(false).construct(commands, assets, tree, switch_button.end(".Switch"), ())?;
 
         Ok(())
     }
