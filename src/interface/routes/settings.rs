@@ -21,7 +21,16 @@ impl Settings {
 
         ui::Button::new("Return").construct(commands, assets, tree, return_button.end(".Button"), (lg::InputMouseClick::new(), ReturnButton))?;
 
-        let switch_button = WindowLayout::empty().rel((50., 50.)).size_rel((10.0, 5.0)).build_as(tree, settings.end("Switch"))?;
+        let switch_button = WindowLayout::empty().rel((50., 50.)).size_abs((115.0, 40.0)).build_as(tree, settings.end(""))?;
+        ui::Switch::new(false).construct(commands, assets, tree, switch_button.end(".Switch"), ())?;
+
+        let switch_button = WindowLayout::empty().rel((50., 55.)).size_abs((115.0, 40.0)).build_as(tree, settings.end(""))?;
+        ui::Switch::new(false).construct(commands, assets, tree, switch_button.end(".Switch"), ())?;
+
+        let switch_button = WindowLayout::empty().rel((50., 60.)).size_abs((115.0, 40.0)).build_as(tree, settings.end(""))?;
+        ui::Switch::new(false).construct(commands, assets, tree, switch_button.end(".Switch"), ())?;
+
+        let switch_button = WindowLayout::empty().rel((50., 65.)).size_abs((115.0, 40.0)).build_as(tree, settings.end(""))?;
         ui::Switch::new(false).construct(commands, assets, tree, switch_button.end(".Switch"), ())?;
 
         Ok(())

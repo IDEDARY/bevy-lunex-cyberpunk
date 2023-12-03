@@ -11,6 +11,8 @@ script_plugin!(LogicPlugin,
             animate_cursor_input.after(InputSystemSet),
             animate_system,
             animate_window_position_system::<T>,
+            animate_into_window_layout_system::<T>,
+            animate_into_relative_layout_system::<T>,
             animate_into_solid_layout_system::<T>,
             animate_color_text_system,
             animate_color_image_system

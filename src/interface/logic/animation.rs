@@ -36,6 +36,10 @@ impl Animate {
 pub struct AnimateControl {
     /// If true, `value` will move to 1.0, else it will move to 0.0
     pub trigger: bool,
+    /// The value manipulated by speed, this is then sent to [`Animate`] through easing function
+    pub slider: f32,
+    /// The power of easing (1.0 = no easing, 2.0 = quadratic easing, etc..)
+    pub ease_power: i32,
     /// The speed at which value will change if trigger is true
     pub forward_speed: f32,
     /// The speed at which value will change if trigger is true
@@ -45,18 +49,25 @@ impl AnimateControl {
     pub fn new(forward_speed: f32, backward_speed: f32) -> Self {
         AnimateControl {
             trigger: false,
+            slider: 0.0,
+            ease_power: 1,
             forward_speed,
             backward_speed,
         }
     }
+    pub fn ease(mut self, easing: i32) -> Self {
+        self.ease_power = easing.abs();
+        self
+    }
 }
-pub (super) fn animate_system(mut query: Query<(&mut Animate, &AnimateControl)>) {
-    for (mut slider, trigger) in &mut query {
+pub (super) fn animate_system(mut query: Query<(&mut Animate, &mut AnimateControl)>) {
+    for (mut slider, mut trigger) in &mut query {
         if trigger.trigger {
-            if slider.slider < 1.0 {slider.slider += trigger.forward_speed} else {slider.slider = 1.0}
+            if trigger.slider < 1.0 {trigger.slider += trigger.forward_speed} else {trigger.slider = 1.0}
         } else {
-            if slider.slider > 0.0 {slider.slider -= trigger.backward_speed} else {slider.slider = 0.0}
+            if trigger.slider > 0.0 {trigger.slider -= trigger.backward_speed} else {trigger.slider = 0.0}
         }
+        slider.slider = ease_in(trigger.slider, trigger.ease_power);
     }
 }
 
@@ -96,6 +107,76 @@ pub (super) fn animate_window_position_system<T:Component + Default>(mut trees: 
 }
 
 
+
+/// # Animate into Window Layout
+/// Based on slider value from [`Animate`] component updates
+/// solid position. Will panic if the container is not a [`WindowLayout`].
+/// ## Requires:
+/// * [`lg::Animate`]
+#[derive(Component, Clone)]
+pub struct AnimateIntoWindowLayout {
+    pub layout1: WindowLayout,
+    pub layout2: WindowLayout,
+}
+impl AnimateIntoWindowLayout {
+    pub fn new(layout1: WindowLayout, layout2: WindowLayout) -> Self {
+        AnimateIntoWindowLayout {
+            layout1,
+            layout2,
+        }
+    }
+}
+pub (super) fn animate_into_window_layout_system<T:Component + Default>(mut trees: Query<&mut UiTree<T>>, query: Query<(&Widget, &AnimateIntoWindowLayout, &Animate)>) {
+    for mut tree in &mut trees {
+        for (widget, source, slider) in &query {
+
+            let container = match widget.fetch_mut(&mut tree) {
+                Ok(d) => d,
+                Err(_) => continue,
+            }.get_container_mut();
+
+            let layout = container.get_layout_mut().expect_window_mut();
+            layout.tween(&source.layout1, &source.layout2, slider.slider);
+            layout.tween(&source.layout1, &source.layout2, slider.slider);
+
+        }
+    }
+}
+
+/// # Animate into Relative Layout
+/// Based on slider value from [`Animate`] component updates
+/// solid position. Will panic if the container is not a [`RelativeLayout`].
+/// ## Requires:
+/// * [`lg::Animate`]
+#[derive(Component, Clone)]
+pub struct AnimateIntoRelativeLayout {
+    pub layout1: RelativeLayout,
+    pub layout2: RelativeLayout,
+}
+impl AnimateIntoRelativeLayout {
+    pub fn new(layout1: RelativeLayout, layout2: RelativeLayout) -> Self {
+        AnimateIntoRelativeLayout {
+            layout1,
+            layout2,
+        }
+    }
+}
+pub (super) fn animate_into_relative_layout_system<T:Component + Default>(mut trees: Query<&mut UiTree<T>>, query: Query<(&Widget, &AnimateIntoRelativeLayout, &Animate)>) {
+    for mut tree in &mut trees {
+        for (widget, source, slider) in &query {
+
+            let container = match widget.fetch_mut(&mut tree) {
+                Ok(d) => d,
+                Err(_) => continue,
+            }.get_container_mut();
+
+            let layout = container.get_layout_mut().expect_relative_mut();
+            layout.tween(&source.layout1, &source.layout2, slider.slider);
+            layout.tween(&source.layout1, &source.layout2, slider.slider);
+
+        }
+    }
+}
 
 /// # Animate into Solid Layout
 /// Based on slider value from [`Animate`] component updates
@@ -183,6 +264,10 @@ pub(super) fn animate_cursor_input(mut query: Query<(&mut lg::AnimateControl, &l
     }
 }
 
+
+fn ease_in(x: f32, a: i32) -> f32 {
+    f32::clamp(x.powi(a) / (x.powi(a) + (1.0 - x).powi(a)), 0.0, 1.0)
+}
 
 // =========================
 // SCOPED TO <T> = MyData
