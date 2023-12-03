@@ -28,14 +28,26 @@ impl Switch {
     }
     pub fn construct<T: Component + Default>(self, commands: &mut Commands, assets: &MenuAssetCache, tree: &mut UiTree<T>, path: impl Borrow<str>, bundle: impl Bundle + Clone) -> Result<Widget, LunexError> {
 
-        let widget = WindowLayout::new().build_as(tree, path)?;
+        let widget = RelativeLayout::new().build_as(tree, path)?;
         let head = SolidLayout::new().with_horizontal_anchor(-1.0).build_as(tree, widget.end("Head"))?;
         let head_icon = RelativeLayout::new().with_rel_1((15.0, 15.0).into()).with_rel_2((85.0, 85.0).into()).build_as(tree, head.end("Head_Icon"))?;
 
+        // Add hover logic (enlarge)
         commands.spawn((
-            ImageElementBundle::new(&widget, ImageParams::default().with_width(Some(100.0)).with_height(Some(100.0)), assets.switch_base.clone(), Vec2::new(230.0, 80.0)),
-            SwitchState { state: self.state},
+            widget.clone(),
+            lg::Animate::new(),
+            lg::AnimateControl::new(0.1, 0.03).ease(1),
+            lg::AnimateIntoRelativeLayout::new(RelativeLayout::new(), RelativeLayout::new().with_rel_1((-2.0, -2.0).into()).with_rel_2((102.0, 102.0).into())),
+
+            lg::CursorHoverAsAnimateInput::new(),
             lg::InputCursorHover::new().request_cursor(1),
+        ));
+
+        // Add click logic (image + color change + pipe animation)
+        commands.spawn((
+            ImageElementBundle::new(&widget, ImageParams::default().with_width(Some(100.0)).with_height(Some(100.0)), assets.switch_base.clone(), Vec2::new(160.0, 80.0)),
+            SwitchState { state: self.state},
+            lg::InputCursorHover::new(),
             lg::InputMouseClick::new(),
 
             lg::Animate::new(),
@@ -45,6 +57,7 @@ impl Switch {
             bundle.clone()
         ));
 
+        // Add move logic (from piped animation)
         commands.spawn((
             head.clone(),
             lg::Animate::new(),
@@ -53,6 +66,7 @@ impl Switch {
             lg::PipeAnimateToTree("Head_Icon".into()),
         ));
 
+        // Add color change logic (image + pipe animation)
         commands.spawn((
             ImageElementBundle::new(&head_icon, ImageParams::default().with_width(Some(100.0)).with_height(Some(100.0)), assets.switch_head.clone(), Vec2::new(64.0, 64.0)),
             lg::Animate::new(),
