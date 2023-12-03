@@ -8,7 +8,7 @@ This project showcases advanced workflow and complex use of **Bevy-Lunex** libra
 
 ## === Showcase ===
 
-![image](https://github.com/IDEDARY/Bevypunk/assets/49441831/21ee1d0e-68ff-4268-8ea1-59399a10b63b)
+![image](https://github.com/IDEDARY/Bevypunk/assets/49441831/31b0fc91-5eef-4574-ae73-e78aef538070)
 
 
 ## === Licensing ===
