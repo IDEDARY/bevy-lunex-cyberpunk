@@ -23,4 +23,4 @@ mathio = "^0.2"
 #bevy = { version = "0.12.0" }
 
 bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy-lunex" }
-bevy = { version = "0.12.0", features = ["dynamic_linking"] }
+bevy = { version = "0.12.1", features = ["dynamic_linking"] }

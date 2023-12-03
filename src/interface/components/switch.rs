@@ -20,14 +20,13 @@ impl Switch {
     pub fn new(state: bool) -> Self {
         Switch {
             state,
-            base_color_off: Color::GRAY,
+            base_color_off: Color::GRAY.with_a(0.2),
             base_color_on: COLOR_PRIMARY.with_a(1.0).with_l(0.68),
-            base_head_color_off: COLOR_PRIMARY.with_a(1.0),
-            base_head_color_on: COLOR_SECONDARY.with_a(1.0).with_l(0.68),
+            base_head_color_off: COLOR_PRIMARY.with_a(1.0).with_s(0.2).with_l(0.2),
+            base_head_color_on: COLOR_PRIMARY.with_a(1.0).with_l(0.68),
         }
     }
     pub fn construct<T: Component + Default>(self, commands: &mut Commands, assets: &MenuAssetCache, tree: &mut UiTree<T>, path: impl Borrow<str>, bundle: impl Bundle + Clone) -> Result<Widget, LunexError> {
-
         let widget = RelativeLayout::new().build_as(tree, path)?;
         let head = SolidLayout::new().with_horizontal_anchor(-1.0).build_as(tree, widget.end("Head"))?;
         let head_icon = RelativeLayout::new().with_rel_1((15.0, 15.0).into()).with_rel_2((85.0, 85.0).into()).build_as(tree, head.end("Head_Icon"))?;
@@ -35,12 +34,12 @@ impl Switch {
         // Add hover logic (enlarge)
         commands.spawn((
             widget.clone(),
+            lg::CursorHoverAsAnimateInput::new(),
+            lg::InputCursorHover::new().request_cursor(1),
+            
             lg::Animate::new(),
             lg::AnimateControl::new(0.1, 0.03).ease(1),
             lg::AnimateIntoRelativeLayout::new(RelativeLayout::new(), RelativeLayout::new().with_rel_1((-2.0, -2.0).into()).with_rel_2((102.0, 102.0).into())),
-
-            lg::CursorHoverAsAnimateInput::new(),
-            lg::InputCursorHover::new().request_cursor(1),
         ));
 
         // Add click logic (image + color change + pipe animation)
@@ -74,7 +73,6 @@ impl Switch {
             lg::PipeAnimateFromTree,
             bundle
         ));
-
         Ok(widget)
     }
 }

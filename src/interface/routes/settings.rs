@@ -17,11 +17,11 @@ impl Settings {
         image.fetch_mut(tree)?.get_container_mut().set_render_depth(Modifier::Set(90.0));
         commands.spawn(ImageElementBundle::new(image, ImageParams::default().with_depth(-0.5), assets.settings_background.clone(), Vec2::new(1920.0, 1080.0)));
         
-        let return_button = WindowLayout::empty().rel((5., 5.)).size_rel((10.0, 5.0)).build_as(tree, settings.end("Return"))?;
+        let return_button = WindowLayout::empty().rel((85., 85.)).size_rel((10.0, 5.0)).build_as(tree, settings.end("Return"))?;
 
         ui::Button::new("Return").construct(commands, assets, tree, return_button.end(".Button"), (lg::InputMouseClick::new(), ReturnButton))?;
 
-        let k = 1.0;
+        let k = 1.4;
 
         let switch_button = WindowLayout::empty().rel((50., 40.+5.*k)).size_abs((80.0*k, 40.0*k)).build_as(tree, settings.end(""))?;
         ui::Switch::new(false).construct(commands, assets, tree, switch_button.end(".Switch"), ())?;
@@ -57,6 +57,10 @@ mod script {
             }
         }
     }
+
+
+    #[derive(Component, Clone, Copy)]
+    pub(super) struct HorizontalMarker;
 
 }
 use script::*;
