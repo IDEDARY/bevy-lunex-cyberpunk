@@ -50,7 +50,7 @@ impl Switch {
             lg::InputMouseClick::new(),
 
             lg::Animate::new(),
-            lg::AnimateControl::new(0.01, 0.01).ease(4),
+            lg::AnimateControl::new(0.02, 0.02).ease(4),
             lg::AnimateColor::new(self.base_color_off, self.base_color_on),
             lg::PipeAnimateToTree("Head".into()),
             bundle.clone()
