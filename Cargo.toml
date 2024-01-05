@@ -12,10 +12,7 @@ ahash = "^0.8"
 rand = "^0.8"
 mathio = "^0.2"
 
-#bevy_lunex = "0.0.9"
-#bevy = { version = "0.12.0" }
-
-#bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy-lunex" }
-
-bevy_lunex = { git = "https://github.com/bytestring-net/bevy-lunex" }
+bevy_lunex = "0.0.11"
+#bevy = { version = "0.12.1" }
+#bevy_lunex = { git = "https://github.com/bytestring-net/bevy-lunex" }
 bevy = { version = "0.12.1", features = ["dynamic_linking"] }
