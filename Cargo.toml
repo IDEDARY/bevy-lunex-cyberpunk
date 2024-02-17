@@ -13,9 +13,10 @@
   #bevy = { version = "0.12.1", default_features = false, features = [
   bevy = { git = "https://github.com/bevyengine/bevy", default_features = false, features = [
     "bevy_asset",
+    "bevy_audio",
     #"bevy_gilrs",
     "bevy_winit",
-    #"bevy_core_pipeline",
+    "bevy_core_pipeline",
     #"bevy_pbr",
     "bevy_render",
     #"bevy_sprite",
@@ -23,6 +24,7 @@
     "multi-threaded",
     "png",
     "hdr",
+    "vorbis",
     "x11",
     #"default_font",
     "tonemapping_luts",
@@ -30,3 +32,4 @@
   ] }
   #bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev" }
   bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex" }
+  rand = "0.8.5"
