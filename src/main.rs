@@ -7,7 +7,7 @@ use boilerplate::*;
 fn main() {
     App::new()
         .add_plugins((default_plugins(), UiPlugin::<NoData, NoData, MenuUi>::new()))
-        .add_plugins(UiDebugPlugin::<NoData, NoData, MenuUi>::new())
+        //.add_plugins(UiDebugPlugin::<NoData, NoData, MenuUi>::new())
         .add_plugins(VFXPlugin)
         .add_systems(PreStartup, presetup)
         .add_systems(Startup, setup)
@@ -40,7 +40,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
         ui.spawn((
             MenuUi,
             root.add("Background"),
-            UiLayout::Solid::new().size(Abs((1920.0, 1080.0))).cover(Cover::Full).pack(),
+            UiLayout::Solid::new().size(Abs((2968.0, 1656.0))).cover(Cover::Full).pack(),
             UiImage2dBundle::from(assets.main_background.clone())
         ));
 
@@ -49,20 +49,32 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
         ui.spawn((
             MenuUi,
             board.clone(),
-            UiLayout::Solid::new().size(Abs((807.0, 1432.0))).align_x(Align(-0.8)).pack(),
+            UiLayout::Solid::new().size(Abs((896.0, 1656.0))).align_x(Align(-0.74)).pack(),
             UiImage2dBundle::from(assets.main_board.clone())
         ));
 
         // Spawn the logo
-        ui.spawn((
+        /* ui.spawn((
             MenuUi,
             board.add("Boundary"),
-            UiLayout::Window::new().pos(Prc((-5.0, 12.0))).size(Prc((110.0, 20.0))).pack(),
+            UiLayout::Window::new().pos(Prc((0.0, 12.0))).size(Prc((105.0, 20.0))).pack(),
         ));
         ui.spawn((
             MenuUi,
             board.add("Boundary/Logo"),
             UiLayout::Solid::new().size(Abs((1240.0, 381.0))).pack(),
+            UiImage2dBundle::from(assets.main_logo.clone())
+        )); */
+
+        ui.spawn((
+            MenuUi,
+            board.add("Boundary"),
+            UiLayout::Window::new().pos(Prc((-10.0, 10.0))).size(Prc((117.0, 28.0))).pack(),
+        ));
+        ui.spawn((
+            MenuUi,
+            board.add("Boundary/Logo"),
+            UiLayout::Solid::new().size(Abs((1120.0, 474.0))).pack(),
             UiImage2dBundle::from(assets.main_logo.clone())
         ));
 
@@ -70,9 +82,50 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
         ui.spawn((
             MenuUi,
             board.add("List"),
-            UiLayout::Window::new().pos(Prc((17.0, 33.0))).size(Prc((62.0, 45.0))).pack(),
+            UiLayout::Window::new().pos(Prc((23.0, 38.0))).size(Prc((54.0, 42.0))).pack(),
         ));
+
         ui.spawn((
+            MenuUi,
+            board.add("List/Continue"),
+            UiLayout::Window::new().pos(Prc(0.0)).size(Prc((100.0, 15.0))).pack(),
+            UiImage2dBundle::from(assets.button.clone()),
+            ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(20.0), ..default() }),
+        ));
+
+        ui.spawn((
+            MenuUi,
+            board.add("List/New game"),
+            UiLayout::Window::new().pos(Prc((0.0, 17.0))).size(Prc((100.0, 15.0))).pack(),
+            UiImage2dBundle::from(assets.button.clone()),
+            ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(20.0), ..default() }),
+        ));
+
+        ui.spawn((
+            MenuUi,
+            board.add("List/Settings"),
+            UiLayout::Window::new().pos(Prc((0.0, 34.0))).size(Prc((100.0, 15.0))).pack(),
+            UiImage2dBundle::from(assets.button.clone()),
+            ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(20.0), ..default() }),
+        ));
+
+        ui.spawn((
+            MenuUi,
+            board.add("List/Credits"),
+            UiLayout::Window::new().pos(Prc((0.0, 51.0))).size(Prc((100.0, 15.0))).pack(),
+            UiImage2dBundle::from(assets.button.clone()),
+            ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(20.0), ..default() }),
+        ));
+
+        ui.spawn((
+            MenuUi,
+            board.add("List/Quit game"),
+            UiLayout::Window::new().pos(Prc((0.0, 68.0))).size(Prc((100.0, 15.0))).pack(),
+            UiImage2dBundle::from(assets.button.clone()),
+            ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(20.0), ..default() }),
+        ));
+
+        /* ui.spawn((
             MenuUi,
             board.add("List/Text"),
             UiLayout::Div::new().margin_t(Abs::SM).br().pack(),
@@ -102,7 +155,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
                     }),
                 ..default()
             }
-        ));
+        )); */
 
 
 

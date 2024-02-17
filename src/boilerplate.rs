@@ -48,7 +48,7 @@ pub fn presetup(mut commands: Commands, asset_server: Res<AssetServer>) {
 
         main_background: asset_server.load("images/main_menu/background.png"),
         main_board: asset_server.load("images/main_menu/board.png"),
-        main_logo: asset_server.load("images/main_menu/bevypunk.png"),
+        main_logo: asset_server.load("images/main_menu/bevypunk_bloom.png"),
         settings_background: asset_server.load("images/settings/background.png"),
     });
 }
@@ -73,20 +73,20 @@ pub fn camera() -> impl Bundle {
         Camera2dBundle {
             transform: Transform::from_xyz(0.0, 0.0, 1000.0),
             camera: Camera {
-                hdr: true,
+                hdr: false,
                 ..default()
             },
             tonemapping: Tonemapping::None,
             ..default()
         },
         BloomSettings {
-            intensity: 0.20,
-            low_frequency_boost: 0.8,
+            intensity: 0.025,
+            low_frequency_boost: 0.7,
             low_frequency_boost_curvature: 0.95,
             high_pass_frequency: 0.9,
             prefilter_settings: BloomPrefilterSettings {
-                threshold: 0.25,
-                threshold_softness: 0.1,
+                threshold: 0.0,
+                threshold_softness: 0.0,
             },
             composite_mode: BloomCompositeMode::Additive,
         },
