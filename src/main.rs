@@ -7,7 +7,7 @@ use boilerplate::*;
 fn main() {
     App::new()
         .add_plugins((default_plugins(), UiPlugin::<NoData, NoData, MenuUi>::new()))
-        //.add_plugins(UiDebugPlugin::<NoData, NoData, MenuUi>::new())
+        .add_plugins(UiDebugPlugin::<NoData, NoData, MenuUi>::new())
         .add_plugins(VFXPlugin)
         .add_systems(PreStartup, presetup)
         .add_systems(Startup, setup)
@@ -66,22 +66,43 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
             UiImage2dBundle::from(assets.main_logo.clone())
         ));
 
-
-        /* parent.spawn((
-            MyWidget,
-            root.new(),
-            UiLayout::Div::new().pad(Abs::MD).margin(Abs::SM).br().pack(),
-            /*UiText2dBundle {
+        // Spawn the buttons
+        ui.spawn((
+            MenuUi,
+            board.add("List"),
+            UiLayout::Window::new().pos(Prc((17.0, 33.0))).size(Prc((62.0, 45.0))).pack(),
+        ));
+        ui.spawn((
+            MenuUi,
+            board.add("List/Text"),
+            UiLayout::Div::new().margin_t(Abs::SM).br().pack(),
+            UiContent::new((220.0, 35.0)),
+            UiText2dBundle {
                 text: Text::from_section("hello world!",
                     TextStyle {
                         font: assets.font.clone(),
                         font_size: 60.0,
-                        color: Color::RED,
+                        color: Color::YELLOW,
                     }),
                 ..default()
-            }*/
-            //UiImage2dBundle::from(assets.main_background.clone())
-        )); */
+            }
+        ));
+
+        ui.spawn((
+            MenuUi,
+            board.add("List/Text2"),
+            UiLayout::Div::new().margin_t(Abs::SM).br().pack(),
+            UiContent::new((220.0, 35.0)),
+            UiText2dBundle {
+                text: Text::from_section("hello world!",
+                    TextStyle {
+                        font: assets.font.clone(),
+                        font_size: 60.0,
+                        color: Color::YELLOW,
+                    }),
+                ..default()
+            }
+        ));
 
 
 

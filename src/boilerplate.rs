@@ -6,7 +6,7 @@ pub fn default_plugins() -> PluginGroupBuilder {
         WindowPlugin {
             primary_window: Some(Window {
                 title: "Bevypunk".into(),
-                mode: bevy::window::WindowMode::Windowed,
+                mode: bevy::window::WindowMode::BorderlessFullscreen,
                 ..default()
             }),
             ..default()
@@ -46,7 +46,7 @@ pub fn presetup(mut commands: Commands, asset_server: Res<AssetServer>) {
         switch_head: asset_server.load("images/settings/switch_head.png"),
 
         main_background: asset_server.load("images/main_menu/background.png"),
-        main_board: asset_server.load("images/main_menu/board1.png"),
+        main_board: asset_server.load("images/main_menu/board.png"),
         main_logo: asset_server.load("images/main_menu/bevypunk.png"),
         settings_background: asset_server.load("images/settings/background.png"),
     });
