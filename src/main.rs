@@ -7,7 +7,7 @@ use boilerplate::*;
 fn main() {
     App::new()
         .add_plugins((default_plugins(), UiPlugin::<NoData, NoData, MenuUi>::new()))
-        //.add_plugins(UiDebugPlugin::<NoData, NoData, MenuUi>::new())
+        .add_plugins(UiDebugPlugin::<NoData, NoData, MenuUi>::new())
         .add_plugins(VFXPlugin)
         .add_systems(PreStartup, presetup)
         .add_systems(Startup, setup)
@@ -130,7 +130,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
         ui.spawn((
             MenuUi,
             board.add("List/Settings/Text"),
-            UiLayout::Solid::new().size((150.0, 50.0)).align_x(-1.0).pack(),
+            UiLayout::Solid::new().size((50.0, 50.0)).align_x(-1.0).pack(),
             UiText2dBundle {
                 text: Text::from_section("SETTINGS",
                     TextStyle {
