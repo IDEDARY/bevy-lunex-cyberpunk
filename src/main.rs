@@ -98,12 +98,14 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
             ui.spawn((
                 MenuUi,
                 list.add(format!("{button}/Text")),
-                UiLayout::Solid::new().align_x(-1.0).pack(),
+                UiLayout::Solid::new().align_x(-0.85).pack(),
+                //UiLayout::Div::new().margin_l(Prc(5.0)).br().pack(),
+                //UiContent::default(),
                 UiText2dBundle {
                     text: Text::from_section(button,
                         TextStyle {
                             font: assets.font_medium.clone(),
-                            font_size: 32.0,
+                            font_size: 50.0,
                             color: Color::BEVYPUNK_RED,
                         }),
                     ..default()
