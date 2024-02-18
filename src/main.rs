@@ -50,7 +50,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
         ui.spawn((
             MenuUi,
             board.clone(),
-            UiLayout::Solid::new().size((896.0, 1656.0)).align_x(Align(-0.74)).pack(),
+            UiLayout::Solid::new().size((896.0, 1656.0)).align_x(-0.74).pack(),
             UiImage2dBundle::from(assets.main_board.clone())
         ));
 
@@ -63,7 +63,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
         ui.spawn((
             MenuUi,
             board.add("Boundary/Logo"),
-            UiLayout::Solid::new().size(Abs((1240.0, 381.0))).pack(),
+            UiLayout::Solid::new().size((1240.0, 381.0)).pack(),
             UiImage2dBundle::from(assets.main_logo.clone())
         ));
 
@@ -115,4 +115,3 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
     });
 
 }
-
