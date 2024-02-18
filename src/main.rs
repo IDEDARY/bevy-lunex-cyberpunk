@@ -7,7 +7,7 @@ use boilerplate::*;
 fn main() {
     App::new()
         .add_plugins((default_plugins(), UiPlugin::<NoData, NoData, MenuUi>::new()))
-        .add_plugins(UiDebugPlugin::<NoData, NoData, MenuUi>::new())
+        //.add_plugins(UiDebugPlugin::<NoData, NoData, MenuUi>::new())
         .add_plugins(VFXPlugin)
         .add_systems(PreStartup, presetup)
         .add_systems(Startup, setup)
@@ -54,206 +54,63 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
         ));
 
         // Spawn the logo
-        /* ui.spawn((
+        ui.spawn((
             MenuUi,
             board.add("Boundary"),
-            UiLayout::Window::new().pos(Prc((0.0, 12.0))).size(Prc((105.0, 20.0))).pack(),
+            UiLayout::Window::new().pos(Prc((0.0, 13.0))).size(Prc((105.0, 20.0))).pack(),
         ));
         ui.spawn((
             MenuUi,
             board.add("Boundary/Logo"),
             UiLayout::Solid::new().size(Abs((1240.0, 381.0))).pack(),
             UiImage2dBundle::from(assets.main_logo.clone())
-        )); */
-
-        ui.spawn((
-            MenuUi,
-            board.add("Boundary"),
-            UiLayout::Window::new().pos(Prc((-10.0, 10.0))).size(Prc((117.0, 28.0))).pack(),
-        ));
-        ui.spawn((
-            MenuUi,
-            board.add("Boundary/Logo"),
-            UiLayout::Solid::new().size((1120.0, 474.0)).pack(),
-            UiImage2dBundle::from(assets.main_logo.clone())
         ));
 
-        // Spawn the buttons
+        // Spawn button boundary
+        let list = board.add("List");
         ui.spawn((
             MenuUi,
-            board.add("List"),
-            UiLayout::Window::new().pos(Prc((23.0, 38.0))).size(Prc((54.0, 37.0))).pack(),
+            list.clone(),
+            UiLayout::Window::new().pos(Prc((22.0, 41.0))).size(Prc((55.0, 37.0))).pack(),
         ));
 
-        ui.spawn((
-            MenuUi,
-            board.add("List/Continue"),
-            UiLayout::Window::new().pos(Prc(0.0)).size(Prc((100.0, 15.0))).pack(),
-            UiImage2dBundle {
-                texture: assets.button.clone(),
-                sprite: Sprite { color: Color::BEVYPUNK_RED, ..default() },
-                ..default()
-            },
-            ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(20.0), ..default() }),
-        ));
+        // Spawn buttons
+        let gap = 3.0;
+        let size = 13.0;
+        let mut offset = 0.0;
+        for button in ["CONTINUE", "LOAD GAME", "SETTINGS", "CREDITS", "QUIT GAME"] {
 
-        ui.spawn((
-            MenuUi,
-            board.add("List/Continue/Text"),
-            UiLayout::Solid::new().size((150.0, 50.0)).align_x(-1.0).pack(),
-            UiText2dBundle {
-                text: Text::from_section("CONTINUE",
-                    TextStyle {
-                        font: assets.font_medium.clone(),
-                        font_size: 36.0,
-                        color: Color::BEVYPUNK_RED,
-                    }),
-                ..default()
-            }
-        ));
+            // Spawn button image
+            ui.spawn((
+                MenuUi,
+                list.add(button),
+                UiLayout::Window::new().pos(Prc((0.0, offset))).size(Prc((100.0, size))).pack(),
+                UiImage2dBundle {
+                    texture: assets.button.clone(),
+                    sprite: Sprite { color: Color::BEVYPUNK_RED_DIM, ..default() },
+                    ..default()
+                },
+                ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(32.0), ..default() }),
+            ));
+    
+            // Spawn button text
+            ui.spawn((
+                MenuUi,
+                list.add(format!("{button}/Text")),
+                UiLayout::Solid::new().align_x(-1.0).pack(),
+                UiText2dBundle {
+                    text: Text::from_section(button,
+                        TextStyle {
+                            font: assets.font_medium.clone(),
+                            font_size: 32.0,
+                            color: Color::BEVYPUNK_RED,
+                        }),
+                    ..default()
+                }
+            ));
 
-        ui.spawn((
-            MenuUi,
-            board.add("List/Load game/Text"),
-            UiLayout::Solid::new().size((150.0, 50.0)).align_x(-1.0).pack(),
-            UiText2dBundle {
-                text: Text::from_section("LOAD GAME",
-                    TextStyle {
-                        font: assets.font_medium.clone(),
-                        font_size: 36.0,
-                        color: Color::BEVYPUNK_YELLOW,
-                    }),
-                ..default()
-            }
-        ));
-
-        ui.spawn((
-            MenuUi,
-            board.add("List/Settings/Text"),
-            UiLayout::Solid::new().size((50.0, 50.0)).align_x(-1.0).pack(),
-            UiText2dBundle {
-                text: Text::from_section("SETTINGS",
-                    TextStyle {
-                        font: assets.font_medium.clone(),
-                        font_size: 36.0,
-                        color: Color::BEVYPUNK_RED,
-                    }),
-                ..default()
-            }
-        ));
-
-        ui.spawn((
-            MenuUi,
-            board.add("List/Credits/Text"),
-            UiLayout::Solid::new().size((150.0, 50.0)).align_x(-1.0).pack(),
-            UiText2dBundle {
-                text: Text::from_section("CREDITS",
-                    TextStyle {
-                        font: assets.font_medium.clone(),
-                        font_size: 36.0,
-                        color: Color::BEVYPUNK_RED,
-                    }),
-                ..default()
-            }
-        ));
-
-        ui.spawn((
-            MenuUi,
-            board.add("List/Quit game/Text"),
-            UiLayout::Solid::new().size((150.0, 50.0)).align_x(-1.0).pack(),
-            UiText2dBundle {
-                text: Text::from_section("QUIT GAME",
-                    TextStyle {
-                        font: assets.font_medium.clone(),
-                        font_size: 36.0,
-                        color: Color::BEVYPUNK_RED,
-                    }),
-                ..default()
-            }
-        ));
-
-        ui.spawn((
-            MenuUi,
-            board.add("List/Load game"),
-            UiLayout::Window::new().pos(Prc((0.0, 17.0))).size(Prc((100.0, 15.0))).pack(),
-            UiImage2dBundle {
-                texture: assets.button.clone(),
-                sprite: Sprite { color: Color::BEVYPUNK_YELLOW, ..default() },
-                ..default()
-            },
-            ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(20.0), ..default() }),
-        ));
-
-        ui.spawn((
-            MenuUi,
-            board.add("List/Settings"),
-            UiLayout::Window::new().pos(Prc((0.0, 34.0))).size(Prc((100.0, 15.0))).pack(),
-            UiImage2dBundle {
-                texture: assets.button.clone(),
-                sprite: Sprite { color: Color::BEVYPUNK_RED, ..default() },
-                ..default()
-            },
-            ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(20.0), ..default() }),
-        ));
-
-        ui.spawn((
-            MenuUi,
-            board.add("List/Credits"),
-            UiLayout::Window::new().pos(Prc((0.0, 51.0))).size(Prc((100.0, 15.0))).pack(),
-            UiImage2dBundle {
-                texture: assets.button.clone(),
-                sprite: Sprite { color: Color::BEVYPUNK_RED, ..default() },
-                ..default()
-            },
-            ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(20.0), ..default() }),
-        ));
-
-        ui.spawn((
-            MenuUi,
-            board.add("List/Quit game"),
-            UiLayout::Window::new().pos(Prc((0.0, 68.0))).size(Prc((100.0, 15.0))).pack(),
-            UiImage2dBundle {
-                texture: assets.button.clone(),
-                sprite: Sprite { color: Color::BEVYPUNK_RED, ..default() },
-                ..default()
-            },
-            ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(20.0), ..default() }),
-        ));
-
-        /* ui.spawn((
-            MenuUi,
-            board.add("List/Text"),
-            UiLayout::Div::new().margin_t(Abs::SM).br().pack(),
-            UiContent::new((220.0, 35.0)),
-            UiText2dBundle {
-                text: Text::from_section("hello world!",
-                    TextStyle {
-                        font: assets.font.clone(),
-                        font_size: 60.0,
-                        color: Color::YELLOW,
-                    }),
-                ..default()
-            }
-        ));
-
-        ui.spawn((
-            MenuUi,
-            board.add("List/Text2"),
-            UiLayout::Div::new().margin_t(Abs::SM).br().pack(),
-            UiContent::new((220.0, 35.0)),
-            UiText2dBundle {
-                text: Text::from_section("hello world!",
-                    TextStyle {
-                        font: assets.font.clone(),
-                        font_size: 60.0,
-                        color: Color::YELLOW,
-                    }),
-                ..default()
-            }
-        )); */
-
-
-
+            offset += gap + size;
+        }
 
     });
 

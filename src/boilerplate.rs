@@ -6,7 +6,7 @@ pub fn default_plugins() -> PluginGroupBuilder {
         WindowPlugin {
             primary_window: Some(Window {
                 title: "Bevypunk".into(),
-                mode: bevy::window::WindowMode::Windowed,
+                mode: bevy::window::WindowMode::BorderlessFullscreen,
                 resolution: bevy::window::WindowResolution::new(1920., 1080.),
                 ..default()
             }),
@@ -58,7 +58,7 @@ pub fn presetup(mut commands: Commands, asset_server: Res<AssetServer>) {
 
         main_background: asset_server.load("images/main_menu/background.png"),
         main_board: asset_server.load("images/main_menu/board.png"),
-        main_logo: asset_server.load("images/main_menu/bevypunk_bloom.png"),
+        main_logo: asset_server.load("images/main_menu/bevypunk.png"),
         settings_background: asset_server.load("images/settings/background.png"),
     });
 }
@@ -67,10 +67,12 @@ pub fn presetup(mut commands: Commands, asset_server: Res<AssetServer>) {
 
 pub trait BevypunkColorPalette {
     const BEVYPUNK_RED: Color;
+    const BEVYPUNK_RED_DIM: Color;
     const BEVYPUNK_YELLOW: Color;
 }
 impl BevypunkColorPalette for Color {
     const BEVYPUNK_RED: Color = Color::rgba(255./255., 98./255., 81./255., 1.0);
+    const BEVYPUNK_RED_DIM: Color = Color::rgba(172./255., 64./255., 63./255., 1.0);
     const BEVYPUNK_YELLOW: Color = Color::rgba(252./255., 226./255., 8./255., 1.0);
 }
 
@@ -92,7 +94,7 @@ pub fn camera() -> impl Bundle {
         Camera2dBundle {
             transform: Transform::from_xyz(0.0, 0.0, 1000.0),
             camera: Camera {
-                hdr: false,
+                hdr: true,
                 ..default()
             },
             tonemapping: Tonemapping::None,
@@ -127,8 +129,8 @@ fn vfx_bloom_flicker(mut query: Query<&mut BloomSettings>) {
     for mut bloom in &mut query {
         let mut rng = rand::thread_rng();
         if rng.gen_range(0..100) < 20 {
-            bloom.intensity += (rng.gen_range(0.20..0.25)-bloom.intensity)/5.0;
-            bloom.prefilter_settings.threshold += (rng.gen_range(0.25..0.30)-bloom.prefilter_settings.threshold)/5.0;
+            bloom.intensity += (rng.gen_range(0.20..0.30)-bloom.intensity)/6.0;
+            bloom.prefilter_settings.threshold += (rng.gen_range(0.20..0.30)-bloom.prefilter_settings.threshold)/4.0;
         }
     }
 }
