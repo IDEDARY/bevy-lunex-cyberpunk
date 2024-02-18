@@ -24,8 +24,13 @@ pub struct MenuUi;
 #[derive(Resource)]
 pub struct AssetCache {
     pub music: Handle<AudioSource>,
-    pub font: Handle<Font>,
+
+    pub font_light: Handle<Font>,
+    pub font_regular: Handle<Font>,
+    pub font_medium: Handle<Font>,
+    pub font_semibold: Handle<Font>,
     pub font_bold: Handle<Font>,
+
     pub button: Handle<Image>,
 
     pub switch_base: Handle<Image>,
@@ -39,8 +44,13 @@ pub struct AssetCache {
 pub fn presetup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.insert_resource(AssetCache {
         music: asset_server.load("sounds/main_menu.ogg"),
-        font: asset_server.load("fonts/rajdhani/Rajdhani-Medium.ttf"),
+
+        font_light: asset_server.load("fonts/rajdhani/Rajdhani-Light.ttf"),
+        font_regular: asset_server.load("fonts/rajdhani/Rajdhani-Regular.ttf"),
+        font_medium: asset_server.load("fonts/rajdhani/Rajdhani-Medium.ttf"),
+        font_semibold: asset_server.load("fonts/rajdhani/Rajdhani-SemiBold.ttf"),
         font_bold: asset_server.load("fonts/rajdhani/Rajdhani-Bold.ttf"),
+
         button: asset_server.load("images/main_menu/button.png"),
 
         switch_base: asset_server.load("images/settings/switch_base.png"),
@@ -54,6 +64,15 @@ pub fn presetup(mut commands: Commands, asset_server: Res<AssetServer>) {
 }
 
 
+
+pub trait BevypunkColorPalette {
+    const BEVYPUNK_RED: Color;
+    const BEVYPUNK_YELLOW: Color;
+}
+impl BevypunkColorPalette for Color {
+    const BEVYPUNK_RED: Color = Color::rgba(255./255., 98./255., 81./255., 1.0);
+    const BEVYPUNK_YELLOW: Color = Color::rgba(252./255., 226./255., 8./255., 1.0);
+}
 
 
 

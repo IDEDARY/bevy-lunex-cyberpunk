@@ -89,15 +89,98 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
             MenuUi,
             board.add("List/Continue"),
             UiLayout::Window::new().pos(Prc(0.0)).size(Prc((100.0, 15.0))).pack(),
-            UiImage2dBundle::from(assets.button.clone()),
+            UiImage2dBundle {
+                texture: assets.button.clone(),
+                sprite: Sprite { color: Color::BEVYPUNK_RED, ..default() },
+                ..default()
+            },
             ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(20.0), ..default() }),
         ));
 
         ui.spawn((
             MenuUi,
-            board.add("List/New game"),
+            board.add("List/Continue/Text"),
+            UiLayout::Window::FULL.pack(),
+            UiText2dBundle {
+                text: Text::from_section("CONTINUE",
+                    TextStyle {
+                        font: assets.font_regular.clone(),
+                        font_size: 36.0,
+                        color: Color::BEVYPUNK_RED,
+                    }),
+                ..default()
+            }
+        ));
+
+        ui.spawn((
+            MenuUi,
+            board.add("List/Load game/Text"),
+            UiLayout::Window::FULL.pack(),
+            UiText2dBundle {
+                text: Text::from_section("LOAD GAME",
+                    TextStyle {
+                        font: assets.font_regular.clone(),
+                        font_size: 36.0,
+                        color: Color::BEVYPUNK_YELLOW,
+                    }),
+                ..default()
+            }
+        ));
+
+        ui.spawn((
+            MenuUi,
+            board.add("List/Settings/Text"),
+            UiLayout::Window::FULL.pack(),
+            UiText2dBundle {
+                text: Text::from_section("SETTINGS",
+                    TextStyle {
+                        font: assets.font_regular.clone(),
+                        font_size: 36.0,
+                        color: Color::BEVYPUNK_RED,
+                    }),
+                ..default()
+            }
+        ));
+
+        ui.spawn((
+            MenuUi,
+            board.add("List/Credits/Text"),
+            UiLayout::Window::FULL.pack(),
+            UiText2dBundle {
+                text: Text::from_section("CREDITS",
+                    TextStyle {
+                        font: assets.font_medium.clone(),
+                        font_size: 36.0,
+                        color: Color::BEVYPUNK_RED,
+                    }),
+                ..default()
+            }
+        ));
+
+        ui.spawn((
+            MenuUi,
+            board.add("List/Quit game/Text"),
+            UiLayout::Window::FULL.pack(),
+            UiText2dBundle {
+                text: Text::from_section("QUIT GAME",
+                    TextStyle {
+                        font: assets.font_medium.clone(),
+                        font_size: 36.0,
+                        color: Color::BEVYPUNK_RED,
+                    }),
+                ..default()
+            }
+        ));
+
+        ui.spawn((
+            MenuUi,
+            board.add("List/Load game"),
             UiLayout::Window::new().pos(Prc((0.0, 17.0))).size(Prc((100.0, 15.0))).pack(),
-            UiImage2dBundle::from(assets.button.clone()),
+            UiImage2dBundle {
+                texture: assets.button.clone(),
+                sprite: Sprite { color: Color::BEVYPUNK_YELLOW, ..default() },
+                ..default()
+            },
             ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(20.0), ..default() }),
         ));
 
@@ -105,7 +188,11 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
             MenuUi,
             board.add("List/Settings"),
             UiLayout::Window::new().pos(Prc((0.0, 34.0))).size(Prc((100.0, 15.0))).pack(),
-            UiImage2dBundle::from(assets.button.clone()),
+            UiImage2dBundle {
+                texture: assets.button.clone(),
+                sprite: Sprite { color: Color::BEVYPUNK_RED, ..default() },
+                ..default()
+            },
             ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(20.0), ..default() }),
         ));
 
@@ -113,7 +200,11 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
             MenuUi,
             board.add("List/Credits"),
             UiLayout::Window::new().pos(Prc((0.0, 51.0))).size(Prc((100.0, 15.0))).pack(),
-            UiImage2dBundle::from(assets.button.clone()),
+            UiImage2dBundle {
+                texture: assets.button.clone(),
+                sprite: Sprite { color: Color::BEVYPUNK_RED, ..default() },
+                ..default()
+            },
             ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(20.0), ..default() }),
         ));
 
@@ -121,7 +212,11 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
             MenuUi,
             board.add("List/Quit game"),
             UiLayout::Window::new().pos(Prc((0.0, 68.0))).size(Prc((100.0, 15.0))).pack(),
-            UiImage2dBundle::from(assets.button.clone()),
+            UiImage2dBundle {
+                texture: assets.button.clone(),
+                sprite: Sprite { color: Color::BEVYPUNK_RED, ..default() },
+                ..default()
+            },
             ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(20.0), ..default() }),
         ));
 
