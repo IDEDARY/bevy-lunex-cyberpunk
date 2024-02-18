@@ -40,7 +40,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
         ui.spawn((
             MenuUi,
             root.add("Background"),
-            UiLayout::Solid::new().size(Abs((2968.0, 1656.0))).cover(Cover::Full).pack(),
+            UiLayout::Solid::new().size((2968.0, 1656.0)).cover(Cover::Full).pack(),
             UiImage2dBundle::from(assets.main_background.clone())
         ));
 
@@ -49,7 +49,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
         ui.spawn((
             MenuUi,
             board.clone(),
-            UiLayout::Solid::new().size(Abs((896.0, 1656.0))).align_x(Align(-0.74)).pack(),
+            UiLayout::Solid::new().size((896.0, 1656.0)).align_x(Align(-0.74)).pack(),
             UiImage2dBundle::from(assets.main_board.clone())
         ));
 
@@ -74,7 +74,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
         ui.spawn((
             MenuUi,
             board.add("Boundary/Logo"),
-            UiLayout::Solid::new().size(Abs((1120.0, 474.0))).pack(),
+            UiLayout::Solid::new().size((1120.0, 474.0)).pack(),
             UiImage2dBundle::from(assets.main_logo.clone())
         ));
 
@@ -82,7 +82,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
         ui.spawn((
             MenuUi,
             board.add("List"),
-            UiLayout::Window::new().pos(Prc((23.0, 38.0))).size(Prc((54.0, 42.0))).pack(),
+            UiLayout::Window::new().pos(Prc((23.0, 38.0))).size(Prc((54.0, 37.0))).pack(),
         ));
 
         ui.spawn((
@@ -100,11 +100,11 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
         ui.spawn((
             MenuUi,
             board.add("List/Continue/Text"),
-            UiLayout::Window::FULL.pack(),
+            UiLayout::Solid::new().size((150.0, 50.0)).align_x(-1.0).pack(),
             UiText2dBundle {
                 text: Text::from_section("CONTINUE",
                     TextStyle {
-                        font: assets.font_regular.clone(),
+                        font: assets.font_medium.clone(),
                         font_size: 36.0,
                         color: Color::BEVYPUNK_RED,
                     }),
@@ -115,11 +115,11 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
         ui.spawn((
             MenuUi,
             board.add("List/Load game/Text"),
-            UiLayout::Window::FULL.pack(),
+            UiLayout::Solid::new().size((150.0, 50.0)).align_x(-1.0).pack(),
             UiText2dBundle {
                 text: Text::from_section("LOAD GAME",
                     TextStyle {
-                        font: assets.font_regular.clone(),
+                        font: assets.font_medium.clone(),
                         font_size: 36.0,
                         color: Color::BEVYPUNK_YELLOW,
                     }),
@@ -130,11 +130,11 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
         ui.spawn((
             MenuUi,
             board.add("List/Settings/Text"),
-            UiLayout::Window::FULL.pack(),
+            UiLayout::Solid::new().size((150.0, 50.0)).align_x(-1.0).pack(),
             UiText2dBundle {
                 text: Text::from_section("SETTINGS",
                     TextStyle {
-                        font: assets.font_regular.clone(),
+                        font: assets.font_medium.clone(),
                         font_size: 36.0,
                         color: Color::BEVYPUNK_RED,
                     }),
@@ -145,7 +145,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
         ui.spawn((
             MenuUi,
             board.add("List/Credits/Text"),
-            UiLayout::Window::FULL.pack(),
+            UiLayout::Solid::new().size((150.0, 50.0)).align_x(-1.0).pack(),
             UiText2dBundle {
                 text: Text::from_section("CREDITS",
                     TextStyle {
@@ -160,7 +160,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
         ui.spawn((
             MenuUi,
             board.add("List/Quit game/Text"),
-            UiLayout::Window::FULL.pack(),
+            UiLayout::Solid::new().size((150.0, 50.0)).align_x(-1.0).pack(),
             UiText2dBundle {
                 text: Text::from_section("QUIT GAME",
                     TextStyle {
