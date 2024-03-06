@@ -40,7 +40,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>) {
         ui.spawn((
             MenuUi,
             root.add("Background"),
-            UiLayout::Solid::new().size((2968.0, 1656.0)).cover(Cover::Full).pack(),
+            UiLayout::Solid::new().size((2968.0, 1656.0)).cover(Cover::Fill).pack(),
             UiImage2dBundle::from(assets.main_background.clone())
         ));
 
