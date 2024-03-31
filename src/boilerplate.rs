@@ -41,7 +41,7 @@ pub struct AssetCache {
     pub main_logo: Handle<Image>,
     pub settings_background: Handle<Image>,
 }
-pub fn presetup(mut commands: Commands, asset_server: Res<AssetServer>) {
+pub fn prestartup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.insert_resource(AssetCache {
         music: asset_server.load("sounds/main_menu.ogg"),
 

@@ -9,12 +9,12 @@ fn main() {
         .add_plugins((default_plugins(), UiPlugin::<NoData, NoData, MenuUi>::new()))
         //.add_plugins(UiDebugPlugin::<NoData, NoData, MenuUi>::new())
         .add_plugins(VFXPlugin)
-        .add_systems(PreStartup, presetup)
-        .add_systems(Startup, setup)
+        .add_systems(PreStartup, prestartup)
+        .add_systems(Startup, startup)
         .run();
 }
 
-fn setup(mut commands: Commands, assets: Res<AssetCache>) {
+fn startup(mut commands: Commands, assets: Res<AssetCache>) {
 
     // Spawn camera
     commands.spawn(camera());
