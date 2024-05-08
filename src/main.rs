@@ -103,14 +103,14 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
         ui.spawn((
             MenuUi,
             list.clone(),
-            UiLayout::Window::new().pos(Rl((22.0, 41.0))).size(Rl((55.0, 35.0))).pack(),
+            UiLayout::Window::new().pos(Rl((22.0, 33.0))).size(Rl((55.0, 34.0))).pack(),
         ));
 
         // Spawn buttons
         let gap = 3.0;
         let size = 14.0;
         let mut offset = 0.0;
-        for button in ["CONTINUE", "LOAD GAME", "SETTINGS", "CREDITS", "QUIT GAME"] {
+        for button in ["CONTINUE", "NEW GAME", "LOAD GAME", "SETTINGS", "ADDITIONAL CONTENT", "CREDITS", "QUIT GAME"] {
 
             // Spawn button image
             ui.spawn((
@@ -119,7 +119,7 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
                 UiLayout::Window::new().y(Rl(offset)).size(Rl((100.0, size))).pack(),
                 UiImage2dBundle {
                     texture: assets.button.clone(),
-                    sprite: Sprite { color: Color::BEVYPUNK_RED_DIM.with_a(1.5), ..default() },
+                    sprite: Sprite { color: Color::BEVYPUNK_RED_DIM.with_a(0.0), ..default() },
                     ..default()
                 },
                 ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(32.0), ..default() }),
@@ -134,8 +134,8 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
                     text: Text::from_section(button,
                         TextStyle {
                             font: assets.font_medium.clone(),
-                            font_size: 70.0,
-                            color: Color::BEVYPUNK_RED.with_s(1.1).with_a(1.5) * 1.1,
+                            font_size: 60.0,
+                            color: Color::BEVYPUNK_RED,
                         }),
                     ..default()
                 }

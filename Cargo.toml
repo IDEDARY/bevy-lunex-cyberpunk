@@ -28,8 +28,8 @@
     "x11",
     #"default_font",
     "tonemapping_luts",
-    "dynamic_linking"
+    #"dynamic_linking"
   ] }
-  #bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev" }
-  bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex" }
+  bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev" }
+  #bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex" }
   rand = "0.8.5"
