@@ -14,10 +14,34 @@ fn main() {
         .run();
 }
 
-fn startup(mut commands: Commands, assets: Res<AssetCache>) {
+fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>) {
 
     // Spawn camera
-    commands.spawn(camera());
+    commands.spawn(camera()).with_children(|camera| {
+
+        // Spawn cursor
+        camera.spawn ((
+            Cursor2d::new().native_cursor(false)
+                .register_cursor(CursorIcon::Default, 0, (14.0, 14.0))
+                .register_cursor(CursorIcon::Copy, 1, (10.0, 12.0))
+                .register_cursor(CursorIcon::Grab, 2, (40.0, 40.0)),
+
+            SpriteSheetBundle {
+                texture: assets.cursor.clone(),
+                atlas: TextureAtlas {
+                    layout: atlas_layout.add(TextureAtlasLayout::from_grid(Vec2::splat(80.0), 3, 1, None, None)),
+                    index: 0,
+                },
+                transform: Transform { scale: Vec3::new(0.45, 0.45, 1.0), ..default() },
+                sprite: Sprite {
+                    color: Color::BEVYPUNK_YELLOW.with_a(2.0).with_l(0.68),
+                    anchor: bevy::sprite::Anchor::TopLeft,
+                    ..default()
+                },
+                ..default()
+            },
+        ));
+    });
 
     // Spawn audio
     commands.spawn( AudioBundle { source: assets.music.clone(), settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new(0.5)) } );
@@ -46,11 +70,18 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>) {
 
 
         // Spawn the board
-        let board = root.add("Board");
+        let board = root.add("Solid");
         ui.spawn((
             MenuUi,
             board.clone(),
-            UiLayout::Solid::new().size((896.0, 1656.0)).align_x(-0.74).pack(),
+            UiLayout::Solid::new().size((879.0, 1600.0)).align_x(-0.74).pack(),
+        ));
+
+        let board = board.add("Board");
+        ui.spawn((
+            MenuUi,
+            board.clone(),
+            UiLayout::Window::new().x(Rl(50.0)).anchor(Anchor::TopCenter).size(Rl(105.0)).pack(),
             UiImage2dBundle::from(assets.main_board.clone())
         ));
 
@@ -88,12 +119,12 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>) {
                 UiLayout::Window::new().y(Rl(offset)).size(Rl((100.0, size))).pack(),
                 UiImage2dBundle {
                     texture: assets.button.clone(),
-                    sprite: Sprite { color: Color::BEVYPUNK_RED_DIM, ..default() },
+                    sprite: Sprite { color: Color::BEVYPUNK_RED_DIM.with_a(1.5), ..default() },
                     ..default()
                 },
                 ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(32.0), ..default() }),
             ));
-    
+
             // Spawn button text
             ui.spawn((
                 MenuUi,
@@ -104,7 +135,7 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>) {
                         TextStyle {
                             font: assets.font_medium.clone(),
                             font_size: 70.0,
-                            color: Color::BEVYPUNK_RED,
+                            color: Color::BEVYPUNK_RED.with_s(1.1).with_a(1.5) * 1.1,
                         }),
                     ..default()
                 }

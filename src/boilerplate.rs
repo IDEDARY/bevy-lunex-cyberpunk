@@ -31,6 +31,8 @@ pub struct AssetCache {
     pub font_semibold: Handle<Font>,
     pub font_bold: Handle<Font>,
 
+    pub cursor: Handle<Image>,
+
     pub button: Handle<Image>,
 
     pub switch_base: Handle<Image>,
@@ -50,6 +52,8 @@ pub fn prestartup(mut commands: Commands, asset_server: Res<AssetServer>) {
         font_medium: asset_server.load("fonts/rajdhani/Rajdhani-Medium.ttf"),
         font_semibold: asset_server.load("fonts/rajdhani/Rajdhani-SemiBold.ttf"),
         font_bold: asset_server.load("fonts/rajdhani/Rajdhani-Bold.ttf"),
+
+        cursor: asset_server.load("images/cursor.png"),
 
         button: asset_server.load("images/main_menu/button.png"),
 
