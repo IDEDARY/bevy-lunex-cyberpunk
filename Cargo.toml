@@ -10,8 +10,8 @@
   opt-level = 1
 
 [dependencies]
-  #bevy = { version = "0.12.1", default_features = false, features = [
-  bevy = { git = "https://github.com/bevyengine/bevy", default_features = false, features = [
+  bevy = { version = "0.13.0", default_features = false, features = [
+  #bevy = { git = "https://github.com/bevyengine/bevy", default_features = false, features = [
     "bevy_asset",
     "bevy_audio",
     #"bevy_gilrs",
@@ -20,7 +20,7 @@
     #"bevy_pbr",
     "bevy_render",
     #"bevy_sprite",
-    #"bevy_text",
+    "bevy_text",
     "multi-threaded",
     "png",
     "hdr",

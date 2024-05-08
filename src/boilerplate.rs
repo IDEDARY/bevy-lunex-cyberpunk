@@ -24,8 +24,15 @@ pub struct MenuUi;
 #[derive(Resource)]
 pub struct AssetCache {
     pub music: Handle<AudioSource>,
-    pub font: Handle<Font>,
+
+    pub font_light: Handle<Font>,
+    pub font_regular: Handle<Font>,
+    pub font_medium: Handle<Font>,
+    pub font_semibold: Handle<Font>,
     pub font_bold: Handle<Font>,
+
+    pub cursor: Handle<Image>,
+
     pub button: Handle<Image>,
 
     pub switch_base: Handle<Image>,
@@ -36,11 +43,18 @@ pub struct AssetCache {
     pub main_logo: Handle<Image>,
     pub settings_background: Handle<Image>,
 }
-pub fn presetup(mut commands: Commands, asset_server: Res<AssetServer>) {
+pub fn prestartup(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.insert_resource(AssetCache {
         music: asset_server.load("sounds/main_menu.ogg"),
-        font: asset_server.load("fonts/rajdhani/Rajdhani-Medium.ttf"),
+
+        font_light: asset_server.load("fonts/rajdhani/Rajdhani-Light.ttf"),
+        font_regular: asset_server.load("fonts/rajdhani/Rajdhani-Regular.ttf"),
+        font_medium: asset_server.load("fonts/rajdhani/Rajdhani-Medium.ttf"),
+        font_semibold: asset_server.load("fonts/rajdhani/Rajdhani-SemiBold.ttf"),
         font_bold: asset_server.load("fonts/rajdhani/Rajdhani-Bold.ttf"),
+
+        cursor: asset_server.load("images/cursor.png"),
+
         button: asset_server.load("images/main_menu/button.png"),
 
         switch_base: asset_server.load("images/settings/switch_base.png"),
@@ -54,6 +68,17 @@ pub fn presetup(mut commands: Commands, asset_server: Res<AssetServer>) {
 }
 
 
+
+pub trait BevypunkColorPalette {
+    const BEVYPUNK_RED: Color;
+    const BEVYPUNK_RED_DIM: Color;
+    const BEVYPUNK_YELLOW: Color;
+}
+impl BevypunkColorPalette for Color {
+    const BEVYPUNK_RED: Color = Color::rgba(255./255., 98./255., 81./255., 1.0);
+    const BEVYPUNK_RED_DIM: Color = Color::rgba(172./255., 64./255., 63./255., 1.0);
+    const BEVYPUNK_YELLOW: Color = Color::rgba(252./255., 226./255., 8./255., 1.0);
+}
 
 
 
@@ -80,13 +105,13 @@ pub fn camera() -> impl Bundle {
             ..default()
         },
         BloomSettings {
-            intensity: 0.20,
-            low_frequency_boost: 0.8,
+            intensity: 0.025,
+            low_frequency_boost: 0.7,
             low_frequency_boost_curvature: 0.95,
             high_pass_frequency: 0.9,
             prefilter_settings: BloomPrefilterSettings {
-                threshold: 0.25,
-                threshold_softness: 0.1,
+                threshold: 0.0,
+                threshold_softness: 0.0,
             },
             composite_mode: BloomCompositeMode::Additive,
         },
@@ -108,8 +133,8 @@ fn vfx_bloom_flicker(mut query: Query<&mut BloomSettings>) {
     for mut bloom in &mut query {
         let mut rng = rand::thread_rng();
         if rng.gen_range(0..100) < 20 {
-            bloom.intensity += (rng.gen_range(0.20..0.25)-bloom.intensity)/5.0;
-            bloom.prefilter_settings.threshold += (rng.gen_range(0.25..0.30)-bloom.prefilter_settings.threshold)/5.0;
+            bloom.intensity += (rng.gen_range(0.20..0.30)-bloom.intensity)/6.0;
+            bloom.prefilter_settings.threshold += (rng.gen_range(0.20..0.30)-bloom.prefilter_settings.threshold)/4.0;
         }
     }
 }
