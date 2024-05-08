@@ -7,11 +7,10 @@
   repository  = "https://github.com/idedary/bevypunk"
 
 [profile.dev]
-  opt-level = 1
+  opt-level = 3
 
 [dependencies]
-  bevy = { version = "0.13.0", default_features = false, features = [
-  #bevy = { git = "https://github.com/bevyengine/bevy", default_features = false, features = [
+  bevy = { version = "0.13.2", default_features = false, features = [
     "bevy_asset",
     "bevy_audio",
     #"bevy_gilrs",
@@ -28,8 +27,8 @@
     "x11",
     #"default_font",
     "tonemapping_luts",
-    #"dynamic_linking"
+    "dynamic_linking"
   ] }
-  bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev" }
-  #bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex" }
+  #bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev" }
+  bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex" }
   rand = "0.8.5"
