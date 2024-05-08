@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, sprite::Anchor};
 use bevy_lunex::prelude::*;
 
 mod boilerplate;
@@ -33,14 +33,14 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>) {
         ui.spawn((
             MenuUi,
             root.clone(),
-            UiLayout::Window::FULL.pack(),
+            UiLayout::Window::full().pack(),
         ));
 
         // Spawn the background
         ui.spawn((
             MenuUi,
             root.add("Background"),
-            UiLayout::Solid::new().size((2968.0, 1656.0)).cover(Cover::Fill).pack(),
+            UiLayout::Solid::new().size((2968.0, 1656.0)).scaling(Scaling::Fill).pack(),
             UiImage2dBundle::from(assets.main_background.clone())
         ));
 
@@ -58,7 +58,7 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>) {
         ui.spawn((
             MenuUi,
             board.add("Boundary"),
-            UiLayout::Window::new().pos(Prc((0.0, 13.0))).size(Prc((105.0, 20.0))).pack(),
+            UiLayout::Window::new().y(Rl(13.0)).size(Rl((105.0, 20.0))).pack(),
         ));
         ui.spawn((
             MenuUi,
@@ -72,7 +72,7 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>) {
         ui.spawn((
             MenuUi,
             list.clone(),
-            UiLayout::Window::new().pos(Prc((22.0, 41.0))).size(Prc((55.0, 35.0))).pack(),
+            UiLayout::Window::new().pos(Rl((22.0, 41.0))).size(Rl((55.0, 35.0))).pack(),
         ));
 
         // Spawn buttons
@@ -85,7 +85,7 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>) {
             ui.spawn((
                 MenuUi,
                 list.add(button),
-                UiLayout::Window::new().pos(Prc((0.0, offset))).size(Prc((100.0, size))).pack(),
+                UiLayout::Window::new().y(Rl(offset)).size(Rl((100.0, size))).pack(),
                 UiImage2dBundle {
                     texture: assets.button.clone(),
                     sprite: Sprite { color: Color::BEVYPUNK_RED_DIM, ..default() },
@@ -98,14 +98,12 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>) {
             ui.spawn((
                 MenuUi,
                 list.add(format!("{button}/Text")),
-                UiLayout::Solid::new().align_x(-0.85).pack(),
-                //UiLayout::Div::new().margin_l(Prc(5.0)).br().pack(),
-                //UiContent::default(),
+                UiLayout::Window::new().pos(Rl((5., 50.))).anchor(Anchor::CenterLeft).pack(),
                 UiText2dBundle {
                     text: Text::from_section(button,
                         TextStyle {
                             font: assets.font_medium.clone(),
-                            font_size: 50.0,
+                            font_size: 70.0,
                             color: Color::BEVYPUNK_RED,
                         }),
                     ..default()
