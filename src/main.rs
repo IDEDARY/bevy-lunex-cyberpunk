@@ -1,140 +1,148 @@
-pub mod prelude {
-    // Bevy + Bevy_Lunex
-    pub use bevy::prelude::*;
-    pub use bevy_lunex::prelude::*;
-    
-    // STD + Usefull stuff
-    pub use std::borrow::Borrow;
-    pub use bevy::window::PrimaryWindow;
+use bevy::{prelude::*, sprite::Anchor};
+use bevy_lunex::prelude::*;
 
-    // Global access to this data
-    pub use crate::MyData;
-    pub use crate::MenuAssetCache;
-    pub use crate::interface::*;
-    pub use crate::{COLOR_PRIMARY, COLOR_SECONDARY};
-}
-use prelude::*;
-import_use!(vfx, interface);
-
-pub const BEVYPUNK_RED: Color = Color::rgba(255./255., 98./255., 81./255., 1.0);
-pub const BEVYPUNK_YELLOW: Color = Color::rgba(252./255., 226./255., 8./255., 1.0);
-
-pub const COLOR_PRIMARY: Color = BEVYPUNK_RED;
-pub const COLOR_SECONDARY: Color = BEVYPUNK_YELLOW;
+mod boilerplate;
+use boilerplate::*;
 
 fn main() {
     App::new()
-        // Game boilerplate
-        .add_plugins((DefaultPlugins.set (
-            WindowPlugin {
-                primary_window: Some(Window {
-                    title: "Bevypunk".into(),
-                    mode: bevy::window::WindowMode::BorderlessFullscreen,
-                    ..default()
-                }),
-                ..default()
-            }
-        ), bevy::diagnostic::FrameTimeDiagnosticsPlugin))
-        
-        // Lunex boilerplate
-        .add_plugins(LunexUiPlugin2D::<MyData>::new())
-        //.add_plugins(LunexUiDebugPlugin2D::<MyData>::new())
-
-        // Lunex logic
-        .add_plugins(InterfacePlugin::<MyData>::new())
-
-        // Game logic
+        .add_plugins((default_plugins(), UiPlugin::<NoData, NoData, MenuUi>::new()))
+        //.add_plugins(UiDebugPlugin::<NoData, NoData, MenuUi>::new())
         .add_plugins(VFXPlugin)
-        .add_systems(PreStartup, presetup)
-        .add_systems(Startup, setup)
-
+        .add_systems(PreStartup, prestartup)
+        .add_systems(Startup, startup)
         .run();
 }
 
-/// This function loads all big assets into memory to awoid waiting for async load times
-fn presetup(mut commands: Commands, asset_server: Res<AssetServer>) {
-    // LOAD ALL ASSETS INTO CACHE
-    commands.insert_resource(MenuAssetCache {
-        font: asset_server.load("fonts/rajdhani/Rajdhani-Medium.ttf"),
-        font_bold: asset_server.load("fonts/rajdhani/Rajdhani-Bold.ttf"),
-        button: asset_server.load("images/main_menu/button.png"),
+fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>) {
 
-        switch_base: asset_server.load("images/settings/switch_base.png"),
-        switch_head: asset_server.load("images/settings/switch_head.png"),
+    // Spawn camera
+    commands.spawn(camera()).with_children(|camera| {
 
-        main_background: asset_server.load("images/main_menu/background.png"),
-        main_board: asset_server.load("images/main_menu/board.png"),
-        main_logo: asset_server.load("images/main_menu/bevypunk.png"),
-        settings_background: asset_server.load("images/settings/background.png"),
-    });
-}
+        // Spawn cursor
+        camera.spawn ((
+            Cursor2d::new().native_cursor(false)
+                .register_cursor(CursorIcon::Default, 0, (14.0, 14.0))
+                .register_cursor(CursorIcon::Copy, 1, (10.0, 12.0))
+                .register_cursor(CursorIcon::Grab, 2, (40.0, 40.0)),
 
-/// This function is RUN on start of the app
-fn setup(mut commands: Commands, asset_server: Res<AssetServer>, assets: Res<MenuAssetCache>, mut textures: ResMut<Assets<TextureAtlas>>, window: Query<Entity, (With<Window>, With<PrimaryWindow>)>) {
-
-    // Start playing the main menu music
-    commands.spawn(
-        AudioBundle {
-            source: asset_server.load("sounds/main_menu.ogg"),
-            settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new_relative(0.5)),
-        }
-    );
-    
-    // Spawn the camera
-    commands.spawn(camera());
-
-    // Spawn cursor
-    commands.spawn ((
-        Cursor::new().with_os_cursor(false).add_sprite_offset(Vec2::splat(14.0)).add_sprite_offset(Vec2::new(10.0, 12.0)).add_sprite_offset(Vec2::splat(40.0)),
-        SpriteSheetBundle {
-            texture_atlas: textures.add(TextureAtlas::from_grid(asset_server.load("images/cursor.png"), Vec2::splat(80.0), 3, 1, None, None)),
-            transform: Transform { translation: Vec3::new(0.0, 0.0, 800.0), scale: Vec3::new(0.5, 0.5, 1.0), ..default() },
-            sprite: TextureAtlasSprite {
-                color: COLOR_SECONDARY.with_a(2.0).with_l(0.68),
-                anchor: bevy::sprite::Anchor::TopLeft,
+            SpriteSheetBundle {
+                texture: assets.cursor.clone(),
+                atlas: TextureAtlas {
+                    layout: atlas_layout.add(TextureAtlasLayout::from_grid(Vec2::splat(80.0), 3, 1, None, None)),
+                    index: 0,
+                },
+                transform: Transform { scale: Vec3::new(0.45, 0.45, 1.0), ..default() },
+                sprite: Sprite {
+                    color: Color::BEVYPUNK_YELLOW.with_a(2.0).with_l(0.68),
+                    anchor: bevy::sprite::Anchor::TopLeft,
+                    ..default()
+                },
                 ..default()
             },
-            ..default()
+        ));
+    });
+
+    // Spawn audio
+    commands.spawn( AudioBundle { source: assets.music.clone(), settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new(0.5)) } );
+
+    // Spawn the master ui
+    commands.spawn((
+        UiTreeBundle::<NoData, NoData, MenuUi>::from(UiTree::new("Bevypunk")),
+        MovableByCamera,
+    )).with_children(|ui| {
+
+        // Spawn the root div
+        let root = UiLink::path("Root");
+        ui.spawn((
+            MenuUi,
+            root.clone(),
+            UiLayout::Window::full().pack(),
+        ));
+
+        // Spawn the background
+        ui.spawn((
+            MenuUi,
+            root.add("Background"),
+            UiLayout::Solid::new().size((2968.0, 1656.0)).scaling(Scaling::Fill).pack(),
+            UiImage2dBundle::from(assets.main_background.clone())
+        ));
+
+
+        // Spawn the board
+        let board = root.add("Solid");
+        ui.spawn((
+            MenuUi,
+            board.clone(),
+            UiLayout::Solid::new().size((879.0, 1600.0)).align_x(-0.74).pack(),
+        ));
+
+        let board = board.add("Board");
+        ui.spawn((
+            MenuUi,
+            board.clone(),
+            UiLayout::Window::new().x(Rl(50.0)).anchor(Anchor::TopCenter).size(Rl(105.0)).pack(),
+            UiImage2dBundle::from(assets.main_board.clone())
+        ));
+
+        // Spawn the logo
+        ui.spawn((
+            MenuUi,
+            board.add("Boundary"),
+            UiLayout::Window::new().y(Rl(13.0)).size(Rl((105.0, 20.0))).pack(),
+        ));
+        ui.spawn((
+            MenuUi,
+            board.add("Boundary/Logo"),
+            UiLayout::Solid::new().size((1240.0, 381.0)).pack(),
+            UiImage2dBundle::from(assets.main_logo.clone())
+        ));
+
+        // Spawn button boundary
+        let list = board.add("List");
+        ui.spawn((
+            MenuUi,
+            list.clone(),
+            UiLayout::Window::new().pos(Rl((22.0, 41.0))).size(Rl((55.0, 35.0))).pack(),
+        ));
+
+        // Spawn buttons
+        let gap = 3.0;
+        let size = 14.0;
+        let mut offset = 0.0;
+        for button in ["CONTINUE", "LOAD GAME", "SETTINGS", "CREDITS", "QUIT GAME"] {
+
+            // Spawn button image
+            ui.spawn((
+                MenuUi,
+                list.add(button),
+                UiLayout::Window::new().y(Rl(offset)).size(Rl((100.0, size))).pack(),
+                UiImage2dBundle {
+                    texture: assets.button.clone(),
+                    sprite: Sprite { color: Color::BEVYPUNK_RED_DIM.with_a(1.5), ..default() },
+                    ..default()
+                },
+                ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(32.0), ..default() }),
+            ));
+
+            // Spawn button text
+            ui.spawn((
+                MenuUi,
+                list.add(format!("{button}/Text")),
+                UiLayout::Window::new().pos(Rl((5., 50.))).anchor(Anchor::CenterLeft).pack(),
+                UiText2dBundle {
+                    text: Text::from_section(button,
+                        TextStyle {
+                            font: assets.font_medium.clone(),
+                            font_size: 70.0,
+                            color: Color::BEVYPUNK_RED.with_s(1.1).with_a(1.5) * 1.1,
+                        }),
+                    ..default()
+                }
+            ));
+
+            offset += gap + size;
         }
-    ));
+    });
 
-    // Create new UiTree (a UI context / DOM)
-    let mut tree: UiTree<MyData> = UiTree::new("Interface");
-
-    // Construct the route Menu first
-    rt::Menu::construct(&mut commands, &assets, &mut tree).unwrap();
-
-    // Print nice debug tree in console
-    println!("{}", tree.tree());
-
-    // Insert the UI into the window
-    let window = window.single();
-    commands.entity(window).insert(tree.bundle());
-}
-
-/// # My Data
-/// This struct is used to define which data my widgets will need to access and share across the UiTree
-#[derive(Debug, Clone, Component, Default)]
-pub struct MyData {
-    pub animate_trigger: bool,
-    pub animate_slider : f32,
-}
-
-/// # Menu Asset Cache
-/// On PreStartup, load all UI assets ahead of time.
-/// 
-/// Makes it more smooth when dynamically building UI.
-#[derive(Resource)]
-pub struct MenuAssetCache {
-    pub font: Handle<Font>,
-    pub font_bold: Handle<Font>,
-    pub button: Handle<Image>,
-
-    pub switch_base: Handle<Image>,
-    pub switch_head: Handle<Image>,
-
-    pub main_background: Handle<Image>,
-    pub main_board: Handle<Image>,
-    pub main_logo: Handle<Image>,
-    pub settings_background: Handle<Image>,
 }

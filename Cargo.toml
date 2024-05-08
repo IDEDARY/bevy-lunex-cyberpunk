@@ -1,18 +1,35 @@
 [package]
-name = "bevypunk"
-version = "0.1.0"
-edition = "2021"
+  name = "bevypunk"
+  authors     = ["Dominik Kaspar"]
+  version     = "0.0.1"
+  edition     = "2021"
+  license     = "MIT OR Apache-2.0"
+  repository  = "https://github.com/idedary/bevypunk"
 
 [profile.dev]
-opt-level = 1
-
+  opt-level = 1
 
 [dependencies]
-ahash = "^0.8"
-rand = "^0.8"
-mathio = "^0.2"
-
-bevy_lunex = "0.0.11"
-#bevy = { version = "0.12.1" }
-#bevy_lunex = { git = "https://github.com/bytestring-net/bevy-lunex" }
-bevy = { version = "0.12.1", features = ["dynamic_linking"] }
+  bevy = { version = "0.13.0", default_features = false, features = [
+  #bevy = { git = "https://github.com/bevyengine/bevy", default_features = false, features = [
+    "bevy_asset",
+    "bevy_audio",
+    #"bevy_gilrs",
+    "bevy_winit",
+    "bevy_core_pipeline",
+    #"bevy_pbr",
+    "bevy_render",
+    #"bevy_sprite",
+    "bevy_text",
+    "multi-threaded",
+    "png",
+    "hdr",
+    "vorbis",
+    "x11",
+    #"default_font",
+    "tonemapping_luts",
+    "dynamic_linking"
+  ] }
+  #bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev" }
+  bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex" }
+  rand = "0.8.5"
