@@ -11,7 +11,7 @@ fn main() {
         .add_plugins(DefaultPickingPlugins)
         //.add_plugins(UiDebugPlugin::<NoData, NoData, MenuUi>::new())
         .add_plugins(VFXPlugin)
-        .add_systems(PreStartup, prestartup)
+        .add_systems(PreStartup, cache_assets)
         .add_systems(Startup, startup)
         .run();
 }
