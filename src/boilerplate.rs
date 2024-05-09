@@ -1,3 +1,4 @@
+use bevy::render::settings::WgpuSettings;
 use bevy::{app::PluginGroupBuilder, prelude::*};
 
 // Function to setup the app
@@ -6,11 +7,21 @@ pub fn default_plugins() -> PluginGroupBuilder {
         WindowPlugin {
             primary_window: Some(Window {
                 title: "Bevypunk".into(),
-                mode: bevy::window::WindowMode::BorderlessFullscreen,
+                mode: bevy::window::WindowMode::Windowed,
                 present_mode: bevy::window::PresentMode::AutoNoVsync,
                 resolution: bevy::window::WindowResolution::new(1920., 1080.),
                 ..default()
             }),
+            ..default()
+        }
+    ).set (
+        bevy::render::RenderPlugin {
+            render_creation: bevy::render::settings::RenderCreation::Automatic(
+                WgpuSettings {
+                    power_preference: bevy::render::settings::PowerPreference::HighPerformance,
+                    ..default()
+                }
+            ),
             ..default()
         }
     )

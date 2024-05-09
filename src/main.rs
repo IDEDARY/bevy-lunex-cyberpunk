@@ -1,5 +1,6 @@
 use bevy::{prelude::*, sprite::Anchor};
 use bevy_lunex::prelude::*;
+use bevy_mod_picking::prelude::*;
 
 mod boilerplate;
 use boilerplate::*;
@@ -7,6 +8,7 @@ use boilerplate::*;
 fn main() {
     App::new()
         .add_plugins((default_plugins(), UiPlugin::<NoData, NoData, MenuUi>::new()))
+        .add_plugins(DefaultPickingPlugins)
         //.add_plugins(UiDebugPlugin::<NoData, NoData, MenuUi>::new())
         .add_plugins(VFXPlugin)
         .add_systems(PreStartup, prestartup)
@@ -123,6 +125,13 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
                     ..default()
                 },
                 ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(32.0), ..default() }),
+                PickableBundle::default(),
+                //On::<Pointer<Down>>::send_event::<DoSomethingComplex>(),
+                On::<Pointer<Click>>::target_component_mut::<Sprite>(|_, sprite| {
+                    println!("HEY");
+                    sprite.color = Color::BEVYPUNK_YELLOW;
+                }),
+
             ));
 
             // Spawn button text

@@ -18,7 +18,7 @@
     "bevy_core_pipeline",
     #"bevy_pbr",
     "bevy_render",
-    #"bevy_sprite",
+    "bevy_sprite",
     "bevy_text",
     "multi-threaded",
     "png",
@@ -31,4 +31,5 @@
   ] }
   #bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev" }
   bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex" }
+  bevy_mod_picking = { version = "0.18.2", default_features = false, features = ["backend_raycast","backend_sprite","debug","selection","highlight",] }
   rand = "0.8.5"
