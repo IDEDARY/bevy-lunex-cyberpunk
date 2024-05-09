@@ -77,7 +77,7 @@ pub fn default_plugins() -> PluginGroupBuilder {
         WindowPlugin {
             primary_window: Some(Window {
                 title: "Bevypunk".into(),
-                mode: bevy::window::WindowMode::Windowed,
+                mode: bevy::window::WindowMode::BorderlessFullscreen,
                 present_mode: bevy::window::PresentMode::AutoNoVsync,
                 resolution: bevy::window::WindowResolution::new(1920.0, 1080.0),
                 ..default()

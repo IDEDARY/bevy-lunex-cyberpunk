@@ -1,4 +1,4 @@
-use bevy::{prelude::*, sprite::Anchor};
+use bevy::{app::AppExit, prelude::*, sprite::Anchor};
 use bevy_lunex::prelude::*;
 use bevy_mod_picking::prelude::*;
 
@@ -22,6 +22,10 @@ fn main() {
 }
 
 fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>) {
+
+
+    // #=====================#
+    // #=== GENERIC SETUP ===#
 
     // Spawn camera
     commands.spawn(camera()).with_children(|camera| {
@@ -58,6 +62,10 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
 
     // Spawn audio
     commands.spawn( AudioBundle { source: assets.music.clone(), settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new(0.5)) } );
+
+
+    // #======================#
+    // #=== USER INTERFACE ===#
 
     // Spawn the master ui tree
     commands.spawn((
@@ -111,6 +119,10 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
             UiImage2dBundle::from(assets.main_logo.clone())
         ));
 
+
+        // #=========================#
+        // #=== MAIN MENU BUTTONS ===#
+
         // Spawn button boundary
         let list = board.add("List");
         ui.spawn((
@@ -123,12 +135,20 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
         let gap = 3.0;
         let size = 14.0;
         let mut offset = 0.0;
-        for button in ["CONTINUE", "NEW GAME", "LOAD GAME", "SETTINGS", "ADDITIONAL CONTENT", "CREDITS", "QUIT GAME"] {
+        for button in [
+            MainMenuButton::Continue,
+            MainMenuButton::NewGame,
+            MainMenuButton::LoadGame,
+            MainMenuButton::Settings,
+            MainMenuButton::AdditionalContent,
+            MainMenuButton::Credits,
+            MainMenuButton::QuitGame,
+        ] {
 
             // Spawn button image
             ui.spawn((
                 MenuUi,
-                list.add(button),
+                list.add(button.str()),
                 UiLayout::Window::new().y(Rl(offset)).size(Rl((100.0, size))).pack(),
                 UiImage2dBundle {
                     texture: assets.button.clone(),
@@ -136,6 +156,9 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
                     ..default()
                 },
                 ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(32.0), ..default() }),    // Here we make the sprite tillable
+
+                // Here we add the button type
+                button.clone(),
 
                 // This is required to make this entity clickable
                 PickableBundle::default(),
@@ -145,7 +168,7 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
 
                 // Here we can define what happens on hover
                 On::<Pointer<Over>>::target_component_mut::<Sprite>(|_, sprite| {
-                    sprite.color.set_a(1.0);
+                    sprite.color = Color::BEVYPUNK_YELLOW;
                 }),
                 On::<Pointer<Out>>::target_component_mut::<Sprite>(|_, sprite| {
                     sprite.color.set_a(0.0);
@@ -155,7 +178,7 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
             // Spawn button text
             ui.spawn((
                 MenuUi,
-                list.add(format!("{button}/Text")),
+                list.add(format!("{}/Text", button.str())),
 
                 // Here we can define where we want to position our text within the parent node,
                 // don't worry about size, that is picked up and overwritten automaticaly by Lunex to match text size.
@@ -163,7 +186,7 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
 
                 // Here we define the text and style
                 UiText2dBundle {
-                    text: Text::from_section(button,
+                    text: Text::from_section(button.str(),
                         TextStyle {
                             font: assets.font_medium.clone(),
                             font_size: 60.0,
@@ -179,26 +202,68 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
 
 }
 
+
+// #======================================#
+// #=== MAIN MENU BUTTON INTERACTIVITY ===#
+
+#[derive(Component, Clone)]
+enum MainMenuButton {
+    Continue,
+    NewGame,
+    LoadGame,
+    Settings,
+    AdditionalContent,
+    Credits,
+    QuitGame,
+}
+impl MainMenuButton {
+    fn str(&self) -> String {
+        match self {
+            MainMenuButton::Continue => "CONTINUE".into(),
+            MainMenuButton::NewGame => "NEW GAME".into(),
+            MainMenuButton::LoadGame => "LOAD GAME".into(),
+            MainMenuButton::Settings => "SETTINGS".into(),
+            MainMenuButton::AdditionalContent => "ADDITIONAL CONTENT".into(),
+            MainMenuButton::Credits => "CREDITS".into(),
+            MainMenuButton::QuitGame => "QUIT GAME".into(),
+        }
+    }
+}
+
 // Our event that will happen if we click one of the main menu buttons
 #[derive(Event)]
 struct MainMenuButtonAction {
-    important_data: usize,
+    enitity: Entity,
 }
 
 // Implement constructor for our event
 impl From<ListenerInput<Pointer<Down>>> for MainMenuButtonAction {
     fn from(value: ListenerInput<Pointer<Down>>) -> Self {
-        let _target = value.target();
-        let _listener = value.listener();
         MainMenuButtonAction {
-            important_data: value.event.button as usize,
+            enitity: value.target(),
         }
     }
 }
 
 // System that will resolve our event
-fn main_menu_button_action_system(mut events: EventReader<MainMenuButtonAction>) {
+fn main_menu_button_action_system(mut events: EventReader<MainMenuButtonAction>, query: Query<&MainMenuButton>, mut exit: EventWriter<AppExit>) {
     for event in events.read() {
-        info!("Doing complex things with data: {}", event.important_data)
+        if let Ok(button) = query.get(event.enitity) {
+
+            info!("Pressed: {}", button.str());
+
+            // Here we can do our logic for each button
+            match button {
+                MainMenuButton::Continue => {},
+                MainMenuButton::NewGame => {},
+                MainMenuButton::LoadGame => {},
+                MainMenuButton::Settings => {},
+                MainMenuButton::AdditionalContent => {},
+                MainMenuButton::Credits => {},
+                MainMenuButton::QuitGame => {
+                    exit.send(AppExit);
+                },
+            }
+        }
     }
 }
