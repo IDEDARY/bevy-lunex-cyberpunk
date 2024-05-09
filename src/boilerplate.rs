@@ -111,6 +111,7 @@ pub fn camera() -> impl Bundle {
             ..default()
         },
         BloomSettings::OLD_SCHOOL,
+        InheritedVisibility::default(),
         /*VfxWiggleCamera {
             sinusoid: vec![
                 Sine {

@@ -5,18 +5,22 @@ use bevy_mod_picking::prelude::*;
 mod boilerplate;
 use boilerplate::*;
 
+mod components;
+use components::*;
+
 fn main() {
     App::new()
-        .add_plugins((default_plugins(), DefaultPickingPlugins, UiPlugin::<NoData, NoData, MenuUi>::new()))
-        //.add_plugins(UiDebugPlugin::<NoData, NoData, MenuUi>::new())
+        .add_plugins((default_plugins(), DefaultPickingPlugins, UiGeneralPlugin, UiPlugin::<NoData, NoData, MenuUi>::new()))
+        .add_plugins(UiDebugPlugin::<NoData, NoData, MenuUi>::new())
+        .add_plugins(MainButtonPlugin)
 
         .add_plugins(VFXPlugin)
         .add_systems(PreStartup, cache_assets)
         .add_systems(Startup, startup)
 
         // Register our button event
-        .add_event::<MainMenuButtonAction>()
-        .add_systems(Update, main_menu_button_action_system.run_if(on_event::<MainMenuButtonAction>()))
+        //.add_event::<MainMenuButtonAction>()
+        //.add_systems(Update, main_menu_button_action_system.run_if(on_event::<MainMenuButtonAction>()))
 
         .run();
 }
@@ -145,8 +149,21 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
             MainMenuButton::QuitGame,
         ] {
 
-            // Spawn button image
             ui.spawn((
+                MenuUi,
+                list.add(button.str()),
+                UiLayout::Window::new().y(Rl(offset)).size(Rl((100.0, size))).pack(),
+
+                UiSpacialBundle::default(),
+                //MainButton { text: button.str().into(), ..default() },
+
+                // Here we add the button type
+                //button.clone(),
+
+            ));
+
+            // Spawn button image
+            /* ui.spawn((
                 MenuUi,
                 list.add(button.str()),
                 UiLayout::Window::new().y(Rl(offset)).size(Rl((100.0, size))).pack(),
@@ -168,7 +185,8 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
 
                 // Here we can define what happens on hover
                 On::<Pointer<Over>>::target_component_mut::<Sprite>(|_, sprite| {
-                    sprite.color = Color::BEVYPUNK_YELLOW;
+                    //sprite.color = Color::BEVYPUNK_YELLOW.with_l(0.68);
+                    sprite.color.set_a(1.0);
                 }),
                 On::<Pointer<Out>>::target_component_mut::<Sprite>(|_, sprite| {
                     sprite.color.set_a(0.0);
@@ -194,7 +212,7 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
                         }),
                     ..default()
                 },
-            ));
+            )); */
 
             offset += gap + size;
         }
