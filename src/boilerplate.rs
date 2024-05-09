@@ -1,6 +1,5 @@
 use bevy::render::settings::WgpuSettings;
 use bevy::core_pipeline::bloom::BloomSettings;
-use bevy::core_pipeline::tonemapping::Tonemapping;
 use bevy::{app::PluginGroupBuilder, prelude::*};
 
 
@@ -79,7 +78,7 @@ pub fn default_plugins() -> PluginGroupBuilder {
             primary_window: Some(Window {
                 title: "Bevypunk".into(),
                 mode: bevy::window::WindowMode::Windowed,
-                present_mode: bevy::window::PresentMode::AutoVsync,
+                present_mode: bevy::window::PresentMode::AutoNoVsync,
                 resolution: bevy::window::WindowResolution::new(1920.0, 1080.0),
                 ..default()
             }),
