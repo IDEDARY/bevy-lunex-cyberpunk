@@ -1,24 +1,30 @@
+use bevy::render::settings::WgpuSettings;
+use bevy::core_pipeline::bloom::BloomSettings;
 use bevy::{app::PluginGroupBuilder, prelude::*};
 
-// Function to setup the app
-pub fn default_plugins() -> PluginGroupBuilder {
-    DefaultPlugins.set (
-        WindowPlugin {
-            primary_window: Some(Window {
-                title: "Bevypunk".into(),
-                mode: bevy::window::WindowMode::Windowed,
-                resolution: bevy::window::WindowResolution::new(1920., 1080.),
-                ..default()
-            }),
-            ..default()
-        }
-    )
-}
 
-// A struct to differentiate between other types of ui (required by Lunex)
+// #=========================================#
+// #=== BOILERPLATE REQUIRED FOR BEVYPUNK ===#
+
+/// Marker struct for UI framework entities
 #[derive(Component, Debug, Default, Clone, PartialEq)]
 pub struct MenuUi;
 
+/// Custom color palette for Bevypunk
+pub trait BevypunkColorPalette {
+    const BEVYPUNK_RED: Color;
+    const BEVYPUNK_RED_DIM: Color;
+    const BEVYPUNK_YELLOW: Color;
+}
+impl BevypunkColorPalette for Color {
+    const BEVYPUNK_RED: Color = Color::rgba(255./255., 98./255., 81./255., 1.0);
+    const BEVYPUNK_RED_DIM: Color = Color::rgba(172./255., 64./255., 63./255., 1.0);
+    const BEVYPUNK_YELLOW: Color = Color::rgba(252./255., 226./255., 8./255., 1.0);
+}
+
+
+// #======================================#
+// #=== ASSET CACHE FOR SMOOTH LOADING ===#
 
 // Load all assets at startup for faster loading during runtime
 #[derive(Resource)]
@@ -34,7 +40,6 @@ pub struct AssetCache {
     pub cursor: Handle<Image>,
 
     pub button: Handle<Image>,
-
     pub switch_base: Handle<Image>,
     pub switch_head: Handle<Image>,
 
@@ -43,24 +48,19 @@ pub struct AssetCache {
     pub main_logo: Handle<Image>,
     pub settings_background: Handle<Image>,
 }
-pub fn prestartup(mut commands: Commands, asset_server: Res<AssetServer>) {
+pub fn cache_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.insert_resource(AssetCache {
         music: asset_server.load("sounds/main_menu.ogg"),
-
         font_light: asset_server.load("fonts/rajdhani/Rajdhani-Light.ttf"),
         font_regular: asset_server.load("fonts/rajdhani/Rajdhani-Regular.ttf"),
         font_medium: asset_server.load("fonts/rajdhani/Rajdhani-Medium.ttf"),
         font_semibold: asset_server.load("fonts/rajdhani/Rajdhani-SemiBold.ttf"),
         font_bold: asset_server.load("fonts/rajdhani/Rajdhani-Bold.ttf"),
-
         cursor: asset_server.load("images/cursor.png"),
-
         button: asset_server.load("images/main_menu/button.png"),
-
         switch_base: asset_server.load("images/settings/switch_base.png"),
         switch_head: asset_server.load("images/settings/switch_head.png"),
-
-        main_background: asset_server.load("images/main_menu/background.png"),
+        main_background: asset_server.load("images/main_menu/background1.png"),
         main_board: asset_server.load("images/main_menu/board.png"),
         main_logo: asset_server.load("images/main_menu/bevypunk.png"),
         settings_background: asset_server.load("images/settings/background.png"),
@@ -68,30 +68,36 @@ pub fn prestartup(mut commands: Commands, asset_server: Res<AssetServer>) {
 }
 
 
+// #======================================#
+// #=== JUST SPAWN PRESETS FOR CLARITY ===#
 
-pub trait BevypunkColorPalette {
-    const BEVYPUNK_RED: Color;
-    const BEVYPUNK_RED_DIM: Color;
-    const BEVYPUNK_YELLOW: Color;
+/// Function to return default plugins with correct settings
+pub fn default_plugins() -> PluginGroupBuilder {
+    DefaultPlugins.set (
+        WindowPlugin {
+            primary_window: Some(Window {
+                title: "Bevypunk".into(),
+                mode: bevy::window::WindowMode::BorderlessFullscreen,
+                present_mode: bevy::window::PresentMode::AutoNoVsync,
+                resolution: bevy::window::WindowResolution::new(1920.0, 1080.0),
+                ..default()
+            }),
+            ..default()
+        }
+    ).set (
+        bevy::render::RenderPlugin {
+            render_creation: bevy::render::settings::RenderCreation::Automatic(
+                WgpuSettings {
+                    power_preference: bevy::render::settings::PowerPreference::HighPerformance,
+                    ..default()
+                }
+            ),
+            ..default()
+        }
+    )
 }
-impl BevypunkColorPalette for Color {
-    const BEVYPUNK_RED: Color = Color::rgba(255./255., 98./255., 81./255., 1.0);
-    const BEVYPUNK_RED_DIM: Color = Color::rgba(172./255., 64./255., 63./255., 1.0);
-    const BEVYPUNK_YELLOW: Color = Color::rgba(252./255., 226./255., 8./255., 1.0);
-}
 
-
-
-
-
-
-use std::f32::consts::TAU;
-use bevy::core_pipeline::bloom::{BloomSettings, BloomPrefilterSettings, BloomCompositeMode};
-use bevy::core_pipeline::tonemapping::Tonemapping;
-use rand::Rng;
-
-
-/// Spawns camera will all custom settings
+/// Function to return camera will all appropriate settings
 pub fn camera() -> impl Bundle {
     (
         MenuUi,
@@ -101,20 +107,10 @@ pub fn camera() -> impl Bundle {
                 hdr: true,
                 ..default()
             },
-            tonemapping: Tonemapping::None,
+            //tonemapping: Tonemapping::None,
             ..default()
         },
-        BloomSettings {
-            intensity: 0.025,
-            low_frequency_boost: 0.7,
-            low_frequency_boost_curvature: 0.95,
-            high_pass_frequency: 0.9,
-            prefilter_settings: BloomPrefilterSettings {
-                threshold: 0.0,
-                threshold_softness: 0.0,
-            },
-            composite_mode: BloomCompositeMode::Additive,
-        },
+        BloomSettings::OLD_SCHOOL,
         /*VfxWiggleCamera {
             sinusoid: vec![
                 Sine {
@@ -128,7 +124,13 @@ pub fn camera() -> impl Bundle {
 }
 
 
-/// System for smooth flickering of the camera's bloom
+// #===============================#
+// #=== VFX LOGIC AND ANIMATION ===#
+
+use std::f32::consts::TAU;
+use rand::Rng;
+
+/// System for immitating flickering by randomly adjusting cameras bloom values
 fn vfx_bloom_flicker(mut query: Query<&mut BloomSettings>) {
     for mut bloom in &mut query {
         let mut rng = rand::thread_rng();
@@ -168,7 +170,6 @@ fn vfx_camera_wiggle(mut query: Query<(&mut VfxWiggleCamera, &mut Transform)>) {
         transform.rotation.z = animation.sinusoid[0].get_pure();
     }
 }
-
 
 /// Plugin with VFX systems for our menu
 pub struct VFXPlugin;

@@ -7,11 +7,19 @@
   repository  = "https://github.com/idedary/bevypunk"
 
 [profile.dev]
-  opt-level = 1
+  opt-level = 3
 
 [dependencies]
-  bevy = { version = "0.13.0", default_features = false, features = [
-  #bevy = { git = "https://github.com/bevyengine/bevy", default_features = false, features = [
+
+  # Required for VFX
+  rand = "0.8.5"
+
+  # UI framework
+  #bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev" }
+  bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex" }
+
+  # Game engine
+  bevy = { version = "0.13.2", default_features = false, features = [
     "bevy_asset",
     "bevy_audio",
     #"bevy_gilrs",
@@ -19,17 +27,23 @@
     "bevy_core_pipeline",
     #"bevy_pbr",
     "bevy_render",
-    #"bevy_sprite",
+    "bevy_sprite",
     "bevy_text",
     "multi-threaded",
     "png",
     "hdr",
     "vorbis",
     "x11",
-    #"default_font",
     "tonemapping_luts",
     "dynamic_linking"
   ] }
-  #bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev" }
-  bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex" }
-  rand = "0.8.5"
+
+  # Will be upstreamed into Bevy in the future
+  bevy_eventlistener = { version = "0.7.0" }
+  bevy_mod_picking = { version = "0.18.2", default_features = false, features = [
+    "backend_raycast",
+    "backend_sprite",
+    "debug",
+    "selection",
+    "highlight",
+  ] }
