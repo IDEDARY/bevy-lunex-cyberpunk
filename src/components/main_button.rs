@@ -2,7 +2,7 @@ use bevy::{prelude::*, sprite::Anchor};
 use bevy_lunex::prelude::*;
 use bevy_mod_picking::prelude::*;
 
-use crate::{AssetCache, BevypunkColorPalette};
+use crate::{AssetCache, BevypunkColorPalette, LerpColor};
 
 
 // #=========================#
@@ -10,10 +10,9 @@ use crate::{AssetCache, BevypunkColorPalette};
 
 /// Control component for our ui-component.
 /// This works as an abstraction over the logic to make things more simple.
-#[derive(Component, Clone, Default)]
+#[derive(Component, Debug, Default, Clone, PartialEq)]
 pub struct MainButton {
     pub text: String,
-    pub pressed: bool,
 }
 
 
@@ -24,22 +23,28 @@ pub struct MainButton {
 #[derive(Component, Debug, Default, Clone, PartialEq)]
 struct MainButtonUi;
 
+/// Control struct for the button state
+#[derive(Component, Debug, Default, Clone, PartialEq)]
+struct MainButtonControl {
+    animation_direction: f32,    // -1.0 backwards, 1.0 forward
+    animation_transition: f32,
+}
+
 
 /// System which builds the layout
 fn build_system (mut commands: Commands, query: Query<(Entity, &MainButton), Added<MainButton>>, assets: Res<AssetCache>) {
     for (entity, button_source) in &query {
-
-        info!("SPAWNED UI SYSTEM");
 
         // This will create a private sandboxed UiTree within the entity just for the button
         commands.entity(entity).insert(
             UiTreeBundle::<NoData, NoData, MainButtonUi>::from(UiTree::new("MainButton")),
         ).with_children(|ui| {
 
-            let root = UiLink::path("Root");
+            let root = UiLink::<MainButtonUi>::path("Root");
             ui.spawn((
                 MainButtonUi,
                 root.clone(),
+                MainButtonControl::default(),
                 UiLayout::Window::full().pack(),
                 UiImage2dBundle {
                     texture: assets.button.clone(),
@@ -50,18 +55,6 @@ fn build_system (mut commands: Commands, query: Query<(Entity, &MainButton), Add
 
                 // This is required to make this entity clickable
                 PickableBundle::default(),
-
-                // Here we can define what event should be triggered on click
-                On::<Pointer<Down>>::send_event::<MainButtonPressed>(),
-
-                // Here we can define what happens on hover
-                On::<Pointer<Over>>::target_component_mut::<Sprite>(|_, sprite| {
-                    //sprite.color = Color::BEVYPUNK_YELLOW.with_l(0.68);
-                    sprite.color.set_a(1.0);
-                }),
-                On::<Pointer<Out>>::target_component_mut::<Sprite>(|_, sprite| {
-                    sprite.color.set_a(0.0);
-                }),
             ));
 
             // Spawn button text
@@ -92,34 +85,46 @@ fn build_system (mut commands: Commands, query: Query<(Entity, &MainButton), Add
 // #=================================#
 // #=== MAIN BUTTON INTERACTIVITY ===#
 
-// Our event that will happen if we click on the button
-#[derive(Event)]
-struct MainButtonPressed {
-    enitity: Entity,
-}
-
-// Implement constructor for our event
-impl From<ListenerInput<Pointer<Down>>> for MainButtonPressed {
-    fn from(value: ListenerInput<Pointer<Down>>) -> Self {
-        MainButtonPressed {
-            enitity: value.target(),
-        }
-    }
-}
-
-// System that will resolve our event
-fn main_button_pressed_event_system(mut events: EventReader<MainButtonPressed>, mut query: Query<&mut MainButton>) {
+/// System that triggers when a pointer enters a node
+fn pointer_enter_system(mut events: EventReader<Pointer<Over>>, mut query: Query<&mut MainButtonControl, With<MainButtonUi>>) {
     for event in events.read() {
-        if let Ok(mut button) = query.get_mut(event.enitity) {
-            button.pressed = true;
+        if let Ok(mut control) = query.get_mut(event.target) {
+            control.animation_direction = 1.0;
         }
     }
 }
 
-// System that will update our button
-fn main_button_update_system(mut query: Query<&mut MainButton>) {
-    for mut button in &mut query {
-        button.pressed = false;
+/// System that triggers when a pointer leaves a node
+fn pointer_leave_system(mut events: EventReader<Pointer<Out>>, mut query: Query<&mut MainButtonControl, With<MainButtonUi>>) {
+    for event in events.read() {
+        if let Ok(mut control) = query.get_mut(event.target) {
+            control.animation_direction = -1.0;
+        }
+    }
+}
+
+/// System that updates the state of the node over time
+fn update_system(time: Res<Time>, mut query: Query<(&mut MainButtonControl, &mut Sprite, &mut Layout), With<MainButtonUi>>, mut cursor: Query<&mut Cursor2d>) {
+    for (mut control, mut sprite, mut layout) in &mut query {
+
+        // Animate the transition
+        control.animation_transition += time.delta_seconds() * 10.0 * control.animation_direction;
+        control.animation_transition = control.animation_transition.clamp(0.0, 1.0);
+
+        // Get the color from transition
+        sprite.color = Color::BEVYPUNK_RED.lerp(Color::BEVYPUNK_YELLOW.with_l(0.68), control.animation_transition);
+        sprite.color.set_a(control.animation_transition);
+
+        // Get the position from transition
+        let window = layout.expect_window_mut();
+        window.set_x(Rl(10.0 * control.animation_transition));
+
+        // Request cursor
+        if control.animation_direction == 1.0 {
+            let mut cursor = cursor.single_mut();
+            cursor.request_cursor(CursorIcon::Copy, 1.0);
+        }
+
     }
 }
 
@@ -134,12 +139,12 @@ impl Plugin for MainButtonPlugin {
             // Add Lunex plugins for our sandboxed UI
             .add_plugins(UiPlugin::<NoData, NoData, MainButtonUi>::new())
 
-            // Add events
-            .add_event::<MainButtonPressed>()
-            .add_systems(Update, main_button_pressed_event_system.after(main_button_update_system).run_if(on_event::<MainButtonPressed>()))
+            // Add event systems
+            .add_systems(Update, pointer_enter_system.before(update_system).run_if(on_event::<Pointer<Over>>()))
+            .add_systems(Update, pointer_leave_system.before(update_system).run_if(on_event::<Pointer<Out>>()))
 
             // Add general systems
-            .add_systems(Update, build_system)
-            .add_systems(Update, main_button_update_system);
+            .add_systems(Update, update_system)
+            .add_systems(Update, build_system);
     }
 }

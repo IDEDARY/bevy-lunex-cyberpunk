@@ -11,7 +11,7 @@ use components::*;
 fn main() {
     App::new()
         .add_plugins((default_plugins(), DefaultPickingPlugins, UiGeneralPlugin, UiPlugin::<NoData, NoData, MenuUi>::new()))
-        .add_plugins(UiDebugPlugin::<NoData, NoData, MenuUi>::new())
+        //.add_plugins(UiDebugPlugin::<NoData, NoData, MenuUi>::new())
         .add_plugins(MainButtonPlugin)
 
         .add_plugins(VFXPlugin)
@@ -73,16 +73,17 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
 
     // Spawn the master ui tree
     commands.spawn((
+        UiLink::<MenuUi>::new(),
         UiTreeBundle::<NoData, NoData, MenuUi>::from(UiTree::new("Bevypunk")),
         MovableByCamera,    // Marks this entity to receive Transform & Dimension updates from camera size
     )).with_children(|ui| {
 
         // Spawn the root div
-        let root = UiLink::path("Root");        // Here we can define the name of the node
+        let root = UiLink::<MenuUi>::path("Root");  // Here we can define the name of the node
         ui.spawn((
-            MenuUi,                             // Required marker component
-            root.clone(),                       // Here we add the link
-            UiLayout::Window::full().pack(),    // This is where we define layout
+            MenuUi,                                 // Required marker component
+            root.clone(),                           // Here we add the link
+            UiLayout::Window::full().pack(),        // This is where we define layout
         ));
 
         // Spawn the background
@@ -155,7 +156,7 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
                 UiLayout::Window::new().y(Rl(offset)).size(Rl((100.0, size))).pack(),
 
                 UiSpacialBundle::default(),
-                //MainButton { text: button.str().into(), ..default() },
+                MainButton { text: button.str().into(), ..default() },
 
                 // Here we add the button type
                 //button.clone(),

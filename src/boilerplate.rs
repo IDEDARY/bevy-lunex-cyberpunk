@@ -23,6 +23,17 @@ impl BevypunkColorPalette for Color {
 }
 
 
+pub trait LerpColor {
+    fn lerp(&self, color: Color, value: f32) -> Color;
+}
+impl LerpColor for Color {
+    fn lerp(&self, color: Color, value: f32) -> Color {
+        let c1 = self.hsl_to_vec3();
+        let c2 = color.hsl_to_vec3();
+        Color::hsl(c1.x.lerp(c2.x, value), c1.y.lerp(c2.y, value), c1.z.lerp(c2.z, value))
+    }
+}
+
 // #======================================#
 // #=== ASSET CACHE FOR SMOOTH LOADING ===#
 
@@ -77,7 +88,7 @@ pub fn default_plugins() -> PluginGroupBuilder {
         WindowPlugin {
             primary_window: Some(Window {
                 title: "Bevypunk".into(),
-                mode: bevy::window::WindowMode::BorderlessFullscreen,
+                mode: bevy::window::WindowMode::Windowed,
                 present_mode: bevy::window::PresentMode::AutoNoVsync,
                 resolution: bevy::window::WindowResolution::new(1920.0, 1080.0),
                 ..default()
