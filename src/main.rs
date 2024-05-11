@@ -12,15 +12,14 @@ fn main() {
     App::new()
         .add_plugins((default_plugins(), DefaultPickingPlugins, UiGeneralPlugin, UiPlugin::<MenuUi>::new()))
         //.add_plugins(UiDebugPlugin::<MenuUi>::new())
-        .add_plugins(MainButtonPlugin)
 
         .add_plugins(VFXPlugin)
         .add_systems(PreStartup, cache_assets)
         .add_systems(Startup, startup)
 
-        // Register our button event
-        //.add_event::<MainMenuButtonAction>()
-        //.add_systems(Update, main_menu_button_action_system.run_if(on_event::<MainMenuButtonAction>()))
+        // React to main button click
+        .add_plugins(MainButtonPlugin)
+        .add_systems(Update, main_menu_button_action_system.run_if(on_event::<MainButtonClick>()))
 
         .run();
 }
@@ -147,17 +146,8 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
                 list.add(button.str()),
                 UiLayout::window().y(Rl(offset)).size(Rl((100.0, size))).pack(),
                 MainButton { text: button.str().into() },
-
-                // Here we add the button type
-                //button.clone(),
-
-                //PickableBundle::default(),
-
-                // Here we can define what event should be triggered on click
-                //On::<Pointer<Down>>::send_event::<MainMenuButtonAction>(),
-
+                button.clone(),
             ));
-
 
             offset += gap + size;
         }
@@ -193,26 +183,10 @@ impl MainMenuButton {
     }
 }
 
-/*
-// Our event that will happen if we click one of the main menu buttons
-#[derive(Event)]
-struct MainMenuButtonAction {
-    enitity: Entity,
-}
-
-// Implement constructor for our event
-impl From<ListenerInput<Pointer<Down>>> for MainMenuButtonAction {
-    fn from(value: ListenerInput<Pointer<Down>>) -> Self {
-        MainMenuButtonAction {
-            enitity: value.target(),
-        }
-    }
-}
-
 // System that will resolve our event
-fn main_menu_button_action_system(mut events: EventReader<MainMenuButtonAction>, query: Query<&MainMenuButton>, mut exit: EventWriter<AppExit>) {
+fn main_menu_button_action_system(mut events: EventReader<MainButtonClick>, query: Query<&MainMenuButton, With<MainButton>>, mut exit: EventWriter<bevy::app::AppExit>) {
     for event in events.read() {
-        if let Ok(button) = query.get(event.enitity) {
+        if let Ok(button) = query.get(event.target) {
 
             info!("Pressed: {}", button.str());
 
@@ -225,10 +199,9 @@ fn main_menu_button_action_system(mut events: EventReader<MainMenuButtonAction>,
                 MainMenuButton::AdditionalContent => {},
                 MainMenuButton::Credits => {},
                 MainMenuButton::QuitGame => {
-                    exit.send(AppExit);
+                    exit.send(bevy::app::AppExit);
                 },
             }
         }
     }
 }
- */

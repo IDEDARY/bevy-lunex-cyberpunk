@@ -8,6 +8,12 @@ use crate::{AssetCache, BevypunkColorPalette, LerpColor};
 // #=========================#
 // #=== EXPOSED COMPONENT ===#
 
+// Event that will trigger if we click the button.
+#[derive(Event)]
+pub struct MainButtonClick {
+    pub target: Entity,
+}
+
 /// Control component for our ui-component.
 /// This works as an abstraction over the logic to make things more simple.
 #[derive(Component, Debug, Default, Clone, PartialEq)]
@@ -72,6 +78,8 @@ fn build_system (mut commands: Commands, query: Query<(Entity, &MainButton), Add
                 // don't worry about size, that is picked up and overwritten automaticaly by Lunex to match text size.
                 UiLayout::window().pos(Rl((5., 50.))).anchor(Anchor::CenterLeft).pack(),
 
+                Pickable::IGNORE,
+
                 // Add text
                 UiText2dBundle {
                     text: Text::from_section(&button_source.text,
@@ -92,14 +100,9 @@ fn build_system (mut commands: Commands, query: Query<(Entity, &MainButton), Add
                 // Add layout
                 UiLayout::window_full().pack(),
 
-                UiImage2dBundle {
-                    texture: assets.button.clone(),
-                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_a(0.0), ..default() },
-                    ..default()
-                },
-
                 // This is required to make this entity clickable
                 PickableBundle::default(),
+                UiSpatialBundle::default(),
 
                 // This is our state machine
                 MainButtonControl {
@@ -116,6 +119,17 @@ fn build_system (mut commands: Commands, query: Query<(Entity, &MainButton), Add
 
 // #=================================#
 // #=== MAIN BUTTON INTERACTIVITY ===#
+
+/// System that triggers when a pointer click a node
+fn pointer_click_system(mut events: EventReader<Pointer<Down>>, mut write: EventWriter<MainButtonClick>, query: Query<&Parent, (With<MainButtonControl>, With<UiLink<MainButtonUi>>)>) {
+    for event in events.read() {
+        if let Ok(parent) = query.get(event.target) {
+            write.send(MainButtonClick {
+                target: **parent,
+            });
+        }
+    }
+}
 
 /// System that triggers when a pointer enters a node
 fn pointer_enter_system(mut events: EventReader<Pointer<Over>>, mut query: Query<&mut MainButtonControl, With<UiLink<MainButtonUi>>>) {
@@ -193,7 +207,11 @@ impl Plugin for MainButtonPlugin {
             .add_plugins(UiPlugin::<MainButtonUi>::new())
             //.add_plugins(UiDebugPlugin::<MainButtonUi>::new())
 
+            // Add out event
+            .add_event::<MainButtonClick>()
+
             // Add event systems
+            .add_systems(Update, pointer_click_system.run_if(on_event::<Pointer<Down>>()))
             .add_systems(Update, pointer_enter_system.before(update_system).run_if(on_event::<Pointer<Over>>()))
             .add_systems(Update, pointer_leave_system.before(update_system).run_if(on_event::<Pointer<Out>>()))
 

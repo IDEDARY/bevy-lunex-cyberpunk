@@ -16,7 +16,7 @@
 
   # UI framework
   #bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev" }
-  bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex", features=[] }
+  bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex", features=["picking"] }
 
   # Game engine
   bevy = { version = "0.13.2", default_features = false, features = [
@@ -41,8 +41,6 @@
   # Will be upstreamed into Bevy in the future
   bevy_eventlistener = { version = "0.7.0" }
   bevy_mod_picking = { version = "0.18.2", default_features = false, features = [
-    "backend_raycast",
-    "backend_sprite",
     "debug",
     "selection",
     "highlight",
