@@ -12,13 +12,13 @@ fn main() {
     App::new()
         .add_plugins((default_plugins(), DefaultPickingPlugins, UiGeneralPlugin, UiPlugin::<MenuUi>::new()))
         //.add_plugins(UiDebugPlugin::<MenuUi>::new())
-        .add_plugins(MainButtonPlugin)
 
         .add_plugins(VFXPlugin)
         .add_systems(PreStartup, cache_assets)
         .add_systems(Startup, startup)
 
-        // React to button press
+        // React to main button click
+        .add_plugins(MainButtonPlugin)
         .add_systems(Update, main_menu_button_action_system.run_if(on_event::<MainButtonClick>()))
 
         .run();
