@@ -81,7 +81,7 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
         let root = UiLink::<MenuUi>::path("Root");  // Here we can define the name of the node
         ui.spawn((
             root.clone(),                           // Here we add the link
-            UiLayout::window_full().pack(),        // This is where we define layout
+            UiLayout::window_full().pack(),         // This is where we define layout
         ));
 
         // Spawn the background
@@ -105,6 +105,7 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
             UiLayout::window().x(Rl(50.0)).anchor(Anchor::TopCenter).size(Rl(105.0)).pack(),
             UiImage2dBundle::from(assets.main_board.clone())
         ));
+
 
         // Spawn the logo
         ui.spawn((
@@ -143,7 +144,6 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
         ] {
 
             ui.spawn((
-                MenuUi,
                 list.add(button.str()),
                 UiLayout::window().y(Rl(offset)).size(Rl((100.0, size))).pack(),
 

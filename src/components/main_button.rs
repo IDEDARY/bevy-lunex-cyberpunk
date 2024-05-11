@@ -104,6 +104,8 @@ fn pointer_leave_system(mut events: EventReader<Pointer<Out>>, mut query: Query<
 fn update_system(time: Res<Time>, mut query: Query<(&mut MainButtonControl, &mut Sprite, &mut UiLayout), With<UiLink<MainButtonUi>>>, mut cursor: Query<&mut Cursor2d>) {
     for (mut control, mut sprite, mut layout) in &mut query {
 
+        let previous = control.animation_transition;
+
         // Animate the transition
         control.animation_transition += time.delta_seconds() * 10.0 * control.animation_direction;
         control.animation_transition = control.animation_transition.clamp(0.0, 1.0);
@@ -113,8 +115,11 @@ fn update_system(time: Res<Time>, mut query: Query<(&mut MainButtonControl, &mut
         sprite.color.set_a(control.animation_transition);
 
         // Get the position from transition
-        let window = layout.expect_window_mut();
-        window.set_x(Rl(10.0 * control.animation_transition));
+        if control.animation_transition != previous {
+            let window = layout.expect_window_mut();
+            window.set_x(Rl(10.0 * control.animation_transition));
+        }
+        
 
         // Request cursor
         if control.animation_direction == 1.0 {
@@ -138,7 +143,7 @@ impl Plugin for MainButtonPlugin {
         app
             // Add Lunex plugins for our sandboxed UI
             .add_plugins(UiPlugin::<MainButtonUi>::new())
-            .add_plugins(UiDebugPlugin::<MainButtonUi>::new())
+            //.add_plugins(UiDebugPlugin::<MainButtonUi>::new())
 
             // Add event systems
             .add_systems(Update, pointer_enter_system.before(update_system).run_if(on_event::<Pointer<Over>>()))
