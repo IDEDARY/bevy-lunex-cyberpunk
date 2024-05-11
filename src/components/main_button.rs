@@ -57,6 +57,8 @@ fn build_system (mut commands: Commands, query: Query<(Entity, &MainButton), Add
                     ..default()
                 },
 
+                Pickable::IGNORE,
+
                 // Make the sprite tile
                 ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(32.0), ..default() }),
             )).id();
@@ -90,8 +92,11 @@ fn build_system (mut commands: Commands, query: Query<(Entity, &MainButton), Add
                 // Add layout
                 UiLayout::window_full().pack(),
 
-                //Sprite::default(),
-                //UiSpacialBundle::default(),
+                UiImage2dBundle {
+                    texture: assets.button.clone(),
+                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_a(0.0), ..default() },
+                    ..default()
+                },
 
                 // This is required to make this entity clickable
                 PickableBundle::default(),
