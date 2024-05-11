@@ -146,66 +146,18 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
             ui.spawn((
                 list.add(button.str()),
                 UiLayout::window().y(Rl(offset)).size(Rl((100.0, size))).pack(),
-
-                UiSpacialBundle::default(),
-                MainButton { text: button.str().into(), ..default() },
+                MainButton { text: button.str().into() },
 
                 // Here we add the button type
                 //button.clone(),
 
-            ));
-
-            // Spawn button image
-            /* ui.spawn((
-                MenuUi,
-                list.add(button.str()),
-                UiLayout::Window::new().y(Rl(offset)).size(Rl((100.0, size))).pack(),
-                UiImage2dBundle {
-                    texture: assets.button.clone(),
-                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_a(0.0), ..default() },
-                    ..default()
-                },
-                ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(32.0), ..default() }),    // Here we make the sprite tillable
-
-                // Here we add the button type
-                button.clone(),
-
-                // This is required to make this entity clickable
-                PickableBundle::default(),
+                //PickableBundle::default(),
 
                 // Here we can define what event should be triggered on click
-                On::<Pointer<Down>>::send_event::<MainMenuButtonAction>(),
+                //On::<Pointer<Down>>::send_event::<MainMenuButtonAction>(),
 
-                // Here we can define what happens on hover
-                On::<Pointer<Over>>::target_component_mut::<Sprite>(|_, sprite| {
-                    //sprite.color = Color::BEVYPUNK_YELLOW.with_l(0.68);
-                    sprite.color.set_a(1.0);
-                }),
-                On::<Pointer<Out>>::target_component_mut::<Sprite>(|_, sprite| {
-                    sprite.color.set_a(0.0);
-                }),
             ));
 
-            // Spawn button text
-            ui.spawn((
-                MenuUi,
-                list.add(format!("{}/Text", button.str())),
-
-                // Here we can define where we want to position our text within the parent node,
-                // don't worry about size, that is picked up and overwritten automaticaly by Lunex to match text size.
-                UiLayout::Window::new().pos(Rl((5., 50.))).anchor(Anchor::CenterLeft).pack(),
-
-                // Here we define the text and style
-                UiText2dBundle {
-                    text: Text::from_section(button.str(),
-                        TextStyle {
-                            font: assets.font_medium.clone(),
-                            font_size: 60.0,
-                            color: Color::BEVYPUNK_RED,
-                        }),
-                    ..default()
-                },
-            )); */
 
             offset += gap + size;
         }

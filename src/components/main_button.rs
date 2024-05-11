@@ -24,10 +24,12 @@ pub struct MainButton {
 struct MainButtonUi;
 
 /// Control struct for the button state
-#[derive(Component, Debug, Default, Clone, PartialEq)]
+#[derive(Component, Debug, Clone, PartialEq)]
 struct MainButtonControl {
     animation_direction: f32,    // -1.0 backwards, 1.0 forward
     animation_transition: f32,
+    image_entity: Entity,
+    text_entity: Entity,
 }
 
 
@@ -40,38 +42,66 @@ fn build_system (mut commands: Commands, query: Query<(Entity, &MainButton), Add
             UiTreeBundle::<MainButtonUi>::from(UiTree::new("MainButton")),
         ).with_children(|ui| {
 
-            ui.spawn((
-                MainButtonControl::default(),
-                UiLink::<MainButtonUi>::path("Root"),
+            // Spawn button image
+            let image = ui.spawn((
+                // Link this widget
+                UiLink::<MainButtonUi>::path("Control/Image"),
+
+                // Add layout
                 UiLayout::window_full().pack(),
+
+                // Give it a background image
                 UiImage2dBundle {
                     texture: assets.button.clone(),
                     sprite: Sprite { color: Color::BEVYPUNK_RED.with_a(0.0), ..default() },
                     ..default()
                 },
-                ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(32.0), ..default() }),    // Here we make the sprite tillable
 
-                // This is required to make this entity clickable
-                PickableBundle::default(),
-            ));
+                // Make the sprite tile
+                ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(32.0), ..default() }),
+            )).id();
 
             // Spawn button text
-            ui.spawn((
-                UiLink::<MainButtonUi>::path("Root/Text"),
+            let text = ui.spawn((
+                // Link this widget
+                UiLink::<MainButtonUi>::path("Control/Image/Text"),
 
                 // Here we can define where we want to position our text within the parent node,
                 // don't worry about size, that is picked up and overwritten automaticaly by Lunex to match text size.
                 UiLayout::window().pos(Rl((5., 50.))).anchor(Anchor::CenterLeft).pack(),
 
-                // Here we define the text and style
+                // Add text
                 UiText2dBundle {
                     text: Text::from_section(&button_source.text,
                         TextStyle {
                             font: assets.font_medium.clone(),
-                            font_size: 60.0,
+                            font_size: 60.0,    // Currently hardcoded as Relative height (Rh) - so 60% of the node height
                             color: Color::BEVYPUNK_RED,
                         }),
                     ..default()
+                },
+            )).id();
+
+            // Spawn button control/hover-zone
+            ui.spawn((
+                // Link this widget
+                UiLink::<MainButtonUi>::path("Control"),
+
+                // Add layout
+                UiLayout::window_full().pack(),
+
+                //Sprite::default(),
+                //UiSpacialBundle::default(),
+
+                // This is required to make this entity clickable
+                PickableBundle::default(),
+
+                // This is our state machine
+                MainButtonControl {
+                    animation_direction: 0.0,
+                    animation_transition: 0.0,
+                    image_entity: image,
+                    text_entity: text,
                 },
             ));
         });
@@ -101,8 +131,14 @@ fn pointer_leave_system(mut events: EventReader<Pointer<Out>>, mut query: Query<
 }
 
 /// System that updates the state of the node over time
-fn update_system(time: Res<Time>, mut query: Query<(&mut MainButtonControl, &mut Sprite, &mut UiLayout), With<UiLink<MainButtonUi>>>, mut cursor: Query<&mut Cursor2d>) {
-    for (mut control, mut sprite, mut layout) in &mut query {
+fn update_system(
+    time: Res<Time>,
+    mut set_color: EventWriter<SetColor>,
+    mut set_layout: EventWriter<SetUiLayout>,
+    mut query: Query<&mut MainButtonControl, With<UiLink<MainButtonUi>>>,
+    mut cursor: Query<&mut Cursor2d>,
+) {
+    for mut control in &mut query {
 
         let previous = control.animation_transition;
 
@@ -110,16 +146,26 @@ fn update_system(time: Res<Time>, mut query: Query<(&mut MainButtonControl, &mut
         control.animation_transition += time.delta_seconds() * 10.0 * control.animation_direction;
         control.animation_transition = control.animation_transition.clamp(0.0, 1.0);
 
-        // Get the color from transition
-        sprite.color = Color::BEVYPUNK_RED.lerp(Color::BEVYPUNK_YELLOW.with_l(0.68), control.animation_transition);
-        sprite.color.set_a(control.animation_transition);
+        // If animation progress call instruction events
+        if previous != control.animation_transition {
 
-        // Get the position from transition
-        if control.animation_transition != previous {
-            let window = layout.expect_window_mut();
-            window.set_x(Rl(10.0 * control.animation_transition));
+            // Set the color from transition
+            let color = Color::BEVYPUNK_RED.lerp(Color::BEVYPUNK_YELLOW.with_l(0.68), control.animation_transition);
+            set_color.send(SetColor {
+                target: control.image_entity,
+                color: color.with_a(control.animation_transition),
+            });
+            set_color.send(SetColor {
+                target: control.text_entity,
+                color,
+            });
+
+            // Set the layout from transition
+            set_layout.send(SetUiLayout {
+                target: control.image_entity,
+                layout: UiLayout::window_full().x(Rl(10.0 * control.animation_transition)).pack(),
+            });
         }
-        
 
         // Request cursor
         if control.animation_direction == 1.0 {
@@ -130,9 +176,6 @@ fn update_system(time: Res<Time>, mut query: Query<(&mut MainButtonControl, &mut
     }
 }
 
-/* fn sys(ui: Query<(&UiTree<NoData, NoData>, &Children), With<MainButtonUi>>, query: Query<(&mut Text, Entity), With<UiLink<MainButtonUi>>> ) {
-
-} */
 
 // #==========================#
 // #=== MAIN BUTTON PLUGIN ===#
