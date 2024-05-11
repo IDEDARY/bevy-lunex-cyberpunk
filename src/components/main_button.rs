@@ -40,12 +40,11 @@ fn build_system (mut commands: Commands, query: Query<(Entity, &MainButton), Add
             UiTreeBundle::<NoData, NoData, MainButtonUi>::from(UiTree::new("MainButton")),
         ).with_children(|ui| {
 
-            let root = UiLink::<MainButtonUi>::path("Root");
             ui.spawn((
                 MainButtonUi,
-                root.clone(),
                 MainButtonControl::default(),
-                UiLayout::Window::full().pack(),
+                UiLink::<MainButtonUi>::path("Root"),
+                UiLayout::window_full().pack(),
                 UiImage2dBundle {
                     texture: assets.button.clone(),
                     sprite: Sprite { color: Color::BEVYPUNK_RED.with_a(0.0), ..default() },
@@ -60,11 +59,11 @@ fn build_system (mut commands: Commands, query: Query<(Entity, &MainButton), Add
             // Spawn button text
             ui.spawn((
                 MainButtonUi,
-                root.add("Text"),
+                UiLink::<MainButtonUi>::path("Root/Text"),
 
                 // Here we can define where we want to position our text within the parent node,
                 // don't worry about size, that is picked up and overwritten automaticaly by Lunex to match text size.
-                UiLayout::Window::new().pos(Rl((5., 50.))).anchor(Anchor::CenterLeft).pack(),
+                UiLayout::window().pos(Rl((5., 50.))).anchor(Anchor::CenterLeft).pack(),
 
                 // Here we define the text and style
                 UiText2dBundle {
@@ -104,7 +103,7 @@ fn pointer_leave_system(mut events: EventReader<Pointer<Out>>, mut query: Query<
 }
 
 /// System that updates the state of the node over time
-fn update_system(time: Res<Time>, mut query: Query<(&mut MainButtonControl, &mut Sprite, &mut Layout), With<MainButtonUi>>, mut cursor: Query<&mut Cursor2d>) {
+fn update_system(time: Res<Time>, mut query: Query<(&mut MainButtonControl, &mut Sprite, &mut UiLayout), With<MainButtonUi>>, mut cursor: Query<&mut Cursor2d>) {
     for (mut control, mut sprite, mut layout) in &mut query {
 
         // Animate the transition
@@ -128,6 +127,9 @@ fn update_system(time: Res<Time>, mut query: Query<(&mut MainButtonControl, &mut
     }
 }
 
+fn sys(ui: Query<(&UiTree<NoData, NoData>, &Children), With<MainButtonUi>>, query: Query<(&mut Text, Entity), With<MainButtonUi>> ) {
+
+}
 
 // #==========================#
 // #=== MAIN BUTTON PLUGIN ===#

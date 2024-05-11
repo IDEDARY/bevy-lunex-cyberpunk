@@ -83,14 +83,14 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
         ui.spawn((
             MenuUi,                                 // Required marker component
             root.clone(),                           // Here we add the link
-            UiLayout::Window::full().pack(),        // This is where we define layout
+            UiLayout::window_full().pack(),        // This is where we define layout
         ));
 
         // Spawn the background
         ui.spawn((
             MenuUi,
             root.add("Background"), // You can see here that we used existing "root" link to create chained link (same as "Root/Background")
-            UiLayout::Solid::new().size((2968.0, 1656.0)).scaling(Scaling::Fill).pack(),
+            UiLayout::solid().size((2968.0, 1656.0)).scaling(Scaling::Fill).pack(),
             UiImage2dBundle::from(assets.main_background.clone()),  // We use this bundle to add background image to our node
         ));
 
@@ -100,14 +100,14 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
         ui.spawn((
             MenuUi,
             board.clone(),
-            UiLayout::Solid::new().size((879.0, 1600.0)).align_x(-0.74).pack(), // Just different layout type that preserves aspect ratio
+            UiLayout::solid().size((879.0, 1600.0)).align_x(-0.74).pack(), // Just different layout type that preserves aspect ratio
         ));
 
         let board = board.add("Board");
         ui.spawn((
             MenuUi,
             board.clone(),
-            UiLayout::Window::new().x(Rl(50.0)).anchor(Anchor::TopCenter).size(Rl(105.0)).pack(),
+            UiLayout::window().x(Rl(50.0)).anchor(Anchor::TopCenter).size(Rl(105.0)).pack(),
             UiImage2dBundle::from(assets.main_board.clone())
         ));
 
@@ -115,12 +115,12 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
         ui.spawn((
             MenuUi,
             board.add("Boundary"),
-            UiLayout::Window::new().y(Rl(13.0)).size(Rl((105.0, 20.0))).pack(),
+            UiLayout::window().y(Rl(13.0)).size(Rl((105.0, 20.0))).pack(),
         ));
         ui.spawn((
             MenuUi,
             board.add("Boundary/Logo"),
-            UiLayout::Solid::new().size((1240.0, 381.0)).pack(),
+            UiLayout::solid().size((1240.0, 381.0)).pack(),
             UiImage2dBundle::from(assets.main_logo.clone())
         ));
 
@@ -133,7 +133,7 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
         ui.spawn((
             MenuUi,
             list.clone(),
-            UiLayout::Window::new().pos(Rl((22.0, 33.0))).size(Rl((55.0, 34.0))).pack(),
+            UiLayout::window().pos(Rl((22.0, 33.0))).size(Rl((55.0, 34.0))).pack(),
         ));
 
         // Spawn buttons
@@ -153,7 +153,7 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
             ui.spawn((
                 MenuUi,
                 list.add(button.str()),
-                UiLayout::Window::new().y(Rl(offset)).size(Rl((100.0, size))).pack(),
+                UiLayout::window().y(Rl(offset)).size(Rl((100.0, size))).pack(),
 
                 UiSpacialBundle::default(),
                 MainButton { text: button.str().into(), ..default() },
