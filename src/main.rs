@@ -150,12 +150,6 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
 
                 // Here we add the button type
                 //button.clone(),
-
-                //PickableBundle::default(),
-
-                // Here we can define what event should be triggered on click
-                //On::<Pointer<Down>>::send_event::<MainMenuButtonAction>(),
-
             ));
 
 

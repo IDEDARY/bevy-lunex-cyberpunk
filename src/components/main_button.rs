@@ -92,14 +92,9 @@ fn build_system (mut commands: Commands, query: Query<(Entity, &MainButton), Add
                 // Add layout
                 UiLayout::window_full().pack(),
 
-                UiImage2dBundle {
-                    texture: assets.button.clone(),
-                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_a(0.0), ..default() },
-                    ..default()
-                },
-
                 // This is required to make this entity clickable
                 PickableBundle::default(),
+                UiSpatialBundle::default(),
 
                 // This is our state machine
                 MainButtonControl {
