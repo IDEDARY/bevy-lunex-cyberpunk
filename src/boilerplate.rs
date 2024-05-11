@@ -90,7 +90,7 @@ pub fn default_plugins() -> PluginGroupBuilder {
                 title: "Bevypunk".into(),
                 mode: bevy::window::WindowMode::Windowed,
                 present_mode: bevy::window::PresentMode::AutoNoVsync,
-                resolution: bevy::window::WindowResolution::new(1920.0, 1080.0),
+                resolution: bevy::window::WindowResolution::new(1280.0, 720.0),
                 ..default()
             }),
             ..default()

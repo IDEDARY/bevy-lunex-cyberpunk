@@ -11,7 +11,7 @@ use components::*;
 fn main() {
     App::new()
         .add_plugins((default_plugins(), DefaultPickingPlugins, UiGeneralPlugin, UiPlugin::<MenuUi>::new()))
-        .add_plugins(UiDebugPlugin::<MenuUi>::new())
+        //.add_plugins(UiDebugPlugin::<MenuUi>::new())
         .add_plugins(MainButtonPlugin)
 
         .add_plugins(VFXPlugin)
