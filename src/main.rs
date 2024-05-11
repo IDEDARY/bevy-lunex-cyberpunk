@@ -1,4 +1,4 @@
-use bevy::{app::AppExit, prelude::*, sprite::Anchor};
+use bevy::{prelude::*, sprite::Anchor};
 use bevy_lunex::prelude::*;
 use bevy_mod_picking::prelude::*;
 
@@ -10,8 +10,8 @@ use components::*;
 
 fn main() {
     App::new()
-        .add_plugins((default_plugins(), DefaultPickingPlugins, UiGeneralPlugin, UiPlugin::<NoData, NoData, MenuUi>::new()))
-        //.add_plugins(UiDebugPlugin::<NoData, NoData, MenuUi>::new())
+        .add_plugins((default_plugins(), DefaultPickingPlugins, UiGeneralPlugin, UiPlugin::<MenuUi>::new()))
+        .add_plugins(UiDebugPlugin::<MenuUi>::new())
         .add_plugins(MainButtonPlugin)
 
         .add_plugins(VFXPlugin)
@@ -73,22 +73,19 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
 
     // Spawn the master ui tree
     commands.spawn((
-        UiLink::<MenuUi>::new(),
-        UiTreeBundle::<NoData, NoData, MenuUi>::from(UiTree::new("Bevypunk")),
+        UiTreeBundle::<MenuUi>::from(UiTree::new("Bevypunk")),
         MovableByCamera,    // Marks this entity to receive Transform & Dimension updates from camera size
     )).with_children(|ui| {
 
         // Spawn the root div
         let root = UiLink::<MenuUi>::path("Root");  // Here we can define the name of the node
         ui.spawn((
-            MenuUi,                                 // Required marker component
             root.clone(),                           // Here we add the link
             UiLayout::window_full().pack(),        // This is where we define layout
         ));
 
         // Spawn the background
         ui.spawn((
-            MenuUi,
             root.add("Background"), // You can see here that we used existing "root" link to create chained link (same as "Root/Background")
             UiLayout::solid().size((2968.0, 1656.0)).scaling(Scaling::Fill).pack(),
             UiImage2dBundle::from(assets.main_background.clone()),  // We use this bundle to add background image to our node
@@ -98,14 +95,12 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
         // Spawn the board
         let board = root.add("Solid");
         ui.spawn((
-            MenuUi,
             board.clone(),
             UiLayout::solid().size((879.0, 1600.0)).align_x(-0.74).pack(), // Just different layout type that preserves aspect ratio
         ));
 
         let board = board.add("Board");
         ui.spawn((
-            MenuUi,
             board.clone(),
             UiLayout::window().x(Rl(50.0)).anchor(Anchor::TopCenter).size(Rl(105.0)).pack(),
             UiImage2dBundle::from(assets.main_board.clone())
@@ -113,12 +108,10 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
 
         // Spawn the logo
         ui.spawn((
-            MenuUi,
             board.add("Boundary"),
             UiLayout::window().y(Rl(13.0)).size(Rl((105.0, 20.0))).pack(),
         ));
         ui.spawn((
-            MenuUi,
             board.add("Boundary/Logo"),
             UiLayout::solid().size((1240.0, 381.0)).pack(),
             UiImage2dBundle::from(assets.main_logo.clone())
@@ -131,7 +124,6 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
         // Spawn button boundary
         let list = board.add("List");
         ui.spawn((
-            MenuUi,
             list.clone(),
             UiLayout::window().pos(Rl((22.0, 33.0))).size(Rl((55.0, 34.0))).pack(),
         ));
@@ -249,6 +241,7 @@ impl MainMenuButton {
     }
 }
 
+/*
 // Our event that will happen if we click one of the main menu buttons
 #[derive(Event)]
 struct MainMenuButtonAction {
@@ -286,3 +279,4 @@ fn main_menu_button_action_system(mut events: EventReader<MainMenuButtonAction>,
         }
     }
 }
+ */

@@ -37,11 +37,10 @@ fn build_system (mut commands: Commands, query: Query<(Entity, &MainButton), Add
 
         // This will create a private sandboxed UiTree within the entity just for the button
         commands.entity(entity).insert(
-            UiTreeBundle::<NoData, NoData, MainButtonUi>::from(UiTree::new("MainButton")),
+            UiTreeBundle::<MainButtonUi>::from(UiTree::new("MainButton")),
         ).with_children(|ui| {
 
             ui.spawn((
-                MainButtonUi,
                 MainButtonControl::default(),
                 UiLink::<MainButtonUi>::path("Root"),
                 UiLayout::window_full().pack(),
@@ -58,7 +57,6 @@ fn build_system (mut commands: Commands, query: Query<(Entity, &MainButton), Add
 
             // Spawn button text
             ui.spawn((
-                MainButtonUi,
                 UiLink::<MainButtonUi>::path("Root/Text"),
 
                 // Here we can define where we want to position our text within the parent node,
@@ -85,7 +83,7 @@ fn build_system (mut commands: Commands, query: Query<(Entity, &MainButton), Add
 // #=== MAIN BUTTON INTERACTIVITY ===#
 
 /// System that triggers when a pointer enters a node
-fn pointer_enter_system(mut events: EventReader<Pointer<Over>>, mut query: Query<&mut MainButtonControl, With<MainButtonUi>>) {
+fn pointer_enter_system(mut events: EventReader<Pointer<Over>>, mut query: Query<&mut MainButtonControl, With<UiLink<MainButtonUi>>>) {
     for event in events.read() {
         if let Ok(mut control) = query.get_mut(event.target) {
             control.animation_direction = 1.0;
@@ -94,7 +92,7 @@ fn pointer_enter_system(mut events: EventReader<Pointer<Over>>, mut query: Query
 }
 
 /// System that triggers when a pointer leaves a node
-fn pointer_leave_system(mut events: EventReader<Pointer<Out>>, mut query: Query<&mut MainButtonControl, With<MainButtonUi>>) {
+fn pointer_leave_system(mut events: EventReader<Pointer<Out>>, mut query: Query<&mut MainButtonControl, With<UiLink<MainButtonUi>>>) {
     for event in events.read() {
         if let Ok(mut control) = query.get_mut(event.target) {
             control.animation_direction = -1.0;
@@ -103,7 +101,7 @@ fn pointer_leave_system(mut events: EventReader<Pointer<Out>>, mut query: Query<
 }
 
 /// System that updates the state of the node over time
-fn update_system(time: Res<Time>, mut query: Query<(&mut MainButtonControl, &mut Sprite, &mut UiLayout), With<MainButtonUi>>, mut cursor: Query<&mut Cursor2d>) {
+fn update_system(time: Res<Time>, mut query: Query<(&mut MainButtonControl, &mut Sprite, &mut UiLayout), With<UiLink<MainButtonUi>>>, mut cursor: Query<&mut Cursor2d>) {
     for (mut control, mut sprite, mut layout) in &mut query {
 
         // Animate the transition
@@ -127,9 +125,9 @@ fn update_system(time: Res<Time>, mut query: Query<(&mut MainButtonControl, &mut
     }
 }
 
-fn sys(ui: Query<(&UiTree<NoData, NoData>, &Children), With<MainButtonUi>>, query: Query<(&mut Text, Entity), With<MainButtonUi>> ) {
+/* fn sys(ui: Query<(&UiTree<NoData, NoData>, &Children), With<MainButtonUi>>, query: Query<(&mut Text, Entity), With<UiLink<MainButtonUi>>> ) {
 
-}
+} */
 
 // #==========================#
 // #=== MAIN BUTTON PLUGIN ===#
@@ -139,7 +137,8 @@ impl Plugin for MainButtonPlugin {
     fn build(&self, app: &mut App) {
         app
             // Add Lunex plugins for our sandboxed UI
-            .add_plugins(UiPlugin::<NoData, NoData, MainButtonUi>::new())
+            .add_plugins(UiPlugin::<MainButtonUi>::new())
+            .add_plugins(UiDebugPlugin::<MainButtonUi>::new())
 
             // Add event systems
             .add_systems(Update, pointer_enter_system.before(update_system).run_if(on_event::<Pointer<Over>>()))
