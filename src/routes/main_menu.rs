@@ -13,6 +13,7 @@ pub struct MainMenuRoute;
 // #===============================#
 // #=== SANDBOXED USER INTEFACE ===#
 
+/// System that builds the route
 fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Entity, Added<MainMenuRoute>>) {
     for entity in &query {
         // #======================#
@@ -106,6 +107,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
 // #=====================#
 // #=== INTERACTIVITY ===#
 
+/// Good practice is to use custom component for buttons, so we can easily know what type of button was pressed
 #[derive(Component, Clone)]
 enum MainMenuButton {
     Continue,
@@ -130,7 +132,7 @@ impl MainMenuButton {
     }
 }
 
-// System that will resolve our event
+/// System that will resolve our event
 fn main_menu_button_action_system(mut events: EventReader<MainButtonClick>, query: Query<&MainMenuButton, With<MainButton>>, mut exit: EventWriter<bevy::app::AppExit>) {
     for event in events.read() {
         if let Ok(button) = query.get(event.target) {
@@ -157,6 +159,7 @@ fn main_menu_button_action_system(mut events: EventReader<MainButtonClick>, quer
 // #====================#
 // #=== ROUTE PLUGIN ===#
 
+/// Plugin adding all our logic
 pub struct MainMenuRoutePlugin;
 impl Plugin for MainMenuRoutePlugin {
     fn build(&self, app: &mut App) {

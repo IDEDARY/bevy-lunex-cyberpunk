@@ -14,8 +14,7 @@ pub struct MainButtonClick {
     pub target: Entity,
 }
 
-/// Control component for our ui-component.
-/// This works as an abstraction over the logic to make things more simple.
+/// When this component is added, a UI system is built
 #[derive(Component, Debug, Default, Clone, PartialEq)]
 pub struct MainButton {
     pub text: String,
@@ -39,7 +38,7 @@ struct MainButtonControl {
 }
 
 
-/// System which builds the layout
+/// System that builds the component UI
 fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), Added<MainButton>>, assets: Res<AssetCache>) {
     for (entity, button_source) in &query {
 
@@ -199,6 +198,7 @@ fn update_system(
 // #========================#
 // #=== COMPONENT PLUGIN ===#
 
+/// Plugin adding all our logic
 pub struct MainButtonPlugin;
 impl Plugin for MainButtonPlugin {
     fn build(&self, app: &mut App) {
