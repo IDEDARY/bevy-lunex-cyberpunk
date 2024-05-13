@@ -18,7 +18,7 @@ fn main() {
 
         .add_plugins(VFXPlugin)
         .add_systems(PreStartup, cache_assets)
-        .add_systems(Startup, startup)
+        .add_systems(Startup, setup)
 
         // React to main button click
         .add_plugins(ComponentPlugin)
@@ -27,11 +27,11 @@ fn main() {
         .run();
 }
 
-fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>) {
 
+// #=====================#
+// #=== GENERIC SETUP ===#
 
-    // #=====================#
-    // #=== GENERIC SETUP ===#
+fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>) {
 
     // Spawn camera
     commands.spawn(camera()).with_children(|camera| {
@@ -69,6 +69,7 @@ fn startup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: Re
     // Spawn audio
     commands.spawn( AudioBundle { source: assets.music.clone(), settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new(0.5)) } );
 
+    // Spawn menu UI
     commands.spawn((
         MainMenuRoute,
         MovableByCamera,    // Marks this ui to receive Transform & Dimension updates from camera size

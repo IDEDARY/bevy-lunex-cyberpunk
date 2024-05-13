@@ -5,6 +5,7 @@ use crate::*;
 // #=========================#
 // #=== EXPOSED COMPONENT ===#
 
+/// When this component is added, a UI system is built
 #[derive(Component, Debug, Default, Clone, PartialEq)]
 pub struct MainMenuRoute;
 
