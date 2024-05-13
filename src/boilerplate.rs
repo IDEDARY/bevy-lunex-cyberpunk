@@ -22,7 +22,7 @@ impl BevypunkColorPalette for Color {
     const BEVYPUNK_YELLOW: Color = Color::rgba(252./255., 226./255., 8./255., 1.0);
 }
 
-
+/// Color lerping functionality
 pub trait LerpColor {
     fn lerp(&self, color: Color, value: f32) -> Color;
 }
@@ -88,7 +88,7 @@ pub fn default_plugins() -> PluginGroupBuilder {
         WindowPlugin {
             primary_window: Some(Window {
                 title: "Bevypunk".into(),
-                mode: bevy::window::WindowMode::Windowed,
+                mode: bevy::window::WindowMode::BorderlessFullscreen,
                 present_mode: bevy::window::PresentMode::AutoNoVsync,
                 resolution: bevy::window::WindowResolution::new(1280.0, 720.0),
                 ..default()
