@@ -8,7 +8,7 @@ use crate::{AssetCache, BevypunkColorPalette, LerpColor};
 // #=========================#
 // #=== EXPOSED COMPONENT ===#
 
-// Event that will trigger if we click the button.
+/// Event that will trigger if we click the button.
 #[derive(Event)]
 pub struct MainButtonClick {
     pub target: Entity,
@@ -40,7 +40,7 @@ struct MainButtonControl {
 
 
 /// System which builds the layout
-fn build_system (mut commands: Commands, query: Query<(Entity, &MainButton), Added<MainButton>>, assets: Res<AssetCache>) {
+fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), Added<MainButton>>, assets: Res<AssetCache>) {
     for (entity, button_source) in &query {
 
         // This will create a private sandboxed UiTree within the entity just for the button
@@ -117,8 +117,8 @@ fn build_system (mut commands: Commands, query: Query<(Entity, &MainButton), Add
 }
 
 
-// #=================================#
-// #=== MAIN BUTTON INTERACTIVITY ===#
+// #=====================#
+// #=== INTERACTIVITY ===#
 
 /// System that triggers when a pointer click a node
 fn pointer_click_system(mut events: EventReader<Pointer<Down>>, mut write: EventWriter<MainButtonClick>, query: Query<&Parent, (With<MainButtonControl>, With<UiLink<MainButtonUi>>)>) {
@@ -196,8 +196,8 @@ fn update_system(
 }
 
 
-// #==========================#
-// #=== MAIN BUTTON PLUGIN ===#
+// #========================#
+// #=== COMPONENT PLUGIN ===#
 
 pub struct MainButtonPlugin;
 impl Plugin for MainButtonPlugin {
@@ -217,6 +217,6 @@ impl Plugin for MainButtonPlugin {
 
             // Add general systems
             .add_systems(Update, update_system)
-            .add_systems(Update, build_system);
+            .add_systems(Update, build_component);
     }
 }
