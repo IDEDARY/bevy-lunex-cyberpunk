@@ -16,11 +16,12 @@ fn main() {
         .add_plugins((default_plugins(), DefaultPickingPlugins, UiGeneralPlugin, UiPlugin::<MenuUi>::new()))
         //.add_plugins(UiDebugPlugin::<MenuUi>::new())
 
+        // General setup
         .add_plugins(VFXPlugin)
         .add_systems(PreStartup, cache_assets)
         .add_systems(Startup, setup)
 
-        // React to main button click
+        // Add our plugins
         .add_plugins(ComponentPlugin)
         .add_plugins(RoutePlugin)
 
