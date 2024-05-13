@@ -22,7 +22,7 @@ impl BevypunkColorPalette for Color {
     const BEVYPUNK_YELLOW: Color = Color::rgba(252./255., 226./255., 8./255., 1.0);
 }
 
-
+/// Color lerping functionality
 pub trait LerpColor {
     fn lerp(&self, color: Color, value: f32) -> Color;
 }
