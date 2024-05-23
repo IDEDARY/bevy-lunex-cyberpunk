@@ -74,7 +74,7 @@ pub fn cache_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
         main_background: asset_server.load("images/main_menu/background1.png"),
         main_board: asset_server.load("images/main_menu/board.png"),
         main_logo: asset_server.load("images/main_menu/bevypunk.png"),
-        settings_background: asset_server.load("images/settings/background.png"),
+        settings_background: asset_server.load("images/settings/flat.png"),
     });
 }
 

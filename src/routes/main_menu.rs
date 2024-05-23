@@ -35,7 +35,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
             ui.spawn((
                 root.add("Background"), // You can see here that we used existing "root" link to create chained link (same as "Root/Background")
                 UiLayout::solid().size((2968.0, 1656.0)).scaling(Scaling::Fill).pack(),
-                UiImage2dBundle::from(assets.main_background.clone()),  // We use this bundle to add background image to our node
+                UiImage2dBundle::from(assets.settings_background.clone()),  // We use this bundle to add background image to our node
             ));
 
 
@@ -57,7 +57,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
             // Spawn the logo
             ui.spawn((
                 board.add("Boundary"),
-                UiLayout::window().y(Rl(13.0)).size(Rl((105.0, 20.0))).pack(),
+                UiLayout::window().y(Rl(11.0)).size(Rl((105.0, 20.0))).pack(),
             ));
             ui.spawn((
                 board.add("Boundary/Logo"),
