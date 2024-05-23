@@ -1,5 +1,6 @@
 use bevy::prelude::*;
 use bevy_lunex::prelude::*;
+use bevy_aseprite::*;
 use bevy_mod_picking::prelude::*;
 
 mod boilerplate;
@@ -13,7 +14,7 @@ use routes::*;
 
 fn main() {
     App::new()
-        .add_plugins((default_plugins(), DefaultPickingPlugins, UiGeneralPlugin, UiPlugin::<MenuUi>::new()))
+        .add_plugins((default_plugins(), DefaultPickingPlugins, AsepritePlugin, UiGeneralPlugin, UiPlugin::<MenuUi>::new()))
         //.add_plugins(UiDebugPlugin::<MenuUi>::new())
 
         // General setup
@@ -75,4 +76,10 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
         MainMenuRoute,
         MovableByCamera,    // Marks this ui to receive Transform & Dimension updates from camera size
     ));
+
+    /* commands.spawn(AsepriteBundle {
+        aseprite: assets.intro.clone(),
+        //animation: AsepriteAnimation::from("walk"),
+        ..default()
+    }); */
 }
