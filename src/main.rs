@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_lunex::prelude::*;
-use bevy_aseprite::*;
 use bevy_mod_picking::prelude::*;
+use vleue_kinetoscope::*;
 
 mod boilerplate;
 use boilerplate::*;
@@ -14,8 +14,10 @@ use routes::*;
 
 fn main() {
     App::new()
-        .add_plugins((default_plugins(), DefaultPickingPlugins, AsepritePlugin, UiGeneralPlugin, UiPlugin::<MenuUi>::new()))
+        .add_plugins((default_plugins(), DefaultPickingPlugins, UiGeneralPlugin, UiPlugin::<MenuUi>::new()))
         //.add_plugins(UiDebugPlugin::<MenuUi>::new())
+
+        .add_plugins(AnimatedGifPlugin::default())
 
         // General setup
         .add_plugins(VFXPlugin)
@@ -72,14 +74,14 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
     commands.spawn( AudioBundle { source: assets.music.clone(), settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new(0.5)) } );
 
     // Spawn menu UI
-    commands.spawn((
+    /* commands.spawn((
         MainMenuRoute,
         MovableByCamera,    // Marks this ui to receive Transform & Dimension updates from camera size
-    ));
+    )); */
 
-    /* commands.spawn(AsepriteBundle {
-        aseprite: assets.intro.clone(),
-        //animation: AsepriteAnimation::from("walk"),
+    commands.spawn(vleue_kinetoscope::AnimatedGifImageBundle {
+        animated_gif: assets.intro.clone(),
         ..default()
-    }); */
+    });
+
 }
