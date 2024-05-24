@@ -12,17 +12,14 @@ use components::*;
 mod routes;
 use routes::*;
 
-use vleue_kinetoscope::{AnimatedGif, AnimatedGifPlugin};
 
 fn main() {
     App::new()
         .add_plugins((default_plugins(), DefaultPickingPlugins, UiGeneralPlugin, UiPlugin::<MenuUi>::new()))
         //.add_plugins(UiDebugPlugin::<MenuUi>::new())
 
-        .add_plugins(AnimatedGifPlugin::default())
-
-        .add_plugins(bevy_webp_anim::Plugin)
-        .init_resource::<bevy_webp_anim::WebpAnimator>()
+        //.add_plugins(bevy_webp_anim::Plugin)
+        //.init_resource::<bevy_webp_anim::WebpAnimator>()
         /* .add_systems(
             Update,
             (
@@ -31,8 +28,6 @@ fn main() {
                 bevy_webp_anim::systems::load_next_frame,
             ),
         ) */
-
-        .add_systems(Update, display_menu)
 
         // General setup
         .add_plugins(VFXPlugin)
@@ -50,7 +45,7 @@ fn main() {
 // #=====================#
 // #=== GENERIC SETUP ===#
 
-fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>,mut _webp: ResMut<bevy_webp_anim::WebpAnimator>) {
+fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>){ //,mut _webp: ResMut<bevy_webp_anim::WebpAnimator>) {
 
     // Spawn camera
     commands.spawn(camera()).with_children(|camera| {
@@ -88,39 +83,22 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
     // Spawn audio
     commands.spawn( AudioBundle { source: assets.music.clone(), settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new(0.5)) } );
 
+    // Spawn intro route
+    commands.spawn((
+        IntroRoute,
+        MovableByCamera,    // Marks this ui to receive Transform & Dimension updates from camera size
+    ));
+
+
     // Spawn menu UI
     /* commands.spawn((
         MainMenuRoute,
         MovableByCamera,    // Marks this ui to receive Transform & Dimension updates from camera size
     )); */
 
-    commands.spawn(vleue_kinetoscope::AnimatedGifImageBundle {
-        animated_gif: assets.intro.clone(),
-        ..default()
-    });
-
     /* commands.spawn(bevy_webp_anim::WebpBundle {
         remote_control: webp.add_and_wait_for_asset_load(assets.intro.clone(), 24.0),
         ..default()
     }); */
 
-}
-
-
-fn display_menu(
-    mut commands: Commands,
-    query: Query<Entity, With<Handle<AnimatedGif>>>,
-    mut i: Local<f32>,
-    delta: ResMut<Time>,
-) {
-    if *i > 11.0 {
-        if !query.is_empty() {
-            commands.entity(query.single()).despawn_recursive();
-            commands.spawn((
-                MainMenuRoute,
-                MovableByCamera, // Marks this ui to receive Transform & Dimension updates from camera size
-            ));
-        }
-    }
-    *i += delta.delta_seconds();
 }
