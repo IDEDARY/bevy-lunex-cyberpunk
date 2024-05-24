@@ -16,8 +16,8 @@
 
   # Required for animations
   #bevy_aseprite = { git="https://github.com/ryo33/bevy_aseprite", branch="bevy-0.13"}
-  #bevy_webp_anim = "0.3.1"
-  vleue_kinetoscope = { git = "https://github.com/vleue/vleue_kinetoscope" }
+  bevy_webp_anim = "0.3.1"
+  #vleue_kinetoscope = { git = "https://github.com/vleue/vleue_kinetoscope" }
 
   # UI framework
   #bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev", features=["picking"] }
@@ -36,6 +36,7 @@
     "bevy_text",
     "multi-threaded",
     "png",
+    #"webp",
     "hdr",
     "vorbis",
     "x11",

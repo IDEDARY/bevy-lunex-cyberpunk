@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy_lunex::prelude::*;
 use bevy_mod_picking::prelude::*;
-use vleue_kinetoscope::*;
+//use vleue_kinetoscope::*;
 
 mod boilerplate;
 use boilerplate::*;
@@ -17,7 +17,20 @@ fn main() {
         .add_plugins((default_plugins(), DefaultPickingPlugins, UiGeneralPlugin, UiPlugin::<MenuUi>::new()))
         //.add_plugins(UiDebugPlugin::<MenuUi>::new())
 
-        .add_plugins(AnimatedGifPlugin::default())
+        //.add_plugins(AnimatedGifPlugin::default())
+
+        .add_plugins(bevy_webp_anim::Plugin)
+        .init_resource::<bevy_webp_anim::WebpAnimator>()
+        /* .add_systems(
+            Update,
+            (
+                // the generic allows you to have multiple `WebpAnimator<T>`
+                bevy_webp_anim::systems::start_loaded_videos::<()>,
+                bevy_webp_anim::systems::load_next_frame,
+            ),
+        ) */
+
+        .add_systems(Update, display_menu)
 
         // General setup
         .add_plugins(VFXPlugin)
@@ -35,7 +48,7 @@ fn main() {
 // #=====================#
 // #=== GENERIC SETUP ===#
 
-fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>) {
+fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>,mut webp: ResMut<bevy_webp_anim::WebpAnimator>) {
 
     // Spawn camera
     commands.spawn(camera()).with_children(|camera| {
@@ -79,9 +92,29 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
         MovableByCamera,    // Marks this ui to receive Transform & Dimension updates from camera size
     )); */
 
-    commands.spawn(vleue_kinetoscope::AnimatedGifImageBundle {
+    /* commands.spawn(vleue_kinetoscope::AnimatedGifImageBundle {
         animated_gif: assets.intro.clone(),
         ..default()
-    });
+    }); */
 
+    /* commands.spawn(bevy_webp_anim::WebpBundle {
+        remote_control: webp.add_and_wait_for_asset_load(assets.intro.clone(), 24.0),
+        ..default()
+    }); */
+
+}
+
+
+fn display_menu(
+    mut commands: Commands,
+    mut i: Local<u32>,
+) {
+    if *i == 100 {
+        //commands.entity(query.single()).despawn_recursive();
+        commands.spawn((
+            MainMenuRoute,
+            MovableByCamera, // Marks this ui to receive Transform & Dimension updates from camera size
+        ));
+    }
+    *i += 1;
 }

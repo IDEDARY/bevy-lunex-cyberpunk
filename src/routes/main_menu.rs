@@ -164,7 +164,7 @@ pub struct MainMenuRoutePlugin;
 impl Plugin for MainMenuRoutePlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_systems(Update, build_route)
+            .add_systems(Update, build_route.before(UiSystems::Compute))
             .add_systems(Update, main_menu_button_action_system.run_if(on_event::<MainButtonClick>()));
     }
 }
