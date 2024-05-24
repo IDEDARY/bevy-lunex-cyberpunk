@@ -1,7 +1,6 @@
 use bevy::render::settings::WgpuSettings;
 use bevy::core_pipeline::bloom::BloomSettings;
 use bevy::{app::PluginGroupBuilder, prelude::*};
-//use bevy_webp_anim::WebpVideo;
 use vleue_kinetoscope::AnimatedGif;
 
 
@@ -52,7 +51,6 @@ pub struct AssetCache {
 
     pub cursor: Handle<Image>,
 
-    //pub intro: Handle<WebpVideo>,
     pub intro: Handle<AnimatedGif>,
 
     pub button: Handle<Image>,
@@ -77,10 +75,10 @@ pub fn cache_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
         button: asset_server.load("images/main_menu/button.png"),
         switch_base: asset_server.load("images/settings/switch_base.png"),
         switch_head: asset_server.load("images/settings/switch_head.png"),
-        main_background: asset_server.load("images/main_menu/background1.png"),
+        main_background: asset_server.load("images/settings/background.png"),
         main_board: asset_server.load("images/main_menu/board.png"),
         main_logo: asset_server.load("images/main_menu/bevypunk.png"),
-        settings_background: asset_server.load("images/settings/flat.png"),
+        settings_background: asset_server.load("images/settings/background.png"),
     });
 }
 
