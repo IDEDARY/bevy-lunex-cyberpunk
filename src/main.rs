@@ -110,14 +110,17 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
 fn display_menu(
     mut commands: Commands,
     query: Query<Entity, With<Handle<AnimatedGif>>>,
-    mut i: Local<u32>,
+    mut i: Local<f32>,
+    delta: ResMut<Time>,
 ) {
-    if *i == 1000 {
-        commands.entity(query.single()).despawn_recursive();
-        commands.spawn((
-            MainMenuRoute,
-            MovableByCamera, // Marks this ui to receive Transform & Dimension updates from camera size
-        ));
+    if *i > 11.0 {
+        if !query.is_empty() {
+            commands.entity(query.single()).despawn_recursive();
+            commands.spawn((
+                MainMenuRoute,
+                MovableByCamera, // Marks this ui to receive Transform & Dimension updates from camera size
+            ));
+        }
     }
-    *i += 1;
+    *i += delta.delta_seconds();
 }
