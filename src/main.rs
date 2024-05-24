@@ -12,12 +12,14 @@ use components::*;
 mod routes;
 use routes::*;
 
+use vleue_kinetoscope::{AnimatedGif, AnimatedGifPlugin};
+
 fn main() {
     App::new()
         .add_plugins((default_plugins(), DefaultPickingPlugins, UiGeneralPlugin, UiPlugin::<MenuUi>::new()))
         //.add_plugins(UiDebugPlugin::<MenuUi>::new())
 
-        //.add_plugins(AnimatedGifPlugin::default())
+        .add_plugins(AnimatedGifPlugin::default())
 
         .add_plugins(bevy_webp_anim::Plugin)
         .init_resource::<bevy_webp_anim::WebpAnimator>()
@@ -48,7 +50,7 @@ fn main() {
 // #=====================#
 // #=== GENERIC SETUP ===#
 
-fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>,mut webp: ResMut<bevy_webp_anim::WebpAnimator>) {
+fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>,mut _webp: ResMut<bevy_webp_anim::WebpAnimator>) {
 
     // Spawn camera
     commands.spawn(camera()).with_children(|camera| {
@@ -92,10 +94,10 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
         MovableByCamera,    // Marks this ui to receive Transform & Dimension updates from camera size
     )); */
 
-    /* commands.spawn(vleue_kinetoscope::AnimatedGifImageBundle {
+    commands.spawn(vleue_kinetoscope::AnimatedGifImageBundle {
         animated_gif: assets.intro.clone(),
         ..default()
-    }); */
+    });
 
     /* commands.spawn(bevy_webp_anim::WebpBundle {
         remote_control: webp.add_and_wait_for_asset_load(assets.intro.clone(), 24.0),
@@ -107,10 +109,11 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
 
 fn display_menu(
     mut commands: Commands,
+    query: Query<Entity, With<Handle<AnimatedGif>>>,
     mut i: Local<u32>,
 ) {
-    if *i == 100 {
-        //commands.entity(query.single()).despawn_recursive();
+    if *i == 1000 {
+        commands.entity(query.single()).despawn_recursive();
         commands.spawn((
             MainMenuRoute,
             MovableByCamera, // Marks this ui to receive Transform & Dimension updates from camera size
