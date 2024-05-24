@@ -18,17 +18,6 @@ fn main() {
         .add_plugins((default_plugins(), DefaultPickingPlugins, UiGeneralPlugin, UiPlugin::<MenuUi>::new()))
         //.add_plugins(UiDebugPlugin::<MenuUi>::new())
 
-        //.add_plugins(bevy_webp_anim::Plugin)
-        //.init_resource::<bevy_webp_anim::WebpAnimator>()
-        /* .add_systems(
-            Update,
-            (
-                // the generic allows you to have multiple `WebpAnimator<T>`
-                bevy_webp_anim::systems::start_loaded_videos::<()>,
-                bevy_webp_anim::systems::load_next_frame,
-            ),
-        ) */
-
         // General setup
         .add_plugins(VFXPlugin)
         .add_systems(PreStartup, cache_assets)
@@ -88,17 +77,4 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
         IntroRoute,
         MovableByCamera,    // Marks this ui to receive Transform & Dimension updates from camera size
     ));
-
-
-    // Spawn menu UI
-    /* commands.spawn((
-        MainMenuRoute,
-        MovableByCamera,    // Marks this ui to receive Transform & Dimension updates from camera size
-    )); */
-
-    /* commands.spawn(bevy_webp_anim::WebpBundle {
-        remote_control: webp.add_and_wait_for_asset_load(assets.intro.clone(), 24.0),
-        ..default()
-    }); */
-
 }
