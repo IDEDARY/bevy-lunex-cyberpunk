@@ -1,6 +1,7 @@
 use bevy::render::settings::WgpuSettings;
 use bevy::core_pipeline::bloom::BloomSettings;
 use bevy::{app::PluginGroupBuilder, prelude::*};
+use vleue_kinetoscope::AnimatedGif;
 
 
 // #=========================================#
@@ -50,6 +51,8 @@ pub struct AssetCache {
 
     pub cursor: Handle<Image>,
 
+    pub intro: Handle<AnimatedGif>,
+
     pub button: Handle<Image>,
     pub switch_base: Handle<Image>,
     pub switch_head: Handle<Image>,
@@ -68,10 +71,11 @@ pub fn cache_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
         font_semibold: asset_server.load("fonts/rajdhani/Rajdhani-SemiBold.ttf"),
         font_bold: asset_server.load("fonts/rajdhani/Rajdhani-Bold.ttf"),
         cursor: asset_server.load("images/cursor.png"),
+        intro: asset_server.load("images/intro/intro-lossy.gif"),
         button: asset_server.load("images/main_menu/button.png"),
         switch_base: asset_server.load("images/settings/switch_base.png"),
         switch_head: asset_server.load("images/settings/switch_head.png"),
-        main_background: asset_server.load("images/main_menu/background1.png"),
+        main_background: asset_server.load("images/settings/background.png"),
         main_board: asset_server.load("images/main_menu/board.png"),
         main_logo: asset_server.load("images/main_menu/bevypunk.png"),
         settings_background: asset_server.load("images/settings/background.png"),
@@ -88,7 +92,7 @@ pub fn default_plugins() -> PluginGroupBuilder {
         WindowPlugin {
             primary_window: Some(Window {
                 title: "Bevypunk".into(),
-                mode: bevy::window::WindowMode::BorderlessFullscreen,
+                mode: bevy::window::WindowMode::Windowed,
                 present_mode: bevy::window::PresentMode::AutoNoVsync,
                 resolution: bevy::window::WindowResolution::new(1280.0, 720.0),
                 ..default()

@@ -11,16 +11,18 @@ use components::*;
 mod routes;
 use routes::*;
 
+
 fn main() {
     App::new()
         .add_plugins((default_plugins(), DefaultPickingPlugins, UiGeneralPlugin, UiPlugin::<MenuUi>::new()))
         //.add_plugins(UiDebugPlugin::<MenuUi>::new())
 
+        // General setup
         .add_plugins(VFXPlugin)
         .add_systems(PreStartup, cache_assets)
         .add_systems(Startup, setup)
 
-        // React to main button click
+        // Add our plugins
         .add_plugins(ComponentPlugin)
         .add_plugins(RoutePlugin)
 
@@ -31,7 +33,7 @@ fn main() {
 // #=====================#
 // #=== GENERIC SETUP ===#
 
-fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>) {
+fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>){ //,mut _webp: ResMut<bevy_webp_anim::WebpAnimator>) {
 
     // Spawn camera
     commands.spawn(camera()).with_children(|camera| {
@@ -69,9 +71,9 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
     // Spawn audio
     commands.spawn( AudioBundle { source: assets.music.clone(), settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new(0.5)) } );
 
-    // Spawn menu UI
+    // Spawn intro route
     commands.spawn((
-        MainMenuRoute,
+        IntroRoute,
         MovableByCamera,    // Marks this ui to receive Transform & Dimension updates from camera size
     ));
 }

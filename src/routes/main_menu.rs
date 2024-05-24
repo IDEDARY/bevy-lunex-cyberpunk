@@ -21,7 +21,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
 
         // Spawn the master ui tree
         commands.entity(entity).insert((
-            UiTreeBundle::<MenuUi>::from(UiTree::new("Bevypunk")),
+            UiTreeBundle::<MenuUi>::from(UiTree::new("MainMenu")),
         )).with_children(|ui| {
 
             // Spawn the root div
@@ -57,7 +57,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
             // Spawn the logo
             ui.spawn((
                 board.add("Boundary"),
-                UiLayout::window().y(Rl(13.0)).size(Rl((105.0, 20.0))).pack(),
+                UiLayout::window().y(Rl(11.0)).size(Rl((105.0, 20.0))).pack(),
             ));
             ui.spawn((
                 board.add("Boundary/Logo"),
@@ -133,7 +133,9 @@ impl MainMenuButton {
 }
 
 /// System that will resolve our event
-fn main_menu_button_action_system(mut events: EventReader<MainButtonClick>, query: Query<&MainMenuButton, With<MainButton>>, mut exit: EventWriter<bevy::app::AppExit>) {
+fn main_menu_button_action_system(mut events: EventReader<MainButtonClick>, query: Query<&MainMenuButton, With<MainButton>>, mut exit: EventWriter<bevy::app::AppExit>, mut commands: Commands,
+    main_menu_route: Query<Entity, With<MainMenuRoute>>,
+) {
     for event in events.read() {
         if let Ok(button) = query.get(event.target) {
 
@@ -142,9 +144,18 @@ fn main_menu_button_action_system(mut events: EventReader<MainButtonClick>, quer
             // Here we can do our logic for each button
             match button {
                 MainMenuButton::Continue => {},
-                MainMenuButton::NewGame => {},
-                MainMenuButton::LoadGame => {},
-                MainMenuButton::Settings => {},
+                MainMenuButton::NewGame => {
+                    commands.entity(main_menu_route.single()).despawn_recursive();
+                    commands.spawn((CharacterCreatorRoute, MovableByCamera));
+                },
+                MainMenuButton::LoadGame => {
+                    commands.entity(main_menu_route.single()).despawn_recursive();
+                    commands.spawn((LoadGameRoute, MovableByCamera));
+                },
+                MainMenuButton::Settings => {
+                    commands.entity(main_menu_route.single()).despawn_recursive();
+                    commands.spawn((SettingsRoute, MovableByCamera));
+                },
                 MainMenuButton::AdditionalContent => {},
                 MainMenuButton::Credits => {},
                 MainMenuButton::QuitGame => {
@@ -164,7 +175,7 @@ pub struct MainMenuRoutePlugin;
 impl Plugin for MainMenuRoutePlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_systems(Update, build_route)
+            .add_systems(Update, build_route.before(UiSystems::Compute))
             .add_systems(Update, main_menu_button_action_system.run_if(on_event::<MainButtonClick>()));
     }
 }
