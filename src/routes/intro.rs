@@ -55,7 +55,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
 
 fn display_menu(
     mut commands: Commands,
-    query: Query<Entity, With<Handle<AnimatedGif>>>,
+    query: Query<Entity, With<IntroRoute>>,
     mut i: Local<f32>,
     delta: ResMut<Time>,
 ) {

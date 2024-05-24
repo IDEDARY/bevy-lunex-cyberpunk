@@ -73,7 +73,7 @@ pub fn cache_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
         font_semibold: asset_server.load("fonts/rajdhani/Rajdhani-SemiBold.ttf"),
         font_bold: asset_server.load("fonts/rajdhani/Rajdhani-Bold.ttf"),
         cursor: asset_server.load("images/cursor.png"),
-        intro: asset_server.load("images/intro/intro_compressed.gif"),
+        intro: asset_server.load("images/intro/intro-lossy.gif"),
         button: asset_server.load("images/main_menu/button.png"),
         switch_base: asset_server.load("images/settings/switch_base.png"),
         switch_head: asset_server.load("images/settings/switch_head.png"),

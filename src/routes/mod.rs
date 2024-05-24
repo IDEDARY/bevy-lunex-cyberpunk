@@ -4,6 +4,9 @@ pub use intro::*;
 pub mod main_menu;
 pub use main_menu::*;
 
+pub mod settings;
+pub use settings::*;
+
 
 // #====================#
 // #=== ROUTE PLUGIN ===#
@@ -16,6 +19,7 @@ impl Plugin for RoutePlugin {
     fn build(&self, app: &mut App) {
         app
             .add_plugins(IntroRoutePlugin)
-            .add_plugins(MainMenuRoutePlugin);
+            .add_plugins(MainMenuRoutePlugin)
+            .add_plugins(SettingsRoutePlugin);
     }
 }

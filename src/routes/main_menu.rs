@@ -21,7 +21,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
 
         // Spawn the master ui tree
         commands.entity(entity).insert((
-            UiTreeBundle::<MenuUi>::from(UiTree::new("Bevypunk")),
+            UiTreeBundle::<MenuUi>::from(UiTree::new("MainMenu")),
         )).with_children(|ui| {
 
             // Spawn the root div
@@ -35,7 +35,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
             ui.spawn((
                 root.add("Background"), // You can see here that we used existing "root" link to create chained link (same as "Root/Background")
                 UiLayout::solid().size((2968.0, 1656.0)).scaling(Scaling::Fill).pack(),
-                UiImage2dBundle::from(assets.settings_background.clone()),  // We use this bundle to add background image to our node
+                UiImage2dBundle::from(assets.main_background.clone()),  // We use this bundle to add background image to our node
             ));
 
 
@@ -133,7 +133,9 @@ impl MainMenuButton {
 }
 
 /// System that will resolve our event
-fn main_menu_button_action_system(mut events: EventReader<MainButtonClick>, query: Query<&MainMenuButton, With<MainButton>>, mut exit: EventWriter<bevy::app::AppExit>) {
+fn main_menu_button_action_system(mut events: EventReader<MainButtonClick>, query: Query<&MainMenuButton, With<MainButton>>, mut exit: EventWriter<bevy::app::AppExit>, mut commands: Commands,
+    main_menu_route: Query<Entity, With<MainMenuRoute>>,
+) {
     for event in events.read() {
         if let Ok(button) = query.get(event.target) {
 
@@ -144,7 +146,10 @@ fn main_menu_button_action_system(mut events: EventReader<MainButtonClick>, quer
                 MainMenuButton::Continue => {},
                 MainMenuButton::NewGame => {},
                 MainMenuButton::LoadGame => {},
-                MainMenuButton::Settings => {},
+                MainMenuButton::Settings => {
+                    commands.entity(main_menu_route.single()).despawn_recursive();
+                    commands.spawn((SettingsRoute, MovableByCamera));
+                },
                 MainMenuButton::AdditionalContent => {},
                 MainMenuButton::Credits => {},
                 MainMenuButton::QuitGame => {
