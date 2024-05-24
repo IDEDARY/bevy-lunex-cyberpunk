@@ -144,8 +144,14 @@ fn main_menu_button_action_system(mut events: EventReader<MainButtonClick>, quer
             // Here we can do our logic for each button
             match button {
                 MainMenuButton::Continue => {},
-                MainMenuButton::NewGame => {},
-                MainMenuButton::LoadGame => {},
+                MainMenuButton::NewGame => {
+                    commands.entity(main_menu_route.single()).despawn_recursive();
+                    commands.spawn((CharacterCreatorRoute, MovableByCamera));
+                },
+                MainMenuButton::LoadGame => {
+                    commands.entity(main_menu_route.single()).despawn_recursive();
+                    commands.spawn((LoadGameRoute, MovableByCamera));
+                },
                 MainMenuButton::Settings => {
                     commands.entity(main_menu_route.single()).despawn_recursive();
                     commands.spawn((SettingsRoute, MovableByCamera));
