@@ -1,7 +1,6 @@
 use bevy::prelude::*;
 use bevy_lunex::prelude::*;
 use bevy_mod_picking::prelude::*;
-//use vleue_kinetoscope::*;
 
 mod boilerplate;
 use boilerplate::*;
