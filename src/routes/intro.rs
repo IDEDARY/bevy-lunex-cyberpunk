@@ -37,7 +37,9 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
                 root.add("Background"), // You can see here that we used existing "root" link to create chained link (same as "Root/Background")
                 UiLayout::solid().size((1920.0, 1080.0)).scaling(Scaling::Fill).pack(),
                 
-                Element,
+                Element::default(),
+                Dimension::default(),
+
                 // Spawn the gif bundle
                 AnimatedGifImageBundle {
                     animated_gif: assets.intro.clone(),
@@ -57,7 +59,7 @@ fn display_menu(
     mut i: Local<f32>,
     delta: ResMut<Time>,
 ) {
-    if *i > 12.0 {
+    if *i > 11.0 {
         if !query.is_empty() {
             commands.entity(query.single()).despawn_recursive();
             commands.spawn((
