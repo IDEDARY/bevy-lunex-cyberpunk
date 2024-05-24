@@ -36,6 +36,7 @@
     "bevy_text",
     "multi-threaded",
     "png",
+    "jpeg",
     #"webp",
     "hdr",
     "vorbis",

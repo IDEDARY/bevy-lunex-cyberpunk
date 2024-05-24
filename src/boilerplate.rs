@@ -119,7 +119,9 @@ pub fn camera() -> impl Bundle {
         Camera2dBundle {
             transform: Transform::from_xyz(0.0, 0.0, 1000.0),
             camera: Camera {
-                hdr: true,
+                order: 1,
+                clear_color: ClearColorConfig::None,
+                //hdr: true,
                 ..default()
             },
             //tonemapping: Tonemapping::None,

@@ -35,7 +35,13 @@ fn main() {
 
 fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>){ //,mut _webp: ResMut<bevy_webp_anim::WebpAnimator>) {
 
-    // Spawn camera
+    // Spawn 3D camera
+    commands.spawn((Camera3dBundle {
+        //transform: Transform::from_xyz(0.0, 0.0, 0.0).looking_at(Vec3::new(10.0, 0.0, 0.0), Vec3::Y),
+        ..default()
+    },));
+
+    // Spawn 2D camera
     commands.spawn(camera()).with_children(|camera| {
 
         // Spawn cursor
@@ -73,7 +79,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
 
     // Spawn intro route
     commands.spawn((
-        IntroRoute,
+        CharacterCreatorRoute,
         MovableByCamera,    // Marks this ui to receive Transform & Dimension updates from camera size
     ));
 }
