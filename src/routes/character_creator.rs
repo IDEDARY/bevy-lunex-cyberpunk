@@ -19,7 +19,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
         // #======================#
         // #=== USER INTERFACE ===#
 
-        /// Disable HDR because it doesnt support none for clear color (Bug??)
+        // Disable HDR because it doesnt support none for clear color (Bug??)
         event.send(SetCameraHdr(false));
 
         // Spawn the master ui tree
