@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use bevy_lunex::prelude::*;
 use bevy_mod_picking::prelude::*;
+use vleue_kinetoscope::AnimatedGifLoader;
 
 mod boilerplate;
 use boilerplate::*;
@@ -13,8 +14,10 @@ use routes::*;
 
 
 fn main() {
+    // Our app
     let mut app = App::new();
 
+    // Add plugins
     let app = app
         .add_plugins((default_plugins(), DefaultPickingPlugins, UiGeneralPlugin, UiPlugin::<MenuUi>::new()))
         //.add_plugins(UiDebugPlugin::<MenuUi>::new())
@@ -28,9 +31,11 @@ fn main() {
         .add_plugins(ComponentPlugin)
         .add_plugins(RoutePlugin);
 
-    vleue_kinetoscope::AnimatedGifLoader::load_now("assets/images/intro/intro-lossy.gif".into(), app);
+    // Load gif before starting our app
+    let gif = AnimatedGifLoader::load_now("assets/images/intro/intro-lossy.gif".into(), app);
 
-    app.run()
+    // Insert the loaded handle and start our app
+    app.insert_resource(PreLoader { intro: gif}).run()
 }
 
 

@@ -38,6 +38,12 @@ impl LerpColor for Color {
 // #======================================#
 // #=== ASSET CACHE FOR SMOOTH LOADING ===#
 
+// Load the gif before the app is run
+#[derive(Resource)]
+pub struct PreLoader {
+    pub intro: Handle<AnimatedGif>,
+}
+
 // Load all assets at startup for faster loading during runtime
 #[derive(Resource)]
 pub struct AssetCache {
@@ -50,8 +56,6 @@ pub struct AssetCache {
     pub font_bold: Handle<Font>,
 
     pub cursor: Handle<Image>,
-
-    pub intro: Handle<AnimatedGif>,
 
     pub button: Handle<Image>,
     pub switch_base: Handle<Image>,
@@ -71,7 +75,6 @@ pub fn cache_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
         font_semibold: asset_server.load("fonts/rajdhani/Rajdhani-SemiBold.ttf"),
         font_bold: asset_server.load("fonts/rajdhani/Rajdhani-Bold.ttf"),
         cursor: asset_server.load("images/cursor.png"),
-        intro: asset_server.load("images/intro/intro-lossy.gif"),
         button: asset_server.load("images/main_menu/button.png"),
         switch_base: asset_server.load("images/settings/switch_base.png"),
         switch_head: asset_server.load("images/settings/switch_head.png"),
@@ -121,7 +124,7 @@ pub fn camera() -> impl Bundle {
             camera: Camera {
                 order: 1,
                 clear_color: ClearColorConfig::None,
-                //hdr: true,
+                hdr: true,
                 ..default()
             },
             //tonemapping: Tonemapping::None,

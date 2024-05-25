@@ -15,7 +15,7 @@ pub struct IntroRoute;
 // #=== SANDBOXED USER INTEFACE ===#
 
 /// System that builds the route
-fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Entity, Added<IntroRoute>>) {
+fn build_route(mut commands: Commands, assets: Res<PreLoader>, query: Query<Entity, Added<IntroRoute>>) {
     for entity in &query {
         // #======================#
         // #=== USER INTERFACE ===#
