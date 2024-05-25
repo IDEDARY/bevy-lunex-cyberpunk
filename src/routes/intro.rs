@@ -14,6 +14,9 @@ pub struct IntroRoute;
 // #===============================#
 // #=== SANDBOXED USER INTEFACE ===#
 
+#[derive(Component, Debug, Default, Clone, PartialEq)]
+struct IntroGif;
+
 /// System that builds the route
 fn build_route(mut commands: Commands, assets: Res<PreLoader>, query: Query<Entity, Added<IntroRoute>>) {
     for entity in &query {
@@ -44,8 +47,8 @@ fn build_route(mut commands: Commands, assets: Res<PreLoader>, query: Query<Enti
                 AnimatedGifImageBundle {
                     animated_gif: assets.intro.clone(),
                     ..default()
-                }
-                
+                },
+                IntroGif,
             ));
 
         });
@@ -53,22 +56,24 @@ fn build_route(mut commands: Commands, assets: Res<PreLoader>, query: Query<Enti
 }
 
 
-fn display_menu(
+// #=====================#
+// #=== INTERACTIVITY ===#
+
+/// Function that checks if our main intro has finished playing
+fn despawn_intro_and_spawn_main_menu(
     mut commands: Commands,
-    query: Query<Entity, With<IntroRoute>>,
-    mut i: Local<f32>,
-    delta: ResMut<Time>,
+    route: Query<Entity, With<IntroRoute>>,
+    intro: Query<&AnimatedGifController, With<IntroGif>>,
 ) {
-    if *i > 11.0 {
-        if !query.is_empty() {
-            commands.entity(query.single()).despawn_recursive();
+    for gif in &intro {
+        if gif.current_frame() + 1 == gif.frame_count() {
+            commands.entity(route.single()).despawn_recursive();
             commands.spawn((
                 MainMenuRoute,
-                MovableByCamera, // Marks this ui to receive Transform & Dimension updates from camera size
+                MovableByCamera,
             ));
         }
     }
-    *i += delta.delta_seconds();
 }
 
 
@@ -82,7 +87,7 @@ impl Plugin for IntroRoutePlugin {
         app
             .add_plugins(AnimatedGifPlugin)
 
-            .add_systems(Update, display_menu)
+            .add_systems(Update, despawn_intro_and_spawn_main_menu)
             .add_systems(Update, build_route.before(UiSystems::Compute));
     }
 }
