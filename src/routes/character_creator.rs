@@ -51,32 +51,33 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
             ui.spawn((
                 board.clone(),
                 UiLayout::window().x(Rl(50.0)).anchor(Anchor::TopCenter).size(Rl(105.0)).pack(),
-                UiImage2dBundle::from(assets.main_board.clone())
+                UiImage2dBundle::from(assets.character_creator_panel.clone())
             ));
 
             // Spawn button boundary
             let list = board.add("List");
             ui.spawn((
                 list.clone(),
-                UiLayout::window().pos(Rl((22.0, 33.0))).size(Rl((55.0, 34.0))).pack(),
+                UiLayout::window().pos(Rl((25.5, 33.0))).size(Rl((55.0, 34.0))).pack(),
             ));
 
             // Spawn buttons
-            let gap = 3.0;
+            let gap = 5.0;
             let size = 14.0;
             let mut offset = 0.0;
-            for button in [
-                "GENDER",
-                "HAIR",
-                "COLOR",
-                "CLOTHES",
-                "NAME",
+            for array in [
+                ( "GENDER", vec!["MALE", "FEMALE"]),
+                ( "BODY", vec!["MALE", "FEMALE"]),
+                ( "COLOR", vec!["MALE", "FEMALE"]),
+                ( "HAIR", vec!["MALE", "FEMALE"]),
+                ( "BEARD", vec!["MALE", "FEMALE"]),
             ] {
+                let options: Vec<String> = array.1.iter().map(|&s| s.to_string()).collect();
 
                 ui.spawn((
-                    list.add(button),
+                    list.add(array.0),
                     UiLayout::window().y(Rl(offset)).size(Rl((100.0, size))).pack(),
-                    MainButton { text: button.into() },
+                    Spinner { options },
                 ));
 
                 offset += gap + size;
@@ -95,8 +96,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
 			point_light: PointLight {
 				intensity: 10000.0,
 				shadows_enabled: false,
-                color: Color::BEVYPUNK_RED.lerp(Color::WHITE, 0.5),
-				//color: Color::rgb_linear(3000.0, 3000.0, 3000.0),
+                color: Color::BEVYPUNK_RED.lerp(Color::WHITE, 0.6),
 				..default()
 			},
 			..default()

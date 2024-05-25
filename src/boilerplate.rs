@@ -59,6 +59,8 @@ pub struct AssetCache {
 
     pub intro_background: Handle<Image>,
 
+    pub chevron_left: Handle<Image>,
+    pub chevron_right: Handle<Image>,
     pub button: Handle<Image>,
     pub switch_base: Handle<Image>,
     pub switch_head: Handle<Image>,
@@ -66,25 +68,38 @@ pub struct AssetCache {
     pub main_background: Handle<Image>,
     pub main_board: Handle<Image>,
     pub main_logo: Handle<Image>,
+
     pub settings_background: Handle<Image>,
+
+    pub character_creator_panel: Handle<Image>,
 }
 pub fn cache_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.insert_resource(AssetCache {
         music: asset_server.load("sounds/main_menu.ogg"),
+
         font_light: asset_server.load("fonts/rajdhani/Rajdhani-Light.ttf"),
         font_regular: asset_server.load("fonts/rajdhani/Rajdhani-Regular.ttf"),
         font_medium: asset_server.load("fonts/rajdhani/Rajdhani-Medium.ttf"),
         font_semibold: asset_server.load("fonts/rajdhani/Rajdhani-SemiBold.ttf"),
         font_bold: asset_server.load("fonts/rajdhani/Rajdhani-Bold.ttf"),
+
         cursor: asset_server.load("images/cursor.png"),
+
         intro_background: asset_server.load("images/intro/frame0.png"),
+
+        chevron_left: asset_server.load("images/character_creator/chevron-left.png"),
+        chevron_right: asset_server.load("images/character_creator/chevron-right.png"),
         button: asset_server.load("images/main_menu/button.png"),
         switch_base: asset_server.load("images/settings/switch_base.png"),
         switch_head: asset_server.load("images/settings/switch_head.png"),
+
         main_background: asset_server.load("images/settings/background.png"),
         main_board: asset_server.load("images/main_menu/board.png"),
         main_logo: asset_server.load("images/main_menu/bevypunk.png"),
+
         settings_background: asset_server.load("images/settings/background.png"),
+
+        character_creator_panel: asset_server.load("images/character_creator/panel.png"),
     });
 }
 

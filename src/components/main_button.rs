@@ -14,6 +14,18 @@ pub struct MainButtonClick {
     pub target: Entity,
 }
 
+#[derive(Event)] struct MainButtonEnter { pub target: Entity }
+impl From<ListenerInput<Pointer<Over>>> for MainButtonEnter {
+    fn from(value: ListenerInput<Pointer<Over>>) -> Self { MainButtonEnter { target: value.target() } }
+}
+
+#[derive(Event)] struct MainButtonLeave { pub target: Entity }
+impl From<ListenerInput<Pointer<Out>>> for MainButtonLeave {
+    fn from(value: ListenerInput<Pointer<Out>>) -> Self { MainButtonLeave { target: value.target() } }
+}
+
+
+
 /// When this component is added, a UI system is built
 #[derive(Component, Debug, Default, Clone, PartialEq)]
 pub struct MainButton {
@@ -101,6 +113,8 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
 
                 // This is required to make this entity clickable
                 PickableBundle::default(),
+                On::<Pointer<Over>>::send_event::<MainButtonEnter>(),
+                On::<Pointer<Out>>::send_event::<MainButtonLeave>(),
                 UiSpatialBundle::default(),
 
                 // This is our state machine
@@ -131,7 +145,7 @@ fn pointer_click_system(mut events: EventReader<Pointer<Down>>, mut write: Event
 }
 
 /// System that triggers when a pointer enters a node
-fn pointer_enter_system(mut events: EventReader<Pointer<Over>>, mut query: Query<&mut MainButtonControl, With<UiLink<MainButtonUi>>>) {
+fn pointer_enter_system(mut events: EventReader<MainButtonEnter>, mut query: Query<&mut MainButtonControl, With<UiLink<MainButtonUi>>>) {
     for event in events.read() {
         if let Ok(mut control) = query.get_mut(event.target) {
             control.animation_direction = 1.0;
@@ -140,7 +154,7 @@ fn pointer_enter_system(mut events: EventReader<Pointer<Over>>, mut query: Query
 }
 
 /// System that triggers when a pointer leaves a node
-fn pointer_leave_system(mut events: EventReader<Pointer<Out>>, mut query: Query<&mut MainButtonControl, With<UiLink<MainButtonUi>>>) {
+fn pointer_leave_system(mut events: EventReader<MainButtonLeave>, mut query: Query<&mut MainButtonControl, With<UiLink<MainButtonUi>>>) {
     for event in events.read() {
         if let Ok(mut control) = query.get_mut(event.target) {
             control.animation_direction = -1.0;
@@ -209,11 +223,13 @@ impl Plugin for MainButtonPlugin {
 
             // Add out event
             .add_event::<MainButtonClick>()
+            .add_event::<MainButtonEnter>()
+            .add_event::<MainButtonLeave>()
 
             // Add event systems
             .add_systems(Update, pointer_click_system.run_if(on_event::<Pointer<Down>>()))
-            .add_systems(Update, pointer_enter_system.before(update_system).run_if(on_event::<Pointer<Over>>()))
-            .add_systems(Update, pointer_leave_system.before(update_system).run_if(on_event::<Pointer<Out>>()))
+            .add_systems(Update, pointer_enter_system.before(update_system).run_if(on_event::<MainButtonEnter>()))
+            .add_systems(Update, pointer_leave_system.before(update_system).run_if(on_event::<MainButtonLeave>()))
 
             // Add general systems
             .add_systems(Update, update_system)
