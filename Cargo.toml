@@ -23,7 +23,7 @@ opt-level = 3
 
   # UI framework
   #bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev", features=["picking"] }
-  bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex", features=["picking"] }
+  bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex", features=["picking", "debug"] }
 
   # Game engine
   bevy = { version = "0.13.2", default_features = false, features = [

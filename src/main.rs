@@ -20,7 +20,7 @@ fn main() {
     // Add plugins
     let app = app
         .add_plugins((default_plugins(), DefaultPickingPlugins, UiGeneralPlugin, UiPlugin::<MenuUi>::new()))
-        //.add_plugins(UiDebugPlugin::<MenuUi>::new())
+        .add_plugins(UiDebugPlugin::<MenuUi>::new())
 
         // General setup
         .add_plugins(VFXPlugin)

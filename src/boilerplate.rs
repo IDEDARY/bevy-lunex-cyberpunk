@@ -57,6 +57,8 @@ pub struct AssetCache {
 
     pub cursor: Handle<Image>,
 
+    pub intro_background: Handle<Image>,
+
     pub button: Handle<Image>,
     pub switch_base: Handle<Image>,
     pub switch_head: Handle<Image>,
@@ -75,6 +77,7 @@ pub fn cache_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
         font_semibold: asset_server.load("fonts/rajdhani/Rajdhani-SemiBold.ttf"),
         font_bold: asset_server.load("fonts/rajdhani/Rajdhani-Bold.ttf"),
         cursor: asset_server.load("images/cursor.png"),
+        intro_background: asset_server.load("images/intro/frame0.png"),
         button: asset_server.load("images/main_menu/button.png"),
         switch_base: asset_server.load("images/settings/switch_base.png"),
         switch_head: asset_server.load("images/settings/switch_head.png"),
@@ -95,7 +98,7 @@ pub fn default_plugins() -> PluginGroupBuilder {
         WindowPlugin {
             primary_window: Some(Window {
                 title: "Bevypunk".into(),
-                mode: bevy::window::WindowMode::BorderlessFullscreen,
+                mode: bevy::window::WindowMode::Windowed,
                 present_mode: bevy::window::PresentMode::AutoNoVsync,
                 resolution: bevy::window::WindowResolution::new(1280.0, 720.0),
                 ..default()
