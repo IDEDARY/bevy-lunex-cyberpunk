@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy_lunex::HideCursor2d;
 use vleue_kinetoscope::*;
 use crate::*;
 
@@ -18,10 +19,12 @@ pub struct IntroRoute;
 struct IntroGif;
 
 /// System that builds the route
-fn build_route(mut commands: Commands, assets: Res<AssetCache>, preloader: Res<PreLoader>, query: Query<Entity, Added<IntroRoute>>) {
+fn build_route(mut commands: Commands, assets: Res<AssetCache>, preloader: Res<PreLoader>, query: Query<Entity, Added<IntroRoute>>, mut event: EventWriter<HideCursor2d>) {
     for entity in &query {
         // #======================#
         // #=== USER INTERFACE ===#
+
+        event.send(HideCursor2d(true));
 
         // Spawn the master ui tree
         commands.entity(entity).insert((
@@ -70,12 +73,14 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, preloader: Res<P
 /// Function that checks if our main intro has finished playing
 fn despawn_intro_and_spawn_main_menu(
     mut commands: Commands,
+    mut event: EventWriter<HideCursor2d>,
     route: Query<Entity, With<IntroRoute>>,
     intro: Query<&AnimatedGifController, With<IntroGif>>,
 ) {
     for gif in &intro {
         if gif.current_frame() + 1 == gif.frame_count() {
             commands.entity(route.single()).despawn_recursive();
+            event.send(HideCursor2d(false));
             commands.spawn((
                 MainMenuRoute,
                 MovableByCamera,

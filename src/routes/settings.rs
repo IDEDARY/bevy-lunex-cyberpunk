@@ -46,6 +46,13 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
 // #=====================#
 // #=== INTERACTIVITY ===#
 
+/* /// Event for changing game settings.
+#[derive(Event)]
+pub struct SettingsCameraHdr (pub bool);
+fn settings_camera_hdr_event_system(mut events: EventReader<SettingsCameraHdr>, query: Query<&mut Camera, With<MainButton>>) {
+    for event in events.read() {
+    }
+} */
 
 
 // #====================#
