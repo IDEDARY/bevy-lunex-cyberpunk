@@ -188,7 +188,7 @@ fn update_system(
         // Request cursor
         if control.animation_direction == 1.0 {
             let mut cursor = cursor.single_mut();
-            cursor.request_cursor(CursorIcon::Copy, 1.0);
+            cursor.request_cursor(CursorIcon::Pointer, 1.0);
         }
 
     }

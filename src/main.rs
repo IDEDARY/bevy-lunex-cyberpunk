@@ -59,7 +59,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
             // Here we can map different native cursor icons to texture atlas indexes and sprite offsets
             Cursor2d::new().native_cursor(false)
                 .register_cursor(CursorIcon::Default, 0, (14.0, 14.0))
-                .register_cursor(CursorIcon::Copy, 1, (10.0, 12.0))
+                .register_cursor(CursorIcon::Pointer, 1, (10.0, 12.0))
                 .register_cursor(CursorIcon::Grab, 2, (40.0, 40.0)),
 
             // Add texture atlas to the cursor
