@@ -16,11 +16,13 @@ pub trait BevypunkColorPalette {
     const BEVYPUNK_RED: Color;
     const BEVYPUNK_RED_DIM: Color;
     const BEVYPUNK_YELLOW: Color;
+    const BEVYPUNK_BLUE: Color;
 }
 impl BevypunkColorPalette for Color {
     const BEVYPUNK_RED: Color = Color::rgba(255./255., 98./255., 81./255., 1.0);
     const BEVYPUNK_RED_DIM: Color = Color::rgba(172./255., 64./255., 63./255., 1.0);
     const BEVYPUNK_YELLOW: Color = Color::rgba(252./255., 226./255., 8./255., 1.0);
+    const BEVYPUNK_BLUE: Color = Color::rgba(8./255., 226./255., 252./255., 1.0);
 }
 
 /// Color lerping functionality
