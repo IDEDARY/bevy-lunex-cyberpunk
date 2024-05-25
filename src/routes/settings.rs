@@ -46,13 +46,16 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
 // #=====================#
 // #=== INTERACTIVITY ===#
 
-/* /// Event for changing game settings.
+/// Event for changing game settings.
 #[derive(Event)]
-pub struct SettingsCameraHdr (pub bool);
-fn settings_camera_hdr_event_system(mut events: EventReader<SettingsCameraHdr>, query: Query<&mut Camera, With<MainButton>>) {
+pub struct SetCameraHdr (pub bool);
+fn settings_camera_hdr_event_system(mut events: EventReader<SetCameraHdr>, mut query: Query<&mut Camera>) {
     for event in events.read() {
+        for mut camera in &mut query {
+            camera.hdr = event.0;
+        }
     }
-} */
+}
 
 
 // #====================#
@@ -63,8 +66,12 @@ pub struct SettingsRoutePlugin;
 impl Plugin for SettingsRoutePlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_systems(Update, build_route.before(UiSystems::Compute));
-            //.add_systems(Update, main_menu_button_action_system.run_if(on_event::<MainButtonClick>()));
+            .add_systems(Update, build_route.before(UiSystems::Compute))
+
+            // Add events that change the app settings
+            .add_event::<SetCameraHdr>()
+            .add_systems(Update, settings_camera_hdr_event_system.run_if(on_event::<SetCameraHdr>()));
+
     }
 }
 

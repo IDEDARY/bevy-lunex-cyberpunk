@@ -14,10 +14,13 @@ pub struct CharacterCreatorRoute;
 // #=== SANDBOXED USER INTEFACE ===#
 
 /// System that builds the route
-fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Entity, Added<CharacterCreatorRoute>>, asset_server: Res<AssetServer>) {
+fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Entity, Added<CharacterCreatorRoute>>, asset_server: Res<AssetServer>, mut event: EventWriter<SetCameraHdr>) {
     for entity in &query {
         // #======================#
         // #=== USER INTERFACE ===#
+
+        /// Disable HDR because it doesnt support none for clear color (Bug??)
+        event.send(SetCameraHdr(false));
 
         // Spawn the master ui tree
         commands.entity(entity).insert((
