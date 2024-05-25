@@ -80,7 +80,7 @@ pub struct IntroRoutePlugin;
 impl Plugin for IntroRoutePlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_plugins(AnimatedGifPlugin::default())
+            .add_plugins(AnimatedGifPlugin)
 
             .add_systems(Update, display_menu)
             .add_systems(Update, build_route.before(UiSystems::Compute));

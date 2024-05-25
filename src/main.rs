@@ -13,7 +13,9 @@ use routes::*;
 
 
 fn main() {
-    App::new()
+    let mut app = App::new();
+
+    let app = app
         .add_plugins((default_plugins(), DefaultPickingPlugins, UiGeneralPlugin, UiPlugin::<MenuUi>::new()))
         //.add_plugins(UiDebugPlugin::<MenuUi>::new())
 
@@ -24,9 +26,11 @@ fn main() {
 
         // Add our plugins
         .add_plugins(ComponentPlugin)
-        .add_plugins(RoutePlugin)
+        .add_plugins(RoutePlugin);
 
-        .run();
+    vleue_kinetoscope::AnimatedGifLoader::load_now("assets/images/intro/intro-lossy.gif".into(), app);
+
+    app.run()
 }
 
 
