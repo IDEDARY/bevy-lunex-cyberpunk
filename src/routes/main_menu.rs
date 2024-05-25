@@ -43,7 +43,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
             let board = root.add("Solid");
             ui.spawn((
                 board.clone(),
-                UiLayout::solid().size((879.0, 1600.0)).align_x(-0.74).pack(), // Just different layout type that preserves aspect ratio
+                UiLayout::solid().size((881.0, 1600.0)).align_x(-0.74).pack(), // Just different layout type that preserves aspect ratio
             ));
 
             let board = board.add("Board");
