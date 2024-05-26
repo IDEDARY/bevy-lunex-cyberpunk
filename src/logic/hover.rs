@@ -200,22 +200,11 @@ fn hover_pipe_update_system(query: Query<(&Hover, &HoverPipe)>, mut event: Event
 fn hover_color_update_system(query: Query<(&Hover, &BaseColor, &HoverColor, Entity)>, mut set_color: EventWriter<SetColor>) {
     for (hover, basecolor, hovercolor, entity) in &query {
         if hover.is_changing() {
-
             let color = basecolor.color.lerp(hovercolor.color, hover.animation_transition);
-
-            //if hovercolor.itself {
-                set_color.send(SetColor {
-                    target: entity,
-                    color,
-                });
-            //}
-
-            /* for (e, overwrite) in &hovercolor.entity {
-                set_color.send(SetColor {
-                    target: *e,
-                    color: if let Some(c) = overwrite { c.lerp(hovercolor.color, hover.animation_transition) } else { color },
-                });
-            } */
+            set_color.send(SetColor {
+                target: entity,
+                color,
+            });
         }
     }
 }
@@ -265,7 +254,7 @@ impl Plugin for HoverPlugin {
         app
             // Add our event
             .add_event::<SetHoverTransition>()
-            .add_systems(Update, apply_event_set_hover_transition.run_if(on_event::<SetHoverTransition>()))
+            .add_systems(Update, apply_event_set_hover_transition.after(hover_update_system).run_if(on_event::<SetHoverTransition>()))
 
             // Core systems
             .add_systems(Update, hover_update_system)

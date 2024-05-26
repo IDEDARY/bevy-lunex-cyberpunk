@@ -92,7 +92,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
                 HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
             )).id();
 
-            // Spawn button control/hover-zone
+            // Spawn button hover-zone
             ui.spawn((
                 // Link this widget
                 UiLink::<MainButtonUi>::path("Control"),
@@ -115,6 +115,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
                 // If we click on this hover zone, it will emmit UiClick event from parent entity
                 UiClickEmitter::new(Some(entity)),
             ));
+            
         });
     }
 }
