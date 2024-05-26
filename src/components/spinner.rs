@@ -2,7 +2,7 @@ use bevy::{prelude::*, sprite::Anchor};
 use bevy_lunex::prelude::*;
 use bevy_mod_picking::prelude::*;
 
-use crate::{AssetCache, BevypunkColorPalette, LerpColor};
+use crate::*;
 
 
 // #=========================#
@@ -72,8 +72,6 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
 
                 PickableBundle::default(),
                 On::<Pointer<Click>>::send_event::<ChevronClick>(),
-                On::<Pointer<Over>>::send_event::<ChevronEnter>(),
-                On::<Pointer<Out>>::send_event::<ChevronLeave>(),
 
                 UiImage2dBundle {
                     texture: assets.chevron_left.clone(),
@@ -81,10 +79,10 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                     ..default()
                 },
 
-                ChevronControl {
-                    animation_direction: -1.0,
-                    animation_transition: 0.0,
-                },
+                BaseColor::new(Color::BEVYPUNK_RED.with_a(1.0)),
+                Hover::new().forward_speed(10.0).backward_speed(10.0),
+                HoverCursor::new(CursorIcon::Pointer),
+                HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
             )).id();
 
             // Spawn chevron right
@@ -94,8 +92,6 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 
                 PickableBundle::default(),
                 On::<Pointer<Click>>::send_event::<ChevronClick>(),
-                On::<Pointer<Over>>::send_event::<ChevronEnter>(),
-                On::<Pointer<Out>>::send_event::<ChevronLeave>(),
 
                 UiImage2dBundle {
                     texture: assets.chevron_right.clone(),
@@ -103,10 +99,11 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                     ..default()
                 },
 
-                ChevronControl {
-                    animation_direction: -1.0,
-                    animation_transition: 0.0,
-                },
+                BaseColor::new(Color::BEVYPUNK_RED.with_a(1.0)),
+                Hover::new().forward_speed(10.0).backward_speed(10.0),
+                HoverCursor::new(CursorIcon::Pointer),
+                HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
+
             )).id();
 
             // Spawn button text
@@ -139,59 +136,6 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
 
 // #=====================#
 // #=== INTERACTIVITY ===#
-
-/// System that triggers when a pointer enters a node
-fn chevron_pointer_enter_system(mut events: EventReader<ChevronEnter>, mut query: Query<&mut ChevronControl>) {
-    for event in events.read() {
-        if let Ok(mut control) = query.get_mut(event.target) {
-            control.animation_direction = 1.0;
-        }
-    }
-}
-
-/// System that triggers when a pointer leaves a node
-fn chevron_pointer_leave_system(mut events: EventReader<ChevronLeave>, mut query: Query<&mut ChevronControl>) {
-    for event in events.read() {
-        if let Ok(mut control) = query.get_mut(event.target) {
-            control.animation_direction = -1.0;
-        }
-    }
-}
-
-/// System that updates the state of the node over time
-fn chevron_update_system(
-    time: Res<Time>,
-    mut set_color: EventWriter<SetColor>,
-    mut query: Query<(&mut ChevronControl, Entity)>,
-    mut cursor: Query<&mut Cursor2d>,
-) {
-    for (mut control, entity) in &mut query {
-
-        let previous = control.animation_transition;
-
-        // Animate the transition
-        control.animation_transition += time.delta_seconds() * 10.0 * control.animation_direction * if control.animation_direction == 1.0 { 1.0 } else { 0.2 };
-        control.animation_transition = control.animation_transition.clamp(0.0, 1.0);
-
-        // If animation progress call instruction events
-        if previous != control.animation_transition {
-
-            // Set the color from transition
-            let color = Color::BEVYPUNK_RED.lerp(Color::BEVYPUNK_YELLOW.with_l(0.68), control.animation_transition);
-            set_color.send(SetColor {
-                target: entity,
-                color,
-            });
-        }
-
-        // Request cursor
-        if control.animation_direction == 1.0 {
-            let mut cursor = cursor.single_mut();
-            cursor.request_cursor(CursorIcon::Pointer, 1.0);
-        }
-    }
-}
-
 
 fn spinner_update_system(mut query: Query<(&SpinnerControl, &mut Text), Changed<SpinnerControl>>) {
     for (spinner, mut text) in &mut query {
@@ -228,9 +172,9 @@ impl Plugin for SpinnerPlugin {
             .add_event::<ChevronEnter>()
             .add_event::<ChevronLeave>()
             .add_systems(Update, spinner_change_system.run_if(on_event::<ChevronClick>()))
-            .add_systems(Update, chevron_pointer_enter_system.before(chevron_update_system).run_if(on_event::<ChevronEnter>()))
-            .add_systems(Update, chevron_pointer_leave_system.before(chevron_update_system).run_if(on_event::<ChevronLeave>()))
-            .add_systems(Update, chevron_update_system)
+            //.add_systems(Update, chevron_pointer_enter_system.before(chevron_update_system).run_if(on_event::<ChevronEnter>()))
+            //.add_systems(Update, chevron_pointer_leave_system.before(chevron_update_system).run_if(on_event::<ChevronLeave>()))
+            //.add_systems(Update, chevron_update_system)
 
             // Add general systems
             .add_systems(Update, spinner_update_system)
