@@ -254,7 +254,7 @@ impl Plugin for HoverPlugin {
         app
             // Add our event
             .add_event::<SetHoverTransition>()
-            .add_systems(Update, apply_event_set_hover_transition.after(hover_update_system).run_if(on_event::<SetHoverTransition>()))
+            .add_systems(Update, apply_event_set_hover_transition.run_if(on_event::<SetHoverTransition>()))
 
             // Core systems
             .add_systems(Update, hover_update_system)
@@ -265,7 +265,7 @@ impl Plugin for HoverPlugin {
             .add_systems(Update, hover_pipe_update_system)
 
             // Styling systems
-            .add_systems(Update, hover_color_update_system)
+            .add_systems(Update, hover_color_update_system.before(hover_update_system))
             .add_systems(Update, hover_cursor_request_system);
     }
 }
