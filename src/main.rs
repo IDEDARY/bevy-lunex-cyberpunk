@@ -32,6 +32,7 @@ fn main() {
 
         // Add our plugins
         .add_plugins(ComponentPlugin)
+        .add_plugins(LogicPlugin)
         .add_plugins(RoutePlugin);
 
     // Load gif before starting our app
