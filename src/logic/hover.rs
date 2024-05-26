@@ -89,7 +89,6 @@ impl HoverCursor {
     }
 }
 
-
 /// Changes color of entity on cursor hover
 #[derive(Component, Clone, PartialEq)]
 pub struct HoverColor {
@@ -104,6 +103,7 @@ impl HoverColor {
         }
     }
 }
+
 
 
 /// Default base color component
@@ -145,6 +145,19 @@ fn apply_event_set_hover_transition(mut events: EventReader<SetHoverTransition>,
 // #=====================#
 // #=== INTERACTIVITY ===#
 
+
+// #=== Core systems
+
+/// System that updates the hover transition
+fn hover_update_system(time: Res<Time>, mut query: Query<&mut Hover>) {
+    for mut control in &mut query {
+        control.previous_transition = control.animation_transition;
+        if control.receiver { continue }
+        control.animation_transition += time.delta_seconds() * control.animation_direction * if control.animation_direction == 1.0 { control.animation_speed_forward } else { control.animation_speed_backward };
+        control.animation_transition = control.animation_transition.clamp(0.0, 1.0);
+    }
+}
+
 /// System that changes animation direction on hover
 fn hover_enter_system(mut events: EventReader<Pointer<Over>>, mut query: Query<&mut Hover>) {
     for event in events.read() {
@@ -163,25 +176,25 @@ fn hover_leave_system(mut events: EventReader<Pointer<Out>>, mut query: Query<&m
     }
 }
 
-/// System that updates the hover transition
-fn hover_update_system(time: Res<Time>, mut query: Query<&mut Hover>) {
-    for mut control in &mut query {
-        control.previous_transition = control.animation_transition;
-        if control.receiver { continue }
-        control.animation_transition += time.delta_seconds() * control.animation_direction * if control.animation_direction == 1.0 { control.animation_speed_forward } else { control.animation_speed_backward };
-        control.animation_transition = control.animation_transition.clamp(0.0, 1.0);
-    }
-}
 
-/// System that request cursor icon on hover
-fn hover_cursor_request_system(query: Query<(&Hover, &HoverCursor)>, mut cursor: Query<&mut Cursor2d>) {
-    for (control, hover_cursor) in &query {
-        if control.is_forward() {
-            let mut cursor = cursor.single_mut();
-            cursor.request_cursor(hover_cursor.cursor, 1.0);
+// #=== Piping systems
+
+/// System that sends color change events on hover
+fn hover_pipe_update_system(query: Query<(&Hover, &HoverPipe)>, mut event: EventWriter<SetHoverTransition>) {
+    for (hover, pipe) in &query {
+        if hover.is_changing() {
+            for e in &pipe.entity {
+                event.send(SetHoverTransition {
+                    target: *e,
+                    transition: hover.animation_transition,
+                });
+            }
         }
     }
 }
+
+
+// #=== Styling systems
 
 /// System that sends color change events on hover
 fn hover_color_update_system(query: Query<(&Hover, &BaseColor, &HoverColor, Entity)>, mut set_color: EventWriter<SetColor>) {
@@ -203,20 +216,6 @@ fn hover_color_update_system(query: Query<(&Hover, &BaseColor, &HoverColor, Enti
                     color: if let Some(c) = overwrite { c.lerp(hovercolor.color, hover.animation_transition) } else { color },
                 });
             } */
-        }
-    }
-}
-
-/// System that sends color change events on hover
-fn hover_pipe_update_system(query: Query<(&Hover, &HoverPipe)>, mut event: EventWriter<SetHoverTransition>) {
-    for (hover, pipe) in &query {
-        if hover.is_changing() {
-            for e in &pipe.entity {
-                event.send(SetHoverTransition {
-                    target: *e,
-                    transition: hover.animation_transition,
-                });
-            }
         }
     }
 }
@@ -244,6 +243,16 @@ fn hover_pipe_update_system(query: Query<(&Hover, &HoverPipe)>, mut event: Event
         }
     }
 } */
+
+/// System that request cursor icon on hover
+fn hover_cursor_request_system(query: Query<(&Hover, &HoverCursor)>, mut cursor: Query<&mut Cursor2d>) {
+    for (control, hover_cursor) in &query {
+        if control.is_forward() {
+            let mut cursor = cursor.single_mut();
+            cursor.request_cursor(hover_cursor.cursor, 1.0);
+        }
+    }
+}
 
 
 // #====================#
