@@ -1,7 +1,7 @@
-use bevy::prelude::*;
-use bevy_lunex::prelude::*;
-use bevy_mod_picking::prelude::*;
-use vleue_kinetoscope::AnimatedGifLoader;
+pub(crate) use bevy::{prelude::*, sprite::Anchor};
+pub(crate) use bevy_lunex::{prelude::*, HideCursor2d};
+pub(crate) use bevy_mod_picking::prelude::*;
+pub(crate) use vleue_kinetoscope::*;
 
 mod boilerplate;
 use boilerplate::*;

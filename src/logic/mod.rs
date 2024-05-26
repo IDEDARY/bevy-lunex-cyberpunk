@@ -1,5 +1,8 @@
-pub mod animation;
-pub use animation::*;
+pub mod core;
+pub use core::*;
+
+pub mod hover;
+pub use hover::*;
 
 
 // #====================#
@@ -12,6 +15,7 @@ pub struct LogicPlugin;
 impl Plugin for LogicPlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_plugins(AnimationPlugin);
+            .add_plugins(CorePlugin)
+            .add_plugins(HoverPlugin);
     }
 }

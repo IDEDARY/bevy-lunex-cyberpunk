@@ -1,12 +1,8 @@
-use bevy::prelude::*;
-use bevy_lunex::prelude::*;
-use bevy_mod_picking::prelude::*;
-
-use crate::LerpColor;
+use crate::*;
 
 
-// #=========================#
-// #=== EXPOSED COMPONENT ===#
+// #==================#
+// #=== COMPONENTS ===#
 
 
 /// Control struct for the button state
@@ -18,6 +14,8 @@ pub struct Hover {
     animation_transition: f32,
     /// Range from `0.0` to `1.0`, animation_transition from last tick
     previous_transition: f32,
+    /// Setting this to true will disable logic with intention that something else will pipe the control data instead
+    pub receiver: bool,
     /// Hover animation speed when transitioning to state
     pub animation_speed_forward: f32,
     /// Hover animation speed when transitioning back to default
@@ -30,9 +28,15 @@ impl Hover {
             animation_direction: 0.0,
             animation_transition: 0.0,
             previous_transition: 0.0,
+            receiver: false,
             animation_speed_backward: 8.0,
             animation_speed_forward: 8.0,
         }
+    }
+    /// Marks this hover as receiver
+    pub fn receiver(mut self, receiver: bool) -> Self {
+        self.receiver = receiver;
+        self
     }
     /// Replaces the forward_speed with a new value.
     pub fn forward_speed(mut self, speed: f32) -> Self {
@@ -54,6 +58,21 @@ impl Hover {
     }
 }
 
+/// This struct synchronizes different entities hover state.
+/// It takes corresponding [`Hover`] and pipes it into specified entities.
+#[derive(Component, Clone, PartialEq)]
+pub struct HoverPipe {
+    /// All entities to to pipe hover state control data to
+    pub entity: Vec<Entity>,
+}
+impl HoverPipe {
+    /// Creates new struct
+    pub fn new(entity: Vec<Entity>) -> Self {
+        HoverPipe {
+            entity,
+        }
+    }
+}
 
 /// Requests cursor icon on hover
 #[derive(Component, Debug, Clone, PartialEq)]
@@ -71,13 +90,9 @@ impl HoverCursor {
 }
 
 
-/// Changes color of entities on cursor hover
+/// Changes color of entity on cursor hover
 #[derive(Component, Clone, PartialEq)]
 pub struct HoverColor {
-    /// Should the change be applied to self
-    pub itself: bool,
-    /// All entities to change color of (with optional color override)
-    pub entity: Vec<(Entity, Option<Color>)>,
     /// The color to change into
     pub color: Color,
 }
@@ -85,20 +100,8 @@ impl HoverColor {
     /// Creates new struct
     pub fn new(color: Color) -> Self {
         HoverColor {
-            itself: true,
-            entity: Vec::new(),
             color,
         }
-    }
-    /// Replaces the itself boolean with a new value. (If the change should be applied to self)
-    pub fn itself(mut self, itself: bool) -> Self {
-        self.itself = itself;
-        self
-    }
-    /// Replaces the entity list with a new one. (All entities that should change color)
-    pub fn entity(mut self, entities: Vec<(Entity, Option<Color>)>) -> Self {
-        self.entity = entities;
-        self
     }
 }
 
@@ -114,6 +117,26 @@ impl BaseColor {
     pub fn new(color: Color) -> Self {
         BaseColor {
             color,
+        }
+    }
+}
+
+
+// #==============#
+// #=== EVENTS ===#
+
+/// This event will override hover transition state of targetted entity
+#[derive(Event, PartialEq, Clone, Copy)]
+pub struct SetHoverTransition {
+    pub target: Entity,
+    pub transition: f32,
+}
+fn apply_event_set_hover_transition(mut events: EventReader<SetHoverTransition>, mut query: Query<&mut Hover>) {
+    for event in events.read() {
+        if let Ok(mut hover) = query.get_mut(event.target) {
+            if hover.animation_transition != event.transition {
+                hover.animation_transition = event.transition
+            }
         }
     }
 }
@@ -144,6 +167,7 @@ fn hover_leave_system(mut events: EventReader<Pointer<Out>>, mut query: Query<&m
 fn hover_update_system(time: Res<Time>, mut query: Query<&mut Hover>) {
     for mut control in &mut query {
         control.previous_transition = control.animation_transition;
+        if control.receiver { continue }
         control.animation_transition += time.delta_seconds() * control.animation_direction * if control.animation_direction == 1.0 { control.animation_speed_forward } else { control.animation_speed_backward };
         control.animation_transition = control.animation_transition.clamp(0.0, 1.0);
     }
@@ -166,17 +190,31 @@ fn hover_color_update_system(query: Query<(&Hover, &BaseColor, &HoverColor, Enti
 
             let color = basecolor.color.lerp(hovercolor.color, hover.animation_transition);
 
-            if hovercolor.itself {
+            //if hovercolor.itself {
                 set_color.send(SetColor {
                     target: entity,
                     color,
                 });
-            }
+            //}
 
-            for (e, overwrite) in &hovercolor.entity {
+            /* for (e, overwrite) in &hovercolor.entity {
                 set_color.send(SetColor {
                     target: *e,
                     color: if let Some(c) = overwrite { c.lerp(hovercolor.color, hover.animation_transition) } else { color },
+                });
+            } */
+        }
+    }
+}
+
+/// System that sends color change events on hover
+fn hover_pipe_update_system(query: Query<(&Hover, &HoverPipe)>, mut event: EventWriter<SetHoverTransition>) {
+    for (hover, pipe) in &query {
+        if hover.is_changing() {
+            for e in &pipe.entity {
+                event.send(SetHoverTransition {
+                    target: *e,
+                    transition: hover.animation_transition,
                 });
             }
         }
@@ -209,17 +247,27 @@ fn hover_color_update_system(query: Query<(&Hover, &BaseColor, &HoverColor, Enti
 
 
 // #====================#
-// #=== LOGIC PLUGIN ===#
+// #=== HOVER PLUGIN ===#
 
 /// Plugin adding all our logic
-pub struct AnimationPlugin;
-impl Plugin for AnimationPlugin {
+pub struct HoverPlugin;
+impl Plugin for HoverPlugin {
     fn build(&self, app: &mut App) {
         app
+            // Add our event
+            .add_event::<SetHoverTransition>()
+            .add_systems(Update, apply_event_set_hover_transition.run_if(on_event::<SetHoverTransition>()))
+
+            // Core systems
+            .add_systems(Update, hover_update_system)
             .add_systems(Update, hover_enter_system.run_if(on_event::<Pointer<Over>>()))
             .add_systems(Update, hover_leave_system.run_if(on_event::<Pointer<Out>>()))
-            .add_systems(Update, hover_update_system)
-            .add_systems(Update, hover_cursor_request_system)
-            .add_systems(Update, hover_color_update_system);
+
+            // Piping system
+            .add_systems(Update, hover_pipe_update_system)
+
+            // Styling systems
+            .add_systems(Update, hover_color_update_system)
+            .add_systems(Update, hover_cursor_request_system);
     }
 }
