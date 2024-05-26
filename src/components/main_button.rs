@@ -113,7 +113,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
                 HoverCursor::new(CursorIcon::Pointer),
 
                 // If we click on this hover zone, it will emmit UiClick event from parent entity
-                UiClickEmitter::new(entity),
+                UiClickEmitter::new(Some(entity)),
             ));
         });
     }
@@ -130,8 +130,6 @@ impl Plugin for MainButtonPlugin {
         app
             // Add Lunex plugins for our sandboxed UI
             .add_plugins(UiPlugin::<MainButtonUi>::new())
-            //.add_plugins(UiDebugPlugin::<MainButtonUi>::new())
-
 
             // Add general systems
             .add_systems(Update, build_component);

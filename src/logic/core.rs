@@ -13,11 +13,11 @@ pub struct UiClick {
 /// Control struct for the button state
 #[derive(Component, Debug, Clone, PartialEq)]
 pub struct UiClickEmitter {
-    trigger: Entity,
+    trigger: Option<Entity>,
 }
 impl UiClickEmitter {
     /// Creates new struct
-    pub fn new(entity: Entity) -> Self {
+    pub fn new(entity: Option<Entity>) -> Self {
         UiClickEmitter {
             trigger: entity
         }
@@ -25,11 +25,11 @@ impl UiClickEmitter {
 }
 
 /// System that triggers when a pointer clicks a node and emmits an event
-fn ui_click_listener_system(mut events: EventReader<Pointer<Down>>, mut write: EventWriter<UiClick>, query: Query<&UiClickEmitter>) {
+fn ui_click_listener_system(mut events: EventReader<Pointer<Down>>, mut write: EventWriter<UiClick>, query: Query<(&UiClickEmitter, Entity)>) {
     for event in events.read() {
-        if let Ok(emitter) = query.get(event.target) {
+        if let Ok((emitter, entity)) = query.get(event.target) {
             write.send(UiClick {
-                target: emitter.trigger,
+                target: if let Some(e) = emitter.trigger { e } else { entity },
             });
         }
     }
