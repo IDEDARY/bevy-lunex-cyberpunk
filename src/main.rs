@@ -9,6 +9,9 @@ use boilerplate::*;
 mod components;
 use components::*;
 
+mod logic;
+use logic::*;
+
 mod routes;
 use routes::*;
 
