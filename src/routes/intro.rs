@@ -1,4 +1,5 @@
 use bevy::prelude::*;
+use bevy_lunex::HideCursor2d;
 use vleue_kinetoscope::*;
 use crate::*;
 
@@ -14,11 +15,16 @@ pub struct IntroRoute;
 // #===============================#
 // #=== SANDBOXED USER INTEFACE ===#
 
+#[derive(Component, Debug, Default, Clone, PartialEq)]
+struct IntroGif;
+
 /// System that builds the route
-fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Entity, Added<IntroRoute>>) {
+fn build_route(mut commands: Commands, assets: Res<AssetCache>, preloader: Res<PreLoader>, query: Query<Entity, Added<IntroRoute>>, mut event: EventWriter<HideCursor2d>) {
     for entity in &query {
         // #======================#
         // #=== USER INTERFACE ===#
+
+        event.send(HideCursor2d(true));
 
         // Spawn the master ui tree
         commands.entity(entity).insert((
@@ -36,16 +42,24 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
             ui.spawn((
                 root.add("Background"), // You can see here that we used existing "root" link to create chained link (same as "Root/Background")
                 UiLayout::solid().size((1920.0, 1080.0)).scaling(Scaling::Fill).pack(),
+                UiImage2dBundle::from(assets.intro_background.clone()),  // We use this bundle to add background image to our node
+            ));
+
+            // Spawn the intro
+            ui.spawn((
+                root.add("Intro"), // You can see here that we used existing "root" link to create chained link (same as "Root/Intro")
+                UiLayout::solid().size((1920.0, 1080.0)).pack(),
+                UiDepthBias(1.0), // "background" and this node are on the same level, they will have same depth. Add this to avoid Z fighting.
                 
                 Element::default(),
                 Dimension::default(),
 
                 // Spawn the gif bundle
                 AnimatedGifImageBundle {
-                    animated_gif: assets.intro.clone(),
+                    animated_gif: preloader.intro.clone(),
                     ..default()
-                }
-                
+                },
+                IntroGif,
             ));
 
         });
@@ -53,22 +67,26 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
 }
 
 
-fn display_menu(
+// #=====================#
+// #=== INTERACTIVITY ===#
+
+/// Function that checks if our main intro has finished playing
+fn despawn_intro_and_spawn_main_menu(
     mut commands: Commands,
-    query: Query<Entity, With<IntroRoute>>,
-    mut i: Local<f32>,
-    delta: ResMut<Time>,
+    mut event: EventWriter<HideCursor2d>,
+    route: Query<Entity, With<IntroRoute>>,
+    intro: Query<&AnimatedGifController, With<IntroGif>>,
 ) {
-    if *i > 11.0 {
-        if !query.is_empty() {
-            commands.entity(query.single()).despawn_recursive();
+    for gif in &intro {
+        if gif.current_frame() + 1 == gif.frame_count() {
+            commands.entity(route.single()).despawn_recursive();
+            event.send(HideCursor2d(false));
             commands.spawn((
                 MainMenuRoute,
-                MovableByCamera, // Marks this ui to receive Transform & Dimension updates from camera size
+                MovableByCamera,
             ));
         }
     }
-    *i += delta.delta_seconds();
 }
 
 
@@ -80,9 +98,9 @@ pub struct IntroRoutePlugin;
 impl Plugin for IntroRoutePlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_plugins(AnimatedGifPlugin::default())
+            .add_plugins(AnimatedGifPlugin)
 
-            .add_systems(Update, display_menu)
+            .add_systems(Update, despawn_intro_and_spawn_main_menu)
             .add_systems(Update, build_route.before(UiSystems::Compute));
     }
 }

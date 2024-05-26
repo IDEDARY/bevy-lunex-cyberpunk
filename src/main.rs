@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use bevy_lunex::prelude::*;
 use bevy_mod_picking::prelude::*;
+use vleue_kinetoscope::AnimatedGifLoader;
 
 mod boilerplate;
 use boilerplate::*;
@@ -13,7 +14,11 @@ use routes::*;
 
 
 fn main() {
-    App::new()
+    // Our app
+    let mut app = App::new();
+
+    // Add plugins
+    let app = app
         .add_plugins((default_plugins(), DefaultPickingPlugins, UiGeneralPlugin, UiPlugin::<MenuUi>::new()))
         //.add_plugins(UiDebugPlugin::<MenuUi>::new())
 
@@ -24,9 +29,13 @@ fn main() {
 
         // Add our plugins
         .add_plugins(ComponentPlugin)
-        .add_plugins(RoutePlugin)
+        .add_plugins(RoutePlugin);
 
-        .run();
+    // Load gif before starting our app
+    let gif = AnimatedGifLoader::load_now("assets/images/intro/intro-lossy.gif".into(), app);
+
+    // Insert the loaded handle and start our app
+    app.insert_resource(PreLoader { intro: gif}).run()
 }
 
 
@@ -35,7 +44,13 @@ fn main() {
 
 fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>){ //,mut _webp: ResMut<bevy_webp_anim::WebpAnimator>) {
 
-    // Spawn camera
+    // Spawn 3D camera
+    commands.spawn((Camera3dBundle {
+        //transform: Transform::from_xyz(0.0, 0.0, 0.0).looking_at(Vec3::new(10.0, 0.0, 0.0), Vec3::Y),
+        ..default()
+    },));
+
+    // Spawn 2D camera
     commands.spawn(camera()).with_children(|camera| {
 
         // Spawn cursor
@@ -44,7 +59,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
             // Here we can map different native cursor icons to texture atlas indexes and sprite offsets
             Cursor2d::new().native_cursor(false)
                 .register_cursor(CursorIcon::Default, 0, (14.0, 14.0))
-                .register_cursor(CursorIcon::Copy, 1, (10.0, 12.0))
+                .register_cursor(CursorIcon::Pointer, 1, (10.0, 12.0))
                 .register_cursor(CursorIcon::Grab, 2, (40.0, 40.0)),
 
             // Add texture atlas to the cursor

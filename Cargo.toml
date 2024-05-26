@@ -7,7 +7,11 @@
   repository  = "https://github.com/idedary/bevypunk"
 
 [profile.dev]
-  opt-level = 3
+opt-level = 2
+
+[profile.dev.package."*"]
+opt-level = 3
+
 
 [dependencies]
 
@@ -15,9 +19,7 @@
   rand = "0.8.5"
 
   # Required for animations
-  #bevy_aseprite = { git="https://github.com/ryo33/bevy_aseprite", branch="bevy-0.13"}
-  #bevy_webp_anim = "0.3.1"
-  vleue_kinetoscope = { git = "https://github.com/vleue/vleue_kinetoscope" }
+  vleue_kinetoscope = "0.1.1"
 
   # UI framework
   #bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev", features=["picking"] }
@@ -25,23 +27,25 @@
 
   # Game engine
   bevy = { version = "0.13.2", default_features = false, features = [
-    "bevy_asset",
-    "bevy_audio",
-    #"bevy_gilrs",
-    "bevy_winit",
+    # Core
     "bevy_core_pipeline",
-    #"bevy_pbr",
-    "bevy_render",
+    "multi-threaded",
+    "bevy_winit",
+    "bevy_audio",
     "bevy_sprite",
     "bevy_text",
-    "multi-threaded",
-    "png",
-    #"webp",
-    "hdr",
+
+    # Core formats
     "vorbis",
-    "x11",
+    "png",
+
+    # VFX
+    "hdr",
     "tonemapping_luts",
-    "dynamic_linking"
+    
+    # 3D
+    "jpeg",
+    "bevy_gltf",
   ] }
 
   # Will be upstreamed into Bevy in the future
@@ -51,3 +55,11 @@
     "selection",
     "highlight",
   ] }
+
+  # Platform specific
+  [target.'cfg(unix)'.dependencies]
+  bevy = { version = "0.13.2", default_features = false, features = ["x11"] }
+
+  # Dev
+  [dev-dependencies]
+  bevy = { version = "0.13.2", default_features = false, features = ["dynamic_linking"] }

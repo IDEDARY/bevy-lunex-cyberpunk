@@ -16,11 +16,13 @@ pub trait BevypunkColorPalette {
     const BEVYPUNK_RED: Color;
     const BEVYPUNK_RED_DIM: Color;
     const BEVYPUNK_YELLOW: Color;
+    const BEVYPUNK_BLUE: Color;
 }
 impl BevypunkColorPalette for Color {
     const BEVYPUNK_RED: Color = Color::rgba(255./255., 98./255., 81./255., 1.0);
     const BEVYPUNK_RED_DIM: Color = Color::rgba(172./255., 64./255., 63./255., 1.0);
     const BEVYPUNK_YELLOW: Color = Color::rgba(252./255., 226./255., 8./255., 1.0);
+    const BEVYPUNK_BLUE: Color = Color::rgba(8./255., 226./255., 252./255., 1.0);
 }
 
 /// Color lerping functionality
@@ -38,6 +40,12 @@ impl LerpColor for Color {
 // #======================================#
 // #=== ASSET CACHE FOR SMOOTH LOADING ===#
 
+// Load the gif before the app is run
+#[derive(Resource)]
+pub struct PreLoader {
+    pub intro: Handle<AnimatedGif>,
+}
+
 // Load all assets at startup for faster loading during runtime
 #[derive(Resource)]
 pub struct AssetCache {
@@ -51,8 +59,10 @@ pub struct AssetCache {
 
     pub cursor: Handle<Image>,
 
-    pub intro: Handle<AnimatedGif>,
+    pub intro_background: Handle<Image>,
 
+    pub chevron_left: Handle<Image>,
+    pub chevron_right: Handle<Image>,
     pub button: Handle<Image>,
     pub switch_base: Handle<Image>,
     pub switch_head: Handle<Image>,
@@ -60,25 +70,38 @@ pub struct AssetCache {
     pub main_background: Handle<Image>,
     pub main_board: Handle<Image>,
     pub main_logo: Handle<Image>,
+
     pub settings_background: Handle<Image>,
+
+    pub character_creator_panel: Handle<Image>,
 }
 pub fn cache_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.insert_resource(AssetCache {
         music: asset_server.load("sounds/main_menu.ogg"),
+
         font_light: asset_server.load("fonts/rajdhani/Rajdhani-Light.ttf"),
         font_regular: asset_server.load("fonts/rajdhani/Rajdhani-Regular.ttf"),
         font_medium: asset_server.load("fonts/rajdhani/Rajdhani-Medium.ttf"),
         font_semibold: asset_server.load("fonts/rajdhani/Rajdhani-SemiBold.ttf"),
         font_bold: asset_server.load("fonts/rajdhani/Rajdhani-Bold.ttf"),
+
         cursor: asset_server.load("images/cursor.png"),
-        intro: asset_server.load("images/intro/intro-lossy.gif"),
+
+        intro_background: asset_server.load("images/intro/frame0.png"),
+
+        chevron_left: asset_server.load("images/character_creator/chevron-left.png"),
+        chevron_right: asset_server.load("images/character_creator/chevron-right.png"),
         button: asset_server.load("images/main_menu/button.png"),
         switch_base: asset_server.load("images/settings/switch_base.png"),
         switch_head: asset_server.load("images/settings/switch_head.png"),
+
         main_background: asset_server.load("images/settings/background.png"),
         main_board: asset_server.load("images/main_menu/board.png"),
         main_logo: asset_server.load("images/main_menu/bevypunk.png"),
+
         settings_background: asset_server.load("images/settings/background.png"),
+
+        character_creator_panel: asset_server.load("images/character_creator/panel.png"),
     });
 }
 
@@ -92,7 +115,7 @@ pub fn default_plugins() -> PluginGroupBuilder {
         WindowPlugin {
             primary_window: Some(Window {
                 title: "Bevypunk".into(),
-                mode: bevy::window::WindowMode::Windowed,
+                mode: bevy::window::WindowMode::BorderlessFullscreen,
                 present_mode: bevy::window::PresentMode::AutoNoVsync,
                 resolution: bevy::window::WindowResolution::new(1280.0, 720.0),
                 ..default()
@@ -119,6 +142,8 @@ pub fn camera() -> impl Bundle {
         Camera2dBundle {
             transform: Transform::from_xyz(0.0, 0.0, 1000.0),
             camera: Camera {
+                order: 1,
+                clear_color: ClearColorConfig::None,
                 hdr: true,
                 ..default()
             },
