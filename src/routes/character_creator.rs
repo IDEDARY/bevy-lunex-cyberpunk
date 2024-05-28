@@ -50,18 +50,18 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
             ui.spawn((
                 board.clone(),
                 UiLayout::window().x(Rl(50.0)).anchor(Anchor::TopCenter).size(Rl(105.0)).pack(),
-                UiImage2dBundle::from(assets.character_creator_panel.clone())
+                //UiImage2dBundle::from(assets.character_creator_panel.clone())
             ));
 
             // Spawn button boundary
             let list = board.add("List");
             ui.spawn((
                 list.clone(),
-                UiLayout::window().pos(Rl((25.5, 33.0))).size(Rl((55.0, 34.0))).pack(),
+                UiLayout::window().pos(Rl((50.5, 15.0))).anchor(Anchor::TopCenter).size(Rl((60.0, 65.0))).pack(),
             ));
 
             // Spawn buttons
-            let gap = 5.0;
+            let gap = 3.0;
             let size = 14.0;
             let mut offset = 0.0;
             for array in [

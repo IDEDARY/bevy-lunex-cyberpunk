@@ -38,7 +38,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
                 // Give it a background image
                 UiImage2dBundle {
                     texture: assets.button_symetric_sliced.clone(),
-                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_a(0.0), ..default() },
+                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_a(0.15), ..default() },
                     ..default()
                 },
 
@@ -52,7 +52,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
                 Hover::new().receiver(true),
 
                 // This will set the color to red
-                BaseColor::new(Color::BEVYPUNK_RED.with_a(0.0)),
+                BaseColor::new(Color::BEVYPUNK_RED.with_a(0.15)),
 
                 // This will set hover color to yellow
                 HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
