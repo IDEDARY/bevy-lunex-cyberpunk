@@ -41,13 +41,16 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
             // Spawn chevron left
             let left = ui.spawn((
                 // Link this widget
-                UiLink::<SpinnerUi>::path("ChevronLeft"),
+                UiLink::<SpinnerUi>::path("Image/ChevronLeft"),
 
                 // Add layout
-                UiLayout::window().size((Rh(60.0), Rl(100.0))).pack(),
+                UiLayout::window().pos(Rl((10.0, 50.0))).anchor(Anchor::Center).size((Rh(45.0), Rl(60.0))).pack(),
 
                 // Make this clickable entity
-                PickableBundle::default(),
+                PickableBundle {
+                    pickable: Pickable { should_block_lower: false, is_hoverable: true },
+                    ..default()
+                },
 
                 // Give it a background image
                 UiImage2dBundle {
@@ -75,13 +78,16 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
             // Spawn chevron right
             let right = ui.spawn((
                 // Link this widget
-                UiLink::<SpinnerUi>::path("ChevronRight"),
+                UiLink::<SpinnerUi>::path("Image/ChevronRight"),
 
                 // Add layout
-                UiLayout::window().x(Rl(100.0) - Rh(60.0)).size((Rh(60.0), Rl(100.0))).pack(),
+                UiLayout::window().pos(Rl((90.0, 50.0))).anchor(Anchor::Center).size((Rh(45.0), Rl(60.0))).pack(),
                 
                 // Make this clickable entity
-                PickableBundle::default(),
+                PickableBundle {
+                    pickable: Pickable { should_block_lower: false, is_hoverable: true },
+                    ..default()
+                },
 
                 // Give it a background image
                 UiImage2dBundle {
@@ -107,9 +113,9 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
             )).id();
 
             // Spawn button text
-            ui.spawn((
+            let text = ui.spawn((
                 // Link this widget
-                UiLink::<SpinnerUi>::path("Text"),
+                UiLink::<SpinnerUi>::path("Image/Text"),
 
                 // Add layout
                 UiLayout::window().pos(Rl((50., 50.))).anchor(Anchor::Center).pack(),
@@ -128,6 +134,15 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                     ..default()
                 },
 
+                // This will set the color to red
+                BaseColor::new(Color::BEVYPUNK_RED.with_a(1.0)),
+
+                // This is required to control our hover animation
+                Hover::new().receiver(true),
+
+                // This will set hover color to yellow
+                HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
+
                 // Spinner control
                 SpinnerControl {
                     index: 0,
@@ -136,7 +151,41 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                     chevron_left: left,
                     chevron_right: right,
                 }
-            ));
+            )).id();
+
+            let _image = ui.spawn((
+                // Link this widget
+                UiLink::<SpinnerUi>::path("Image"),
+
+                // Add layout
+                UiLayout::window_full().pack(),
+
+                // Give it a background image
+                UiImage2dBundle {
+                    texture: assets.button_symetric.clone(),
+                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_a(0.0), ..default() },
+                    ..default()
+                },
+
+                // Make the background scalable
+                ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(32.0), ..default() }),
+
+                // Make it non-obsructable for hit checking (mouse detection)
+                PickableBundle::default(),
+
+                // This is required to control our hover animation
+                Hover::new().forward_speed(20.0).backward_speed(5.0),
+
+                // This will pipe this hover data to the specified entities
+                HoverPipe::new(vec![text]),
+
+                // This will set the color to red
+                BaseColor::new(Color::BEVYPUNK_RED.with_a(0.0)),
+
+                // This will set hover color to yellow
+                HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
+
+            )).id();
 
         });
     }

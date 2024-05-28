@@ -14,6 +14,8 @@ pub struct Hover {
     animation_transition: f32,
     /// Range from `0.0` to `1.0`, animation_transition from last tick
     previous_transition: f32,
+    /// Whenever the hover transition is currently changing
+    pub is_changing: bool,
     /// Setting this to true will disable logic with intention that something else will pipe the control data instead
     pub receiver: bool,
     /// Hover animation speed when transitioning to state
@@ -28,6 +30,7 @@ impl Hover {
             animation_direction: 0.0,
             animation_transition: 0.0,
             previous_transition: 0.0,
+            is_changing: false,
             receiver: false,
             animation_speed_backward: 8.0,
             animation_speed_forward: 8.0,
@@ -54,7 +57,8 @@ impl Hover {
     }
     /// Checks if animation is currently transitioning
     pub fn is_changing(&self) -> bool {
-        self.previous_transition != self.animation_transition
+        //self.previous_transition != self.animation_transition
+        self.is_changing
     }
 }
 
@@ -151,6 +155,7 @@ fn apply_event_set_hover_transition(mut events: EventReader<SetHoverTransition>,
 /// System that updates the hover transition
 fn hover_update_system(time: Res<Time>, mut query: Query<&mut Hover>) {
     for mut control in &mut query {
+        control.is_changing = control.previous_transition != control.animation_transition;
         control.previous_transition = control.animation_transition;
         if control.receiver { continue }
         control.animation_transition += time.delta_seconds() * control.animation_direction * if control.animation_direction == 1.0 { control.animation_speed_forward } else { control.animation_speed_backward };
@@ -180,7 +185,7 @@ fn hover_leave_system(mut events: EventReader<Pointer<Out>>, mut query: Query<&m
 // #=== Piping systems
 
 /// System that sends color change events on hover
-fn hover_pipe_update_system(query: Query<(&Hover, &HoverPipe)>, mut event: EventWriter<SetHoverTransition>) {
+fn hover_pipe_update_system(query: Query<(&Hover, &HoverPipe), Changed<Hover>>, mut event: EventWriter<SetHoverTransition>) {
     for (hover, pipe) in &query {
         if hover.is_changing() {
             for e in &pipe.entity {

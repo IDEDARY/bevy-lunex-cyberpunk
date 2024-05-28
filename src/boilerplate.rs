@@ -63,6 +63,7 @@ pub struct AssetCache {
 
     pub chevron_left: Handle<Image>,
     pub chevron_right: Handle<Image>,
+    pub button_symetric: Handle<Image>,
     pub button: Handle<Image>,
     pub switch_base: Handle<Image>,
     pub switch_head: Handle<Image>,
@@ -91,6 +92,7 @@ pub fn cache_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
 
         chevron_left: asset_server.load("images/character_creator/chevron-left.png"),
         chevron_right: asset_server.load("images/character_creator/chevron-right.png"),
+        button_symetric: asset_server.load("images/character_creator/button.png"),
         button: asset_server.load("images/main_menu/button.png"),
         switch_base: asset_server.load("images/settings/switch_base.png"),
         switch_head: asset_server.load("images/settings/switch_head.png"),
