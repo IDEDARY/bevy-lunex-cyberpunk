@@ -76,7 +76,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
                 ui.spawn((
                     list.add(array.0),
                     UiLayout::window().y(Rl(offset)).size(Rl((100.0, size))).pack(),
-                    Spinner { options },
+                    Spinner { index: 0, options },
                 ));
 
                 offset += gap + size;

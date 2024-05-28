@@ -8,6 +8,7 @@ use crate::*;
 /// When this component is added, a UI system is built
 #[derive(Component, Debug, Default, Clone, PartialEq)]
 pub struct Spinner {
+    pub index: usize,
     pub options: Vec<String>,
 }
 
@@ -22,9 +23,6 @@ struct SpinnerUi;
 /// Control struct for the button state
 #[derive(Component, Debug, Clone, PartialEq)]
 struct SpinnerControl {
-    index: usize,
-    len: usize,
-    options: Vec<String>,
     chevron_left: Entity,
     chevron_right: Entity
 }
@@ -39,7 +37,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
         ).with_children(|ui| {
 
             // Spawn chevron left
-            let left = ui.spawn((
+            let chevron_left = ui.spawn((
                 // Link this widget
                 UiLink::<SpinnerUi>::path("Image/ChevronLeft"),
 
@@ -76,7 +74,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
             )).id();
 
             // Spawn chevron right
-            let right = ui.spawn((
+            let chevron_right = ui.spawn((
                 // Link this widget
                 UiLink::<SpinnerUi>::path("Image/ChevronRight"),
 
@@ -144,16 +142,10 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
 
                 // Spinner control
-                SpinnerControl {
-                    index: 0,
-                    len: spinner.options.len(),
-                    options: spinner.options.clone(),
-                    chevron_left: left,
-                    chevron_right: right,
-                }
+                SpinnerControl { chevron_left, chevron_right }
             )).id();
 
-            let _image = ui.spawn((
+            ui.spawn((
                 // Link this widget
                 UiLink::<SpinnerUi>::path("Image"),
 
@@ -184,8 +176,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
 
                 // This will set hover color to yellow
                 HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
-
-            )).id();
+            ));
 
         });
     }
@@ -196,16 +187,20 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
 // #=== INTERACTIVITY ===#
 
 /// System that will react to chevron presses
-fn spinner_change_system(mut events: EventReader<UiClick>, mut query: Query<(&mut SpinnerControl, &mut Text)>) {
+fn spinner_change_system(mut events: EventReader<UiClick>, mut query: Query<(&mut Spinner, &Children)>, mut text: Query<(&SpinnerControl, &mut Text)>) {
     for event in events.read() {
-        for (mut spinner, mut text) in &mut query {
-            if spinner.chevron_left == event.target  {
-                if spinner.index == 0 { spinner.index = spinner.len - 1 } else { spinner.index -= 1 }
-                text.sections[0].value = spinner.options[spinner.index].clone();
-            }
-            if spinner.chevron_right == event.target {
-                if spinner.index + 1 == spinner.len { spinner.index = 0 } else { spinner.index += 1 }
-                text.sections[0].value = spinner.options[spinner.index].clone();
+        for (mut spinner, children) in &mut query {
+            for child in children {
+                if let Ok((spinner_control, mut text)) = text.get_mut(*child) {
+                    if spinner_control.chevron_left == event.target  {
+                        if spinner.index == 0 { spinner.index = spinner.options.len() - 1 } else { spinner.index -= 1 }
+                        text.sections[0].value = spinner.options[spinner.index].clone();
+                    }
+                    if spinner_control.chevron_right == event.target {
+                        if spinner.index + 1 == spinner.options.len() { spinner.index = 0 } else { spinner.index += 1 }
+                        text.sections[0].value = spinner.options[spinner.index].clone();
+                    }
+                }
             }
         }
     }
