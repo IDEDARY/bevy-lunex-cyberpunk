@@ -12,6 +12,13 @@ pub struct Spinner {
     pub options: Vec<String>,
 }
 
+/// Event that gets triggered if we change the spinner
+#[derive(Event)]
+pub struct SpinnerChange {
+    pub target: Entity,
+    pub value: String,
+}
+
 
 // #===============================#
 // #=== SANDBOXED USER INTEFACE ===#
@@ -247,18 +254,20 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
 // #=== INTERACTIVITY ===#
 
 /// System that will react to chevron presses
-fn spinner_change_system(mut events: EventReader<UiClick>, mut query: Query<(&mut Spinner, &Children)>, mut text: Query<(&SpinnerControl, &mut Text)>) {
+fn spinner_change_system(mut events: EventReader<UiClick>, mut change: EventWriter<SpinnerChange>, mut query: Query<(&mut Spinner, &Children, Entity)>, mut text: Query<(&SpinnerControl, &mut Text)>) {
     for event in events.read() {
-        for (mut spinner, children) in &mut query {
+        for (mut spinner, children, entity) in &mut query {
             for child in children {
                 if let Ok((spinner_control, mut text)) = text.get_mut(*child) {
                     if spinner_control.chevron_left == event.target  {
                         if spinner.index == 0 { spinner.index = spinner.options.len() - 1 } else { spinner.index -= 1 }
                         text.sections[0].value = spinner.options[spinner.index].clone();
+                        change.send(SpinnerChange { target: entity, value: spinner.options[spinner.index].clone() });
                     }
                     if spinner_control.chevron_right == event.target {
                         if spinner.index + 1 == spinner.options.len() { spinner.index = 0 } else { spinner.index += 1 }
                         text.sections[0].value = spinner.options[spinner.index].clone();
+                        change.send(SpinnerChange { target: entity, value: spinner.options[spinner.index].clone() });
                     }
                 }
             }
@@ -276,6 +285,8 @@ impl Plugin for SpinnerPlugin {
         app
             // Add Lunex plugins for our sandboxed UI
             .add_plugins(UiPlugin::<SpinnerUi>::new())
+
+            .add_event::<SpinnerChange>()
 
             // Add general systems
             .add_systems(Update, spinner_change_system.run_if(on_event::<UiClick>()))

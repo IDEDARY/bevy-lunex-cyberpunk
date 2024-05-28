@@ -125,7 +125,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
 
         commands.spawn((
             SceneBundle {
-                scene: asset_server.load("models/female4.glb#Scene0"),
+                scene: asset_server.load("models/female1.glb#Scene0"),
                 transform: Transform::from_xyz(-0.3, -1.5, -1.0),
                 ..default()
             },
@@ -158,6 +158,24 @@ fn showcase_rotate_system(mut query: Query<&mut Transform, With<Showcase>>, mut 
     }
 }
 
+fn showcase_swap_system(mut events: EventReader<SpinnerChange>, asset_server: Res<AssetServer>, mut query: Query<&mut Handle<Scene>, With<Showcase>>) {
+    for event in events.read() {
+        info!("{}", event.value);
+        if event.value == "Male".to_string() {
+            for mut mesh in &mut query {
+                let new: Handle<Scene> = asset_server.load("models/male1.glb#Scene0");
+                *mesh = new;
+            }
+        }
+        if event.value == "Female".to_string() {
+            for mut mesh in &mut query {
+                let new: Handle<Scene> = asset_server.load("models/female1.glb#Scene0");
+                *mesh = new;
+            }
+        }
+    }
+}
+
 // #====================#
 // #=== ROUTE PLUGIN ===#
 
@@ -167,6 +185,7 @@ impl Plugin for CharacterCreatorRoutePlugin {
     fn build(&self, app: &mut App) {
         app
             .add_systems(Update, showcase_rotate_system)
+            .add_systems(Update, showcase_swap_system.run_if(on_event::<SpinnerChange>()))
 
             .add_systems(Update, build_route.before(UiSystems::Compute));
     }
