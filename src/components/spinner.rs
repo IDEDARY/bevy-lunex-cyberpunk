@@ -39,16 +39,13 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
             // Spawn chevron left
             let chevron_left = ui.spawn((
                 // Link this widget
-                UiLink::<SpinnerUi>::path("Image/ChevronLeft"),
+                UiLink::<SpinnerUi>::path("Left/Chevron"),
 
                 // Add layout
-                UiLayout::window().pos(Rl((10.0, 50.0))).anchor(Anchor::Center).size((Rh(45.0), Rl(60.0))).pack(),
+                UiLayout::window().pos(Rl((50.0, 50.0))).anchor(Anchor::Center).size((Rh(45.0), Rl(60.0))).pack(),
 
-                // Make this clickable entity
-                PickableBundle {
-                    pickable: Pickable { should_block_lower: false, is_hoverable: true },
-                    ..default()
-                },
+                // Make it non-obsructable for hit checking (mouse detection)
+                Pickable::IGNORE,
 
                 // Give it a background image
                 UiImage2dBundle {
@@ -61,31 +58,22 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 BaseColor::new(Color::BEVYPUNK_RED.with_a(1.0)),
 
                 // This is required to control our hover animation
-                Hover::new().forward_speed(10.0).backward_speed(10.0),
-
-                // This will change cursor icon on mouse hover
-                HoverCursor::new(CursorIcon::Pointer),
+                Hover::new().receiver(true),
 
                 // This will set hover color to yellow
                 HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
-
-                // If we click on this, it will emmit UiClick event
-                UiClickEmitter::new(None),
             )).id();
 
             // Spawn chevron right
             let chevron_right = ui.spawn((
                 // Link this widget
-                UiLink::<SpinnerUi>::path("Image/ChevronRight"),
+                UiLink::<SpinnerUi>::path("Right/Chevron"),
 
                 // Add layout
-                UiLayout::window().pos(Rl((90.0, 50.0))).anchor(Anchor::Center).size((Rh(45.0), Rl(60.0))).pack(),
+                UiLayout::window().pos(Rl((50.0, 50.0))).anchor(Anchor::Center).size((Rh(45.0), Rl(60.0))).pack(),
                 
-                // Make this clickable entity
-                PickableBundle {
-                    pickable: Pickable { should_block_lower: false, is_hoverable: true },
-                    ..default()
-                },
+                // Make it non-obsructable for hit checking (mouse detection)
+                Pickable::IGNORE,
 
                 // Give it a background image
                 UiImage2dBundle {
@@ -98,16 +86,10 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 BaseColor::new(Color::BEVYPUNK_RED.with_a(1.0)),
 
                 // This is required to control our hover animation
-                Hover::new().forward_speed(10.0).backward_speed(10.0),
-
-                // This will change cursor icon on mouse hover
-                HoverCursor::new(CursorIcon::Pointer),
+                Hover::new().receiver(true),
 
                 // This will set hover color to yellow
                 HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
-
-                // If we click on this, it will emmit UiClick event
-                UiClickEmitter::new(None),
             )).id();
 
             // Spawn button text
@@ -150,12 +132,12 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 UiLink::<SpinnerUi>::path("Image"),
 
                 // Add layout
-                UiLayout::window_full().pack(),
+                UiLayout::window().size(Rl((100.0, 50.0))).pack(),
 
                 // Give it a background image
                 UiImage2dBundle {
                     texture: assets.button_symetric_sliced.clone(),
-                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_a(1.0), ..default() },
+                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_a(0.15), ..default() },
                     ..default()
                 },
 
@@ -172,10 +154,88 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 HoverPipe::new(vec![text]),
 
                 // This will set the color to red
-                BaseColor::new(Color::BEVYPUNK_RED.with_a(1.0)),
+                BaseColor::new(Color::BEVYPUNK_RED.with_a(0.15)),
 
                 // This will set hover color to yellow
                 HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
+            ));
+
+            ui.spawn((
+                // Link this widget
+                UiLink::<SpinnerUi>::path("Left"),
+
+                // Add layout
+                UiLayout::window().pos(Rl((0.0, 55.0))).size((Rl(50.0) - Rh(2.5), Rl(45.0))).pack(),
+
+                // Give it a background image
+                UiImage2dBundle {
+                    texture: assets.button_sliced_bottom_left.clone(),
+                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_a(0.15), ..default() },
+                    ..default()
+                },
+
+                // Make the background scalable
+                ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(32.0), ..default() }),
+
+                // Make it non-obsructable for hit checking (mouse detection)
+                PickableBundle::default(),
+
+                // This is required to control our hover animation
+                Hover::new().forward_speed(20.0).backward_speed(5.0),
+
+                // This will pipe this hover data to the specified entities
+                HoverPipe::new(vec![chevron_left]),
+
+                // This will set the color to red
+                BaseColor::new(Color::BEVYPUNK_RED.with_a(0.15)),
+
+                // This will change cursor icon on mouse hover
+                HoverCursor::new(CursorIcon::Pointer),
+
+                // This will set hover color to yellow
+                HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
+
+                // If we click on this, it will emmit UiClick event
+                UiClickEmitter::new(Some(chevron_left)),
+            ));
+
+            ui.spawn((
+                // Link this widget
+                UiLink::<SpinnerUi>::path("Right"),
+
+                // Add layout
+                UiLayout::window().pos((Rl(50.0) + Rh(2.5), Rl(55.0))).size((Rl(50.0) - Rh(2.5), Rl(45.0))).pack(),
+
+                // Give it a background image
+                UiImage2dBundle {
+                    texture: assets.button_sliced_bottom_right.clone(),
+                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_a(0.15), ..default() },
+                    ..default()
+                },
+
+                // Make the background scalable
+                ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(32.0), ..default() }),
+
+                // Make it non-obsructable for hit checking (mouse detection)
+                PickableBundle::default(),
+
+                // This is required to control our hover animation
+                Hover::new().forward_speed(20.0).backward_speed(5.0),
+
+                // This will pipe this hover data to the specified entities
+                HoverPipe::new(vec![chevron_right]),
+
+                // This will set the color to red
+                BaseColor::new(Color::BEVYPUNK_RED.with_a(0.15)),
+
+                // This will change cursor icon on mouse hover
+                HoverCursor::new(CursorIcon::Pointer),
+
+                // This will set hover color to yellow
+                HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
+
+                // If we click on this, it will emmit UiClick event
+                UiClickEmitter::new(Some(chevron_right)),
             ));
 
         });

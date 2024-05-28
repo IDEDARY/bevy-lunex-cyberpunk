@@ -92,7 +92,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
 
     // Spawn intro route
     commands.spawn((
-        MainMenuRoute,
+        IntroRoute,
         MovableByCamera,    // Marks this ui to receive Transform & Dimension updates from camera size
     ));
 }
