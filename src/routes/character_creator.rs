@@ -103,7 +103,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
             let size = 14.0;
             let mut offset = 0.0;
             for array in [
-                ( "Gender", vec!["Male", "Female"]),
+                ( "Gender", vec!["Female", "Male"]),
                 ( "Body", vec!["Body 1", "Body 2", "Body 3"]),
                 ( "Color", vec!["Red", "Blue"]),
                 ( "Hair", vec!["Short", "Bun", "Long", "Ponytail"]),
