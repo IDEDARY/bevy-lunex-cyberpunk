@@ -1,13 +1,16 @@
-use bevy::prelude::*;
-use bevy_lunex::prelude::*;
-use bevy_mod_picking::prelude::*;
-use vleue_kinetoscope::AnimatedGifLoader;
+pub(crate) use bevy::{prelude::*, sprite::Anchor};
+pub(crate) use bevy_lunex::{prelude::*, HideCursor2d};
+pub(crate) use bevy_mod_picking::prelude::*;
+pub(crate) use vleue_kinetoscope::*;
 
 mod boilerplate;
 use boilerplate::*;
 
 mod components;
 use components::*;
+
+mod logic;
+use logic::*;
 
 mod routes;
 use routes::*;
@@ -29,6 +32,7 @@ fn main() {
 
         // Add our plugins
         .add_plugins(ComponentPlugin)
+        .add_plugins(LogicPlugin)
         .add_plugins(RoutePlugin);
 
     // Load gif before starting our app
@@ -43,12 +47,6 @@ fn main() {
 // #=== GENERIC SETUP ===#
 
 fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>){ //,mut _webp: ResMut<bevy_webp_anim::WebpAnimator>) {
-
-    // Spawn 3D camera
-    commands.spawn((Camera3dBundle {
-        //transform: Transform::from_xyz(0.0, 0.0, 0.0).looking_at(Vec3::new(10.0, 0.0, 0.0), Vec3::Y),
-        ..default()
-    },));
 
     // Spawn 2D camera
     commands.spawn(camera()).with_children(|camera| {

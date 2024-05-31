@@ -31,9 +31,9 @@ pub trait LerpColor {
 }
 impl LerpColor for Color {
     fn lerp(&self, color: Color, value: f32) -> Color {
-        let c1 = self.hsl_to_vec3();
-        let c2 = color.hsl_to_vec3();
-        Color::hsl(c1.x.lerp(c2.x, value), c1.y.lerp(c2.y, value), c1.z.lerp(c2.z, value))
+        let c1 = self.hsla_to_vec4();
+        let c2 = color.hsla_to_vec4();
+        Color::hsla(c1.x.lerp(c2.x, value), c1.y.lerp(c2.y, value), c1.z.lerp(c2.z, value), c1.w.lerp(c2.w, value))
     }
 }
 
@@ -49,23 +49,33 @@ pub struct PreLoader {
 // Load all assets at startup for faster loading during runtime
 #[derive(Resource)]
 pub struct AssetCache {
+    // Music
     pub music: Handle<AudioSource>,
 
+    // Fonts
     pub font_light: Handle<Font>,
     pub font_regular: Handle<Font>,
     pub font_medium: Handle<Font>,
     pub font_semibold: Handle<Font>,
     pub font_bold: Handle<Font>,
 
+    // Cursor
     pub cursor: Handle<Image>,
 
-    pub intro_background: Handle<Image>,
-
+    // Symbols
+    pub button_symetric: Handle<Image>,
+    pub button_symetric_sliced: Handle<Image>,
+    pub button_sliced_bottom_left: Handle<Image>,
+    pub button_sliced_bottom_right: Handle<Image>,
+    pub button_sliced_top_left: Handle<Image>,
+    pub button_sliced_top_right: Handle<Image>,
     pub chevron_left: Handle<Image>,
     pub chevron_right: Handle<Image>,
-    pub button: Handle<Image>,
     pub switch_base: Handle<Image>,
     pub switch_head: Handle<Image>,
+
+    // Routes
+    pub intro_background: Handle<Image>,
 
     pub main_background: Handle<Image>,
     pub main_board: Handle<Image>,
@@ -77,23 +87,33 @@ pub struct AssetCache {
 }
 pub fn cache_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.insert_resource(AssetCache {
+        // Music
         music: asset_server.load("sounds/main_menu.ogg"),
 
+        // Fonts
         font_light: asset_server.load("fonts/rajdhani/Rajdhani-Light.ttf"),
         font_regular: asset_server.load("fonts/rajdhani/Rajdhani-Regular.ttf"),
         font_medium: asset_server.load("fonts/rajdhani/Rajdhani-Medium.ttf"),
         font_semibold: asset_server.load("fonts/rajdhani/Rajdhani-SemiBold.ttf"),
         font_bold: asset_server.load("fonts/rajdhani/Rajdhani-Bold.ttf"),
 
+        // Cursor
         cursor: asset_server.load("images/cursor.png"),
 
-        intro_background: asset_server.load("images/intro/frame0.png"),
+        // Symbols
+        button_symetric: asset_server.load("images/button_symetric.png"),
+        button_symetric_sliced: asset_server.load("images/button_symetric_sliced.png"),
+        button_sliced_bottom_left: asset_server.load("images/button_sliced_bottom_left.png"),
+        button_sliced_bottom_right: asset_server.load("images/button_sliced_bottom_right.png"),
+        button_sliced_top_left: asset_server.load("images/button_sliced_top_left.png"),
+        button_sliced_top_right: asset_server.load("images/button_sliced_top_right.png"),
+        chevron_left: asset_server.load("images/chevron_left.png"),
+        chevron_right: asset_server.load("images/chevron_right.png"),
+        switch_base: asset_server.load("images/switch_base.png"),
+        switch_head: asset_server.load("images/switch_head.png"),
 
-        chevron_left: asset_server.load("images/character_creator/chevron-left.png"),
-        chevron_right: asset_server.load("images/character_creator/chevron-right.png"),
-        button: asset_server.load("images/main_menu/button.png"),
-        switch_base: asset_server.load("images/settings/switch_base.png"),
-        switch_head: asset_server.load("images/settings/switch_head.png"),
+        // Routes
+        intro_background: asset_server.load("images/intro/frame0.png"),
 
         main_background: asset_server.load("images/settings/background.png"),
         main_board: asset_server.load("images/main_menu/board.png"),
@@ -142,8 +162,6 @@ pub fn camera() -> impl Bundle {
         Camera2dBundle {
             transform: Transform::from_xyz(0.0, 0.0, 1000.0),
             camera: Camera {
-                order: 1,
-                clear_color: ClearColorConfig::None,
                 hdr: true,
                 ..default()
             },

@@ -1,8 +1,4 @@
-use bevy::{prelude::*, sprite::Anchor};
-use bevy_lunex::prelude::*;
-use bevy_mod_picking::prelude::*;
-
-use crate::{AssetCache, BevypunkColorPalette, LerpColor};
+use crate::*;
 
 
 // #=========================#
@@ -12,7 +8,15 @@ use crate::{AssetCache, BevypunkColorPalette, LerpColor};
 /// When this component is added, a UI system is built
 #[derive(Component, Debug, Default, Clone, PartialEq)]
 pub struct Spinner {
+    pub index: usize,
     pub options: Vec<String>,
+}
+
+/// Event that gets triggered if we change the spinner
+#[derive(Event)]
+pub struct SpinnerChange {
+    pub target: Entity,
+    pub value: String,
 }
 
 
@@ -25,35 +29,9 @@ struct SpinnerUi;
 
 /// Control struct for the button state
 #[derive(Component, Debug, Clone, PartialEq)]
-struct ChevronControl {
-    animation_direction: f32,    // -1.0 backwards, 1.0 forward
-    animation_transition: f32,
-}
-
-/// Control struct for the button state
-#[derive(Component, Debug, Clone, PartialEq)]
 struct SpinnerControl {
-    index: usize,
-    len: usize,
-    options: Vec<String>,
     chevron_left: Entity,
     chevron_right: Entity
-}
-
-
-#[derive(Event)] struct ChevronClick { pub target: Entity }
-impl From<ListenerInput<Pointer<Click>>> for ChevronClick {
-    fn from(value: ListenerInput<Pointer<Click>>) -> Self { ChevronClick { target: value.target() } }
-}
-
-#[derive(Event)] struct ChevronEnter { pub target: Entity }
-impl From<ListenerInput<Pointer<Over>>> for ChevronEnter {
-    fn from(value: ListenerInput<Pointer<Over>>) -> Self { ChevronEnter { target: value.target() } }
-}
-
-#[derive(Event)] struct ChevronLeave { pub target: Entity }
-impl From<ListenerInput<Pointer<Out>>> for ChevronLeave {
-    fn from(value: ListenerInput<Pointer<Out>>) -> Self { ChevronLeave { target: value.target() } }
 }
 
 /// System that builds the component UI
@@ -66,70 +44,205 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
         ).with_children(|ui| {
 
             // Spawn chevron left
-            let left = ui.spawn((
-                UiLink::<SpinnerUi>::path("ChevronLeft"),
-                UiLayout::window().size((Rh(60.0), Rl(100.0))).pack(),
+            let chevron_left = ui.spawn((
+                // Link this widget
+                UiLink::<SpinnerUi>::path("Left/Chevron"),
 
-                PickableBundle::default(),
-                On::<Pointer<Click>>::send_event::<ChevronClick>(),
-                On::<Pointer<Over>>::send_event::<ChevronEnter>(),
-                On::<Pointer<Out>>::send_event::<ChevronLeave>(),
+                // Add layout
+                UiLayout::window().pos(Rl((50.0, 50.0))).anchor(Anchor::Center).size((Rh(45.0), Rl(60.0))).pack(),
 
+                // Make it non-obsructable for hit checking (mouse detection)
+                Pickable::IGNORE,
+
+                // Give it a background image
                 UiImage2dBundle {
                     texture: assets.chevron_left.clone(),
                     sprite: Sprite { color: Color::BEVYPUNK_RED, ..default() },
                     ..default()
                 },
 
-                ChevronControl {
-                    animation_direction: -1.0,
-                    animation_transition: 0.0,
-                },
+                // This will set the color to red
+                BaseColor::new(Color::BEVYPUNK_RED.with_a(1.0)),
+
+                // This is required to control our hover animation
+                Hover::new().receiver(true),
+
+                // This will set hover color to yellow
+                HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
             )).id();
 
             // Spawn chevron right
-            let right = ui.spawn((
-                UiLink::<SpinnerUi>::path("ChevronRight"),
-                UiLayout::window().x(Rl(100.0) - Rh(60.0)).size((Rh(60.0), Rl(100.0))).pack(),
-                
-                PickableBundle::default(),
-                On::<Pointer<Click>>::send_event::<ChevronClick>(),
-                On::<Pointer<Over>>::send_event::<ChevronEnter>(),
-                On::<Pointer<Out>>::send_event::<ChevronLeave>(),
+            let chevron_right = ui.spawn((
+                // Link this widget
+                UiLink::<SpinnerUi>::path("Right/Chevron"),
 
+                // Add layout
+                UiLayout::window().pos(Rl((50.0, 50.0))).anchor(Anchor::Center).size((Rh(45.0), Rl(60.0))).pack(),
+                
+                // Make it non-obsructable for hit checking (mouse detection)
+                Pickable::IGNORE,
+
+                // Give it a background image
                 UiImage2dBundle {
                     texture: assets.chevron_right.clone(),
                     sprite: Sprite { color: Color::BEVYPUNK_RED, ..default() },
                     ..default()
                 },
 
-                ChevronControl {
-                    animation_direction: -1.0,
-                    animation_transition: 0.0,
-                },
+                // This will set the color to red
+                BaseColor::new(Color::BEVYPUNK_RED.with_a(1.0)),
+
+                // This is required to control our hover animation
+                Hover::new().receiver(true),
+
+                // This will set hover color to yellow
+                HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
             )).id();
 
             // Spawn button text
-            ui.spawn((
-                UiLink::<SpinnerUi>::path("Text"),
+            let text = ui.spawn((
+                // Link this widget
+                UiLink::<SpinnerUi>::path("Image/Text"),
+
+                // Add layout
                 UiLayout::window().pos(Rl((50., 50.))).anchor(Anchor::Center).pack(),
+
+                // Make it non-obsructable for hit checking (mouse detection)
                 Pickable::IGNORE,
+
+                // Add text
                 UiText2dBundle {
                     text: Text::from_section(spinner.options[0].clone(),
                         TextStyle {
                             font: assets.font_medium.clone(),
-                            font_size: 60.0,    // Currently hardcoded as Relative height (Rh) - so 60% of the node height
+                            font_size: 60.0,
                             color: Color::BEVYPUNK_RED,
                         }),
                     ..default()
                 },
-                SpinnerControl {
-                    index: 0,
-                    len: spinner.options.len(),
-                    options: spinner.options.clone(),
-                    chevron_left: left,
-                    chevron_right: right,
-                }
+
+                // This will set the color to red
+                BaseColor::new(Color::BEVYPUNK_RED.with_a(1.0)),
+
+                // This is required to control our hover animation
+                Hover::new().receiver(true),
+
+                // This will set hover color to yellow
+                HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
+
+                // Spinner control
+                SpinnerControl { chevron_left, chevron_right }
+            )).id();
+
+            ui.spawn((
+                // Link this widget
+                UiLink::<SpinnerUi>::path("Image"),
+
+                // Add layout
+                UiLayout::window().size(Rl((100.0, 50.0))).pack(),
+
+                // Give it a background image
+                UiImage2dBundle {
+                    texture: assets.button_symetric_sliced.clone(),
+                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_a(0.15), ..default() },
+                    ..default()
+                },
+
+                // Make the background scalable
+                ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(32.0), ..default() }),
+
+                // Make it non-obsructable for hit checking (mouse detection)
+                PickableBundle::default(),
+
+                // This is required to control our hover animation
+                Hover::new().forward_speed(20.0).backward_speed(5.0),
+
+                // This will pipe this hover data to the specified entities
+                HoverPipe::new(vec![text]),
+
+                // This will set the color to red
+                BaseColor::new(Color::BEVYPUNK_RED.with_a(0.15)),
+
+                // This will set hover color to yellow
+                HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
+            ));
+
+            ui.spawn((
+                // Link this widget
+                UiLink::<SpinnerUi>::path("Left"),
+
+                // Add layout
+                UiLayout::window().pos(Rl((0.0, 55.0))).size((Rl(50.0) - Rh(2.5), Rl(45.0))).pack(),
+
+                // Give it a background image
+                UiImage2dBundle {
+                    texture: assets.button_sliced_bottom_left.clone(),
+                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_a(0.15), ..default() },
+                    ..default()
+                },
+
+                // Make the background scalable
+                ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(32.0), ..default() }),
+
+                // Make it non-obsructable for hit checking (mouse detection)
+                PickableBundle::default(),
+
+                // This is required to control our hover animation
+                Hover::new().forward_speed(20.0).backward_speed(5.0),
+
+                // This will pipe this hover data to the specified entities
+                HoverPipe::new(vec![chevron_left]),
+
+                // This will set the color to red
+                BaseColor::new(Color::BEVYPUNK_RED.with_a(0.15)),
+
+                // This will change cursor icon on mouse hover
+                HoverCursor::new(CursorIcon::Pointer),
+
+                // This will set hover color to yellow
+                HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
+
+                // If we click on this, it will emmit UiClick event
+                UiClickEmitter::new(Some(chevron_left)),
+            ));
+
+            ui.spawn((
+                // Link this widget
+                UiLink::<SpinnerUi>::path("Right"),
+
+                // Add layout
+                UiLayout::window().pos((Rl(50.0) + Rh(2.5), Rl(55.0))).size((Rl(50.0) - Rh(2.5), Rl(45.0))).pack(),
+
+                // Give it a background image
+                UiImage2dBundle {
+                    texture: assets.button_sliced_bottom_right.clone(),
+                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_a(0.15), ..default() },
+                    ..default()
+                },
+
+                // Make the background scalable
+                ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(32.0), ..default() }),
+
+                // Make it non-obsructable for hit checking (mouse detection)
+                PickableBundle::default(),
+
+                // This is required to control our hover animation
+                Hover::new().forward_speed(20.0).backward_speed(5.0),
+
+                // This will pipe this hover data to the specified entities
+                HoverPipe::new(vec![chevron_right]),
+
+                // This will set the color to red
+                BaseColor::new(Color::BEVYPUNK_RED.with_a(0.15)),
+
+                // This will change cursor icon on mouse hover
+                HoverCursor::new(CursorIcon::Pointer),
+
+                // This will set hover color to yellow
+                HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
+
+                // If we click on this, it will emmit UiClick event
+                UiClickEmitter::new(Some(chevron_right)),
             ));
 
         });
@@ -140,73 +253,23 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
 // #=====================#
 // #=== INTERACTIVITY ===#
 
-/// System that triggers when a pointer enters a node
-fn chevron_pointer_enter_system(mut events: EventReader<ChevronEnter>, mut query: Query<&mut ChevronControl>) {
+/// System that will react to chevron presses
+fn spinner_change_system(mut events: EventReader<UiClick>, mut change: EventWriter<SpinnerChange>, mut query: Query<(&mut Spinner, &Children, Entity)>, mut text: Query<(&SpinnerControl, &mut Text)>) {
     for event in events.read() {
-        if let Ok(mut control) = query.get_mut(event.target) {
-            control.animation_direction = 1.0;
-        }
-    }
-}
-
-/// System that triggers when a pointer leaves a node
-fn chevron_pointer_leave_system(mut events: EventReader<ChevronLeave>, mut query: Query<&mut ChevronControl>) {
-    for event in events.read() {
-        if let Ok(mut control) = query.get_mut(event.target) {
-            control.animation_direction = -1.0;
-        }
-    }
-}
-
-/// System that updates the state of the node over time
-fn chevron_update_system(
-    time: Res<Time>,
-    mut set_color: EventWriter<SetColor>,
-    mut query: Query<(&mut ChevronControl, Entity)>,
-    mut cursor: Query<&mut Cursor2d>,
-) {
-    for (mut control, entity) in &mut query {
-
-        let previous = control.animation_transition;
-
-        // Animate the transition
-        control.animation_transition += time.delta_seconds() * 10.0 * control.animation_direction * if control.animation_direction == 1.0 { 1.0 } else { 0.2 };
-        control.animation_transition = control.animation_transition.clamp(0.0, 1.0);
-
-        // If animation progress call instruction events
-        if previous != control.animation_transition {
-
-            // Set the color from transition
-            let color = Color::BEVYPUNK_RED.lerp(Color::BEVYPUNK_YELLOW.with_l(0.68), control.animation_transition);
-            set_color.send(SetColor {
-                target: entity,
-                color,
-            });
-        }
-
-        // Request cursor
-        if control.animation_direction == 1.0 {
-            let mut cursor = cursor.single_mut();
-            cursor.request_cursor(CursorIcon::Pointer, 1.0);
-        }
-    }
-}
-
-
-fn spinner_update_system(mut query: Query<(&SpinnerControl, &mut Text), Changed<SpinnerControl>>) {
-    for (spinner, mut text) in &mut query {
-        text.sections[0].value = spinner.options[spinner.index].clone();
-    }
-}
-
-fn spinner_change_system(mut events: EventReader<ChevronClick>, mut query: Query<&mut SpinnerControl>) {
-    for event in events.read() {
-        for mut spinner in &mut query {
-            if spinner.chevron_left == event.target  {
-                if spinner.index == 0 { spinner.index = spinner.len - 1 } else { spinner.index -= 1 }
-            }
-            if spinner.chevron_right == event.target {
-                if spinner.index + 1 == spinner.len { spinner.index = 0 } else { spinner.index += 1 }
+        for (mut spinner, children, entity) in &mut query {
+            for child in children {
+                if let Ok((spinner_control, mut text)) = text.get_mut(*child) {
+                    if spinner_control.chevron_left == event.target  {
+                        if spinner.index == 0 { spinner.index = spinner.options.len() - 1 } else { spinner.index -= 1 }
+                        text.sections[0].value = spinner.options[spinner.index].clone();
+                        change.send(SpinnerChange { target: entity, value: spinner.options[spinner.index].clone() });
+                    }
+                    if spinner_control.chevron_right == event.target {
+                        if spinner.index + 1 == spinner.options.len() { spinner.index = 0 } else { spinner.index += 1 }
+                        text.sections[0].value = spinner.options[spinner.index].clone();
+                        change.send(SpinnerChange { target: entity, value: spinner.options[spinner.index].clone() });
+                    }
+                }
             }
         }
     }
@@ -222,18 +285,11 @@ impl Plugin for SpinnerPlugin {
         app
             // Add Lunex plugins for our sandboxed UI
             .add_plugins(UiPlugin::<SpinnerUi>::new())
-            //.add_plugins(UiDebugPlugin::<SpinnerUi>::new())
 
-            .add_event::<ChevronClick>()
-            .add_event::<ChevronEnter>()
-            .add_event::<ChevronLeave>()
-            .add_systems(Update, spinner_change_system.run_if(on_event::<ChevronClick>()))
-            .add_systems(Update, chevron_pointer_enter_system.before(chevron_update_system).run_if(on_event::<ChevronEnter>()))
-            .add_systems(Update, chevron_pointer_leave_system.before(chevron_update_system).run_if(on_event::<ChevronLeave>()))
-            .add_systems(Update, chevron_update_system)
+            .add_event::<SpinnerChange>()
 
             // Add general systems
-            .add_systems(Update, spinner_update_system)
+            .add_systems(Update, spinner_change_system.run_if(on_event::<UiClick>()))
             .add_systems(Update, build_component);
     }
 }
