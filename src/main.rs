@@ -36,7 +36,7 @@ fn main() {
         .add_plugins(RoutePlugin);
 
     // Load gif before starting our app
-    let gif = AnimatedGifLoader::load_now("assets/images/intro/intro-lossy.gif".into(), app);
+    let gif = AnimatedGifLoader::load_now("assets/images/intro/intro-lossless.gif".into(), app);
 
     // Insert the loaded handle and start our app
     app.insert_resource(PreLoader { intro: gif}).run()
