@@ -8,6 +8,8 @@ This project serves as advanced example on Bevy and Lunex workflow.
 
 ![image](promo/image.png)
 
+https://github.com/IDEDARY/Bevypunk/assets/49441831/f417d411-63ff-46c1-a0e0-74233b73e7ca
+
 ## Credits
 
 Assets used:
