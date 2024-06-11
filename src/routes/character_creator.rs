@@ -62,32 +62,32 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
             let root = UiLink::<MenuUi>::path("Root");  // Here we can define the name of the node
             ui.spawn((
                 root.clone(),                           // Here we add the link
-                UiLayout::window_full().pack(),         // This is where we define layout
+                UiLayout::window_full().pack::<Base>(),         // This is where we define layout
             ));
 
             // Spawn the background
             ui.spawn((
                 root.add("Background"), // You can see here that we used existing "root" link to create chained link (same as "Root/Background")
-                UiLayout::solid().size((2968.0, 1656.0)).scaling(Scaling::Fill).pack(),
+                UiLayout::solid().size((2968.0, 1656.0)).scaling(Scaling::Fill).pack::<Base>(),
                 UiImage2dBundle::from(assets.settings_background.clone()),  // We use this bundle to add background image to our node
             ));
 
             ui.spawn((
                 root.add("Background/Camera"),
-                UiLayout::solid().size((1920.0, 1080.0)).scaling(Scaling::Fill).pack(),
+                UiLayout::solid().size((1920.0, 1080.0)).scaling(Scaling::Fill).pack::<Base>(),
                 UiImage2dBundle::from(render_image),
             ));
 
             let board = root.add("Solid");
             ui.spawn((
                 board.clone(),
-                UiLayout::solid().size((879.0, 1600.0)).align_x(0.74).pack(), // Just different layout type that preserves aspect ratio
+                UiLayout::solid().size((879.0, 1600.0)).align_x(0.74).pack::<Base>(), // Just different layout type that preserves aspect ratio
             ));
 
             let board = board.add("Board");
             ui.spawn((
                 board.clone(),
-                UiLayout::window().x(Rl(50.0)).anchor(Anchor::TopCenter).size(Rl(105.0)).pack(),
+                UiLayout::window().x(Rl(50.0)).anchor(Anchor::TopCenter).size(Rl(105.0)).pack::<Base>(),
                 UiImage2dBundle::from(assets.character_creator_panel.clone())
             ));
 
@@ -95,7 +95,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
             let list = board.add("List");
             ui.spawn((
                 list.clone(),
-                UiLayout::window().pos(Rl((53.0, 15.0))).anchor(Anchor::TopCenter).size(Rl((60.0, 65.0))).pack(),
+                UiLayout::window().pos(Rl((53.0, 15.0))).anchor(Anchor::TopCenter).size(Rl((60.0, 65.0))).pack::<Base>(),
             ));
 
             // Spawn buttons
@@ -113,7 +113,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
 
                 ui.spawn((
                     list.add(array.0),
-                    UiLayout::window().y(Rl(offset)).size(Rl((100.0, size))).pack(),
+                    UiLayout::window().y(Rl(offset)).size(Rl((100.0, size))).pack::<Base>(),
                     Spinner { index: 0, options },
                 ));
 

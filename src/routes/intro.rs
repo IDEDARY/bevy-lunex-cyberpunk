@@ -32,20 +32,20 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, preloader: Res<P
             let root = UiLink::<MenuUi>::path("Root");  // Here we can define the name of the node
             ui.spawn((
                 root.clone(),                               // Here we add the link
-                UiLayout::window_full().pack(),             // This is where we define layout
+                UiLayout::window_full().pack::<Base>(),             // This is where we define layout
             ));
 
             // Spawn the background
             ui.spawn((
                 root.add("Background"), // You can see here that we used existing "root" link to create chained link (same as "Root/Background")
-                UiLayout::solid().size((1920.0, 1080.0)).scaling(Scaling::Fill).pack(),
+                UiLayout::solid().size((1920.0, 1080.0)).scaling(Scaling::Fill).pack::<Base>(),
                 UiImage2dBundle::from(assets.intro_background.clone()),  // We use this bundle to add background image to our node
             ));
 
             // Spawn the intro
             ui.spawn((
                 root.add("Intro"), // You can see here that we used existing "root" link to create chained link (same as "Root/Intro")
-                UiLayout::solid().size((1920.0, 1080.0)).pack(),
+                UiLayout::solid().size((1920.0, 1080.0)).pack::<Base>(),
                 UiDepthBias(1.0), // "background" and this node are on the same level, they will have same depth. Add this to avoid Z fighting.
                 
                 Element::default(),
