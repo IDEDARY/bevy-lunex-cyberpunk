@@ -232,7 +232,7 @@ fn hover_color_update_system(query: Query<(&Hover, &BaseColor, &HoverColor, Enti
             // Set the layout from transition
             set_layout.send(SetUiLayout {
                 target: control.image_entity,
-                layout: UiLayout::window_full().x(Rl(10.0 * control.animation_transition)).pack(),
+                layout: UiLayout::window_full().x(Rl(10.0 * control.animation_transition)).pack::<Base>(),
             });
         }
     }

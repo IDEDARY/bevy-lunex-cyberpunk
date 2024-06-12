@@ -19,14 +19,14 @@ opt-level = 3
   rand = "0.8.5"
 
   # Required for animations
-  vleue_kinetoscope = "0.1.1"
+  #vleue_kinetoscope = "0.1.1"
 
   # UI framework
   #bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev", features=["picking"] }
   bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex", features=["picking"] }
 
   # Game engine
-  bevy = { version = "0.13.2", default_features = false, features = [
+  bevy = { version = "0.13.2", default_features = true, features = [
     # Core
     "bevy_core_pipeline",
     "multi-threaded",
@@ -50,7 +50,7 @@ opt-level = 3
 
   # Will be upstreamed into Bevy in the future
   bevy_eventlistener = { version = "0.7.0" }
-  bevy_mod_picking = { version = "0.18.2", default_features = false, features = [
+  bevy_mod_picking = { version = "0.19.0", default_features = false, features = [
     "debug",
     "selection",
     "highlight",

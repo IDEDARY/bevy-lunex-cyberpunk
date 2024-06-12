@@ -27,13 +27,13 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
             let root = UiLink::<MenuUi>::path("Root");  // Here we can define the name of the node
             ui.spawn((
                 root.clone(),                           // Here we add the link
-                UiLayout::window_full().pack(),         // This is where we define layout
+                UiLayout::window_full().pack::<Base>(),         // This is where we define layout
             ));
 
             // Spawn the background
             ui.spawn((
                 root.add("Background"), // You can see here that we used existing "root" link to create chained link (same as "Root/Background")
-                UiLayout::solid().size((2968.0, 1656.0)).scaling(Scaling::Fill).pack(),
+                UiLayout::solid().size((2968.0, 1656.0)).scaling(Scaling::Fill).pack::<Base>(),
                 UiImage2dBundle::from(assets.main_background.clone()),  // We use this bundle to add background image to our node
             ));
 
@@ -42,13 +42,13 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
             let board = root.add("Solid");
             ui.spawn((
                 board.clone(),
-                UiLayout::solid().size((881.0, 1600.0)).align_x(-0.74).pack(), // Just different layout type that preserves aspect ratio
+                UiLayout::solid().size((881.0, 1600.0)).align_x(-0.74).pack::<Base>(), // Just different layout type that preserves aspect ratio
             ));
 
             let board = board.add("Board");
             ui.spawn((
                 board.clone(),
-                UiLayout::window().x(Rl(50.0)).anchor(Anchor::TopCenter).size(Rl(105.0)).pack(),
+                UiLayout::window().x(Rl(50.0)).anchor(Anchor::TopCenter).size(Rl(105.0)).pack::<Base>(),
                 UiImage2dBundle::from(assets.main_board.clone())
             ));
 
@@ -56,11 +56,11 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
             // Spawn the logo
             ui.spawn((
                 board.add("Boundary"),
-                UiLayout::window().y(Rl(11.0)).size(Rl((105.0, 20.0))).pack(),
+                UiLayout::window().y(Rl(11.0)).size(Rl((105.0, 20.0))).pack::<Base>(),
             ));
             ui.spawn((
                 board.add("Boundary/Logo"),
-                UiLayout::solid().size((1240.0, 381.0)).pack(),
+                UiLayout::solid().size((1240.0, 381.0)).pack::<Base>(),
                 UiImage2dBundle::from(assets.main_logo.clone())
             ));
 
@@ -72,7 +72,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
             let list = board.add("List");
             ui.spawn((
                 list.clone(),
-                UiLayout::window().pos(Rl((22.0, 33.0))).size(Rl((55.0, 34.0))).pack(),
+                UiLayout::window().pos(Rl((22.0, 33.0))).size(Rl((55.0, 34.0))).pack::<Base>(),
             ));
 
             // Spawn buttons
@@ -91,7 +91,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
 
                 ui.spawn((
                     list.add(button.str()),
-                    UiLayout::window().y(Rl(offset)).size(Rl((100.0, size))).pack(),
+                    UiLayout::window().y(Rl(offset)).size(Rl((100.0, size))).pack::<Base>(),
                     MainButton { text: button.str().into() },
                     button.clone(),
                 ));

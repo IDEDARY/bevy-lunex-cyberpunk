@@ -49,7 +49,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 UiLink::<SpinnerUi>::path("Left/Chevron"),
 
                 // Add layout
-                UiLayout::window().pos(Rl((50.0, 50.0))).anchor(Anchor::Center).size((Rh(45.0), Rl(60.0))).pack(),
+                UiLayout::window().pos(Rl((50.0, 50.0))).anchor(Anchor::Center).size((Rh(45.0), Rl(60.0))).pack::<Base>(),
 
                 // Make it non-obsructable for hit checking (mouse detection)
                 Pickable::IGNORE,
@@ -77,7 +77,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 UiLink::<SpinnerUi>::path("Right/Chevron"),
 
                 // Add layout
-                UiLayout::window().pos(Rl((50.0, 50.0))).anchor(Anchor::Center).size((Rh(45.0), Rl(60.0))).pack(),
+                UiLayout::window().pos(Rl((50.0, 50.0))).anchor(Anchor::Center).size((Rh(45.0), Rl(60.0))).pack::<Base>(),
                 
                 // Make it non-obsructable for hit checking (mouse detection)
                 Pickable::IGNORE,
@@ -105,7 +105,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 UiLink::<SpinnerUi>::path("Image/Text"),
 
                 // Add layout
-                UiLayout::window().pos(Rl((50., 50.))).anchor(Anchor::Center).pack(),
+                UiLayout::window().pos(Rl((50., 50.))).anchor(Anchor::Center).pack::<Base>(),
 
                 // Make it non-obsructable for hit checking (mouse detection)
                 Pickable::IGNORE,
@@ -139,7 +139,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 UiLink::<SpinnerUi>::path("Image"),
 
                 // Add layout
-                UiLayout::window().size(Rl((100.0, 50.0))).pack(),
+                UiLayout::window().size(Rl((100.0, 50.0))).pack::<Base>(),
 
                 // Give it a background image
                 UiImage2dBundle {
@@ -172,7 +172,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 UiLink::<SpinnerUi>::path("Left"),
 
                 // Add layout
-                UiLayout::window().pos(Rl((0.0, 55.0))).size((Rl(50.0) - Rh(2.5), Rl(45.0))).pack(),
+                UiLayout::window().pos(Rl((0.0, 55.0))).size((Rl(50.0) - Rh(2.5), Rl(45.0))).pack::<Base>(),
 
                 // Give it a background image
                 UiImage2dBundle {
@@ -211,7 +211,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 UiLink::<SpinnerUi>::path("Right"),
 
                 // Add layout
-                UiLayout::window().pos((Rl(50.0) + Rh(2.5), Rl(55.0))).size((Rl(50.0) - Rh(2.5), Rl(45.0))).pack(),
+                UiLayout::window().pos((Rl(50.0) + Rh(2.5), Rl(55.0))).size((Rl(50.0) - Rh(2.5), Rl(45.0))).pack::<Base>(),
 
                 // Give it a background image
                 UiImage2dBundle {

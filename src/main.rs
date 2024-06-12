@@ -1,7 +1,7 @@
 pub(crate) use bevy::{prelude::*, sprite::Anchor};
 pub(crate) use bevy_lunex::{prelude::*, HideCursor2d};
 pub(crate) use bevy_mod_picking::prelude::*;
-pub(crate) use vleue_kinetoscope::*;
+//pub(crate) use vleue_kinetoscope::*;
 
 mod boilerplate;
 use boilerplate::*;
@@ -36,10 +36,14 @@ fn main() {
         .add_plugins(RoutePlugin);
 
     // Load gif before starting our app
-    let gif = AnimatedGifLoader::load_now("assets/images/intro/intro-lossless.gif".into(), app);
+    //let gif = AnimatedGifLoader::load_now("assets/images/intro/intro-lossy.gif".into(), app);
 
     // Insert the loaded handle and start our app
-    app.insert_resource(PreLoader { intro: gif}).run()
+    app
+    .insert_resource(PreLoader {
+        //intro: gif
+    })
+    .run()
 }
 
 
@@ -86,7 +90,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
 
     // Spawn intro route
     commands.spawn((
-        IntroRoute,
+        MainMenuRoute,
         MovableByCamera,    // Marks this ui to receive Transform & Dimension updates from camera size
     ));
 }
