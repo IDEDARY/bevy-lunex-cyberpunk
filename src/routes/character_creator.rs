@@ -151,8 +151,8 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
 #[derive(Component)]
 struct Showcase;
 
-fn showcase_rotate_system(mut query: Query<&mut Transform, With<Showcase>>, mut local: Local<f32>) {
-    *local += 0.002;
+fn showcase_rotate_system(mut query: Query<&mut Transform, With<Showcase>>, mut local: Local<f32>, time: Res<Time>) {
+    *local += time.delta_seconds();
     for mut transform in &mut query {
         *transform = transform.with_rotation(Quat::from_euler(EulerRot::XYZ, 0.0, (20.0 * local.sin()).to_radians(), 0.0));
     }
