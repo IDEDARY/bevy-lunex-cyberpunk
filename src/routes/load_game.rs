@@ -27,13 +27,13 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
             let root = UiLink::<MenuUi>::path("Root");  // Here we can define the name of the node
             ui.spawn((
                 root.clone(),                           // Here we add the link
-                UiLayout::window_full().pack(),         // This is where we define layout
+                UiLayout::window_full().pack::<Base>(),         // This is where we define layout
             ));
 
             // Spawn the background
             ui.spawn((
                 root.add("Background"), // You can see here that we used existing "root" link to create chained link (same as "Root/Background")
-                UiLayout::solid().size((2968.0, 1656.0)).scaling(Scaling::Fill).pack(),
+                UiLayout::solid().size((2968.0, 1656.0)).scaling(Scaling::Fill).pack::<Base>(),
                 UiImage2dBundle::from(assets.settings_background.clone()),  // We use this bundle to add background image to our node
             ));
 

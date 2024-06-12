@@ -4,6 +4,8 @@ This repo is a recreation of ***Cyberpunk*** UI in ***Bevy*** using **[Bevy-Lune
 
 This project serves as advanced example on Bevy and Lunex workflow.
 
+***[You can try it here! (github pages)](https://idedary.github.io/Bevypunk/)***
+
 #
 
 ![image](promo/image.png)
