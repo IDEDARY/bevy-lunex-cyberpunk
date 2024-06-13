@@ -16,7 +16,7 @@ pub struct CharacterCreatorRoute;
 
 /// System that builds the route
 fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Entity, Added<CharacterCreatorRoute>>, asset_server: Res<AssetServer>) {
-    for entity in &query {
+    for route_entity in &query {
         // #======================#
         // #=== USER INTERFACE ===#
 
@@ -40,121 +40,129 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
         image.resize(size);
         let render_image = asset_server.add(image);
 
-        // Spawn 3D camera
-        commands.spawn(Camera3dBundle {
-            camera: Camera {
-                order: -1,
-                target: render_image.clone().into(),
-                clear_color: ClearColorConfig::Custom(Color::rgba(0.0, 0.0, 0.0, 0.0)),
-                hdr: true,
+
+        commands.entity(route_entity).insert(
+            SpatialBundle::default(),
+        ).with_children(|route| {
+
+            // Spawn 3D camera
+            route.spawn(Camera3dBundle {
+                camera: Camera {
+                    order: -1,
+                    target: render_image.clone().into(),
+                    clear_color: ClearColorConfig::Custom(Color::rgba(0.0, 0.0, 0.0, 0.0)),
+                    hdr: true,
+                    ..default()
+                },
                 ..default()
-            },
-            ..default()
-        });
+            });
+
+            // Spawn 3D model in the scene
+            route.spawn((
+                SceneBundle {
+                    scene: asset_server.load("models/female1.glb#Scene0"),
+                    transform: Transform::from_xyz(-0.3, -1.5, -1.0),
+                    ..default()
+                },
+                Showcase,
+            ));
+            
+            // Spawn point light
+            route.spawn(PointLightBundle {
+                point_light: PointLight {
+                    intensity: 10000.0,
+                    shadows_enabled: false,
+                    color: Color::BEVYPUNK_RED.lerp(Color::WHITE, 0.6),
+                    ..default()
+                },
+                ..default()
+            });
+
+            // Spawn the master ui tree
+            route.spawn((
+                UiTreeBundle::<MenuUi>::from(UiTree::new("CharacterCreator")),
+                MovableByCamera,
+            )).with_children(|ui| {
     
-
-        // Spawn the master ui tree
-        commands.entity(entity).insert((
-            UiTreeBundle::<MenuUi>::from(UiTree::new("CharacterCreator")),
-        )).with_children(|ui| {
-
-            // Spawn the root div
-            let root = UiLink::<MenuUi>::path("Root");  // Here we can define the name of the node
-            ui.spawn((
-                root.clone(),                           // Here we add the link
-                UiLayout::window_full().pack::<Base>(), // This is where we define layout
-            ));
-
-            // Spawn the background
-            ui.spawn((
-                root.add("Background"), // You can see here that we used existing "root" link to create chained link (same as "Root/Background")
-                UiLayout::solid().size((2968.0, 1656.0)).scaling(Scaling::Fill).pack::<Base>(),
-                UiImage2dBundle::from(assets.settings_background.clone()),  // We use this bundle to add background image to our node
-                // Make it non-obsructable for hit checking (mouse detection)
-                Pickable::IGNORE,
-            ));
-
-            // Spawn 3D camera view
-            ui.spawn((
-                root.add("Background/Camera"),
-                UiLayout::solid().size((1920.0, 1080.0)).scaling(Scaling::Fill).pack::<Base>(),
-                UiImage2dBundle::from(render_image),
-                // Make it non-obsructable for hit checking (mouse detection)
-                Pickable::IGNORE,
-            ));
-
-            ui.spawn((
-                root.add("Return"),
-                UiLayout::window().pos(Rl((5.0, 10.0))).size(Rl((10.0, 7.0))).pack::<Base>(),
-                Button { text: "Return".into() },
-                // OnClick<Despawn>::new(vec![entity])
-                // OnClick<Event>::new(vec![event { .. }])
-            ));
-
-
-            let board = root.add("Solid");
-            ui.spawn((
-                board.clone(),
-                UiLayout::solid().size((879.0, 1600.0)).align_x(0.74).pack::<Base>(), // Just different layout type that preserves aspect ratio
-            ));
-
-            let board = board.add("Board");
-            ui.spawn((
-                board.clone(),
-                UiLayout::window().x(Rl(50.0)).anchor(Anchor::TopCenter).size(Rl(105.0)).pack::<Base>(),
-                UiImage2dBundle::from(assets.character_creator_panel.clone())
-            ));
-
-            // Spawn button boundary
-            let list = board.add("List");
-            ui.spawn((
-                list.clone(),
-                UiLayout::window().pos(Rl((53.0, 15.0))).anchor(Anchor::TopCenter).size(Rl((60.0, 65.0))).pack::<Base>(),
-            ));
-
-            // Spawn buttons
-            let gap = 5.0;
-            let size = 14.0;
-            let mut offset = 0.0;
-            for array in [
-                ( "Gender", vec!["Female", "Male"]),
-                ( "Body", vec!["Body 1", "Body 2", "Body 3"]),
-                ( "Color", vec!["Red", "Blue"]),
-                ( "Hair", vec!["Short", "Bun", "Long", "Ponytail"]),
-                ( "Beard", vec!["None"]),
-            ] {
-                let options: Vec<String> = array.1.iter().map(|&s| s.to_string()).collect();
-
+                // Spawn the root div
+                let root = UiLink::<MenuUi>::path("Root");  // Here we can define the name of the node
                 ui.spawn((
-                    list.add(array.0),
-                    UiLayout::window().y(Rl(offset)).size(Rl((100.0, size))).pack::<Base>(),
-                    Spinner { name: array.0.into(), index: 0, options },
+                    root.clone(),                           // Here we add the link
+                    UiLayout::window_full().pack::<Base>(), // This is where we define layout
                 ));
-
-                offset += gap + size;
-            }
-
-
+    
+                // Spawn the background
+                ui.spawn((
+                    root.add("Background"), // You can see here that we used existing "root" link to create chained link (same as "Root/Background")
+                    UiLayout::solid().size((2968.0, 1656.0)).scaling(Scaling::Fill).pack::<Base>(),
+                    UiImage2dBundle::from(assets.settings_background.clone()),  // We use this bundle to add background image to our node
+                    // Make it non-obsructable for hit checking (mouse detection)
+                    Pickable::IGNORE,
+                ));
+    
+                // Spawn 3D camera view
+                ui.spawn((
+                    root.add("Background/Camera"),
+                    UiLayout::solid().size((1920.0, 1080.0)).scaling(Scaling::Fill).pack::<Base>(),
+                    UiImage2dBundle::from(render_image),
+                    // Make it non-obsructable for hit checking (mouse detection)
+                    Pickable::IGNORE,
+                ));
+    
+                ui.spawn((
+                    root.add("Return"),
+                    UiLayout::window().pos(Rl((5.0, 10.0))).size(Rl((8.0, 8.0))).pack::<Base>(),
+                    Button { text: "Return".into() },
+                    OnUiClickDespawn::new(route_entity),
+                    OnUiClickSpawn::new(|ui| { ui.spawn((MainMenuRoute, MovableByCamera)); })
+                ));
+    
+    
+                let board = root.add("Solid");
+                ui.spawn((
+                    board.clone(),
+                    UiLayout::solid().size((879.0, 1600.0)).align_x(0.74).pack::<Base>(), // Just different layout type that preserves aspect ratio
+                ));
+    
+                let board = board.add("Board");
+                ui.spawn((
+                    board.clone(),
+                    UiLayout::window().x(Rl(50.0)).anchor(Anchor::TopCenter).size(Rl(105.0)).pack::<Base>(),
+                    UiImage2dBundle::from(assets.character_creator_panel.clone())
+                ));
+    
+                // Spawn button boundary
+                let list = board.add("List");
+                ui.spawn((
+                    list.clone(),
+                    UiLayout::window().pos(Rl((53.0, 15.0))).anchor(Anchor::TopCenter).size(Rl((60.0, 65.0))).pack::<Base>(),
+                ));
+    
+                // Spawn buttons
+                let gap = 5.0;
+                let size = 14.0;
+                let mut offset = 0.0;
+                for array in [
+                    ( "Gender", vec!["Female", "Male"]),
+                    ( "Body", vec!["Body 1", "Body 2", "Body 3"]),
+                    ( "Color", vec!["Red", "Blue"]),
+                    ( "Hair", vec!["Short", "Bun", "Long", "Ponytail"]),
+                    ( "Beard", vec!["None"]),
+                ] {
+                    let options: Vec<String> = array.1.iter().map(|&s| s.to_string()).collect();
+    
+                    ui.spawn((
+                        list.add(array.0),
+                        UiLayout::window().y(Rl(offset)).size(Rl((100.0, size))).pack::<Base>(),
+                        Spinner { name: array.0.into(), index: 0, options },
+                    ));
+    
+                    offset += gap + size;
+                }
+    
+    
+            });
         });
-
-        commands.spawn((
-            SceneBundle {
-                scene: asset_server.load("models/female1.glb#Scene0"),
-                transform: Transform::from_xyz(-0.3, -1.5, -1.0),
-                ..default()
-            },
-            Showcase,
-        ));
-
-        commands.spawn(PointLightBundle {
-			point_light: PointLight {
-				intensity: 10000.0,
-				shadows_enabled: false,
-                color: Color::BEVYPUNK_RED.lerp(Color::WHITE, 0.6),
-				..default()
-			},
-			..default()
-		});
     }
 }
 
