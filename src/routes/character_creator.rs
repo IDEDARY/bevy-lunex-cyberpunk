@@ -106,13 +106,16 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
                     UiImage2dBundle::from(render_image),
                     Pickable::IGNORE,
                 ));
-    
+                
+                // Spawn return button
                 ui.spawn((
                     root.add("Return"),
-                    UiLayout::window().pos(Rl((5.0, 10.0))).size(Rl((8.0, 8.0))).pack::<Base>(),
-                    Button { text: "Return".into() },
+                    UiLayout::window().pos(Rl((2.0, 4.0))).size(Rl((16.0, 8.0))).pack::<Base>(),
+                    Button { text: "<- Main menu".into() },
+
+                    // If it detects UiClick event for this entity it will despawn route_entity and run a closure
                     OnUiClickDespawn::new(route_entity),
-                    OnUiClickSpawn::new(|ui| { ui.spawn((MainMenuRoute, MovableByCamera)); })
+                    OnUiClickRun::new(|commands| { commands.spawn((MainMenuRoute, MovableByCamera)); })
                 ));
     
                 // Spawn panel boundary
