@@ -47,6 +47,9 @@ opt-level = 3
     # 3D
     "jpeg",
     "bevy_gltf",
+
+    # Asset preprocessor
+    #"asset_processor",
   ] }
 
   # Will be upstreamed into Bevy in the future

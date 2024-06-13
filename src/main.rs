@@ -22,6 +22,7 @@ fn main() {
 
     // Add plugins
     let app = app
+        .insert_resource(bevy::asset::AssetMetaCheck::Never)
         .add_plugins((default_plugins(), DefaultPickingPlugins, UiGeneralPlugin, UiPlugin::<MenuUi>::new()))
         //.add_plugins(UiDebugPlugin::<MenuUi>::new())
 
@@ -41,7 +42,6 @@ fn main() {
 
     // Insert the loaded handle and start our app
     app
-    .insert_resource(bevy::asset::AssetMetaCheck::Never)
     .insert_resource(PreLoader {
         //intro: gif
     })
