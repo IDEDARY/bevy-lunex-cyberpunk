@@ -35,11 +35,13 @@ fn main() {
         .add_plugins(LogicPlugin)
         .add_plugins(RoutePlugin);
 
+
     // Load gif before starting our app
     //let gif = AnimatedGifLoader::load_now("assets/images/intro/intro-lossy.gif".into(), app);
 
     // Insert the loaded handle and start our app
     app
+    .insert_resource(bevy::asset::AssetMetaCheck::Never)
     .insert_resource(PreLoader {
         //intro: gif
     })
