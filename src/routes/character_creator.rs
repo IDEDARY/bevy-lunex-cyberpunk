@@ -40,7 +40,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
         image.resize(size);
         let render_image = asset_server.add(image);
 
-
+        // Spawn the route
         commands.entity(route_entity).insert(
             SpatialBundle::default(),
         ).with_children(|route| {
@@ -96,7 +96,6 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
                     root.add("Background"), // You can see here that we used existing "root" link to create chained link (same as "Root/Background")
                     UiLayout::solid().size((2968.0, 1656.0)).scaling(Scaling::Fill).pack::<Base>(),
                     UiImage2dBundle::from(assets.settings_background.clone()),  // We use this bundle to add background image to our node
-                    // Make it non-obsructable for hit checking (mouse detection)
                     Pickable::IGNORE,
                 ));
     
@@ -105,7 +104,6 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
                     root.add("Background/Camera"),
                     UiLayout::solid().size((1920.0, 1080.0)).scaling(Scaling::Fill).pack::<Base>(),
                     UiImage2dBundle::from(render_image),
-                    // Make it non-obsructable for hit checking (mouse detection)
                     Pickable::IGNORE,
                 ));
     
@@ -117,22 +115,38 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
                     OnUiClickSpawn::new(|ui| { ui.spawn((MainMenuRoute, MovableByCamera)); })
                 ));
     
-    
-                let board = root.add("Solid");
+                // Spawn panel boundary
+                let panel = root.add("Solid");
                 ui.spawn((
-                    board.clone(),
+                    panel.clone(),
                     UiLayout::solid().size((879.0, 1600.0)).align_x(0.74).pack::<Base>(), // Just different layout type that preserves aspect ratio
                 ));
-    
-                let board = board.add("Board");
+                
+                // Spawn panel
+                let panel = panel.add("Panel");
                 ui.spawn((
-                    board.clone(),
+                    panel.clone(),
                     UiLayout::window().x(Rl(50.0)).anchor(Anchor::TopCenter).size(Rl(105.0)).pack::<Base>(),
                     UiImage2dBundle::from(assets.character_creator_panel.clone())
                 ));
+
+                // Spawn text
+               /*  ui.spawn((
+                    panel.add("Text"),
+                    UiLayout::window().pos(Rl((50., 5.))).anchor(Anchor::TopCenter).pack::<Base>(),
+                    UiText2dBundle {
+                        text: Text::from_section("Character creator",
+                            TextStyle {
+                                font: assets.font_medium.clone(),
+                                font_size: 8.0,
+                                color: Color::BEVYPUNK_RED,
+                            }),
+                        ..default()
+                    },
+                )); */
     
                 // Spawn button boundary
-                let list = board.add("List");
+                let list = panel.add("List");
                 ui.spawn((
                     list.clone(),
                     UiLayout::window().pos(Rl((53.0, 15.0))).anchor(Anchor::TopCenter).size(Rl((60.0, 65.0))).pack::<Base>(),
@@ -159,8 +173,6 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
     
                     offset += gap + size;
                 }
-    
-    
             });
         });
     }
@@ -172,14 +184,12 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
 
 #[derive(Component)]
 struct Showcase;
-
 fn showcase_rotate_system(mut query: Query<&mut Transform, With<Showcase>>, mut local: Local<f32>, time: Res<Time>) {
     *local += time.delta_seconds();
     for mut transform in &mut query {
         *transform = transform.with_rotation(Quat::from_euler(EulerRot::XYZ, 0.0, (20.0 * local.sin()).to_radians(), 0.0));
     }
 }
-
 fn showcase_swap_system(mut events: EventReader<UiChangeEvent>, asset_server: Res<AssetServer>, mut query: Query<&mut Handle<Scene>, With<Showcase>>) {
     for event in events.read() {
         info!("{}", event.value);
@@ -197,6 +207,7 @@ fn showcase_swap_system(mut events: EventReader<UiChangeEvent>, asset_server: Re
         }
     }
 }
+
 
 // #====================#
 // #=== ROUTE PLUGIN ===#

@@ -148,12 +148,12 @@ fn main_menu_button_action_system(mut events: EventReader<UiClickEvent>, query: 
                     commands.spawn((CharacterCreatorRoute, MovableByCamera));
                 },
                 MainMenuButton::LoadGame => {
-                    commands.entity(main_menu_route.single()).despawn_recursive();
-                    commands.spawn((LoadGameRoute, MovableByCamera));
+                    //commands.entity(main_menu_route.single()).despawn_recursive();
+                    //commands.spawn((LoadGameRoute, MovableByCamera));
                 },
                 MainMenuButton::Settings => {
-                    commands.entity(main_menu_route.single()).despawn_recursive();
-                    commands.spawn((SettingsRoute, MovableByCamera));
+                    //commands.entity(main_menu_route.single()).despawn_recursive();
+                    //commands.spawn((SettingsRoute, MovableByCamera));
                 },
                 MainMenuButton::AdditionalContent => {},
                 MainMenuButton::Credits => {},
