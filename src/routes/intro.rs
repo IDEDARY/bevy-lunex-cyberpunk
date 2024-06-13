@@ -16,7 +16,7 @@ pub struct IntroRoute;
 struct IntroGif;
 
 /// System that builds the route
-fn build_route(mut commands: Commands, assets: Res<AssetCache>, preloader: Res<PreLoader>, query: Query<Entity, Added<IntroRoute>>, mut event: EventWriter<HideCursor2d>) {
+fn build_route(mut commands: Commands, assets: Res<AssetCache>, _preloader: Res<PreLoader>, query: Query<Entity, Added<IntroRoute>>, mut event: EventWriter<HideCursor2d>) {
     for entity in &query {
         // #======================#
         // #=== USER INTERFACE ===#

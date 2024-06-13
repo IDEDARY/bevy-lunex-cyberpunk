@@ -132,7 +132,7 @@ impl MainMenuButton {
 }
 
 /// System that will resolve our event
-fn main_menu_button_action_system(mut events: EventReader<UiClick>, query: Query<&MainMenuButton, With<MainButton>>, mut exit: EventWriter<bevy::app::AppExit>, mut commands: Commands,
+fn main_menu_button_action_system(mut events: EventReader<UiClickEvent>, query: Query<&MainMenuButton, With<MainButton>>, mut exit: EventWriter<bevy::app::AppExit>, mut commands: Commands,
     main_menu_route: Query<Entity, With<MainMenuRoute>>,
 ) {
     for event in events.read() {
@@ -175,7 +175,7 @@ impl Plugin for MainMenuRoutePlugin {
     fn build(&self, app: &mut App) {
         app
             .add_systems(Update, build_route.before(UiSystems::Compute))
-            .add_systems(Update, main_menu_button_action_system.run_if(on_event::<UiClick>()));
+            .add_systems(Update, main_menu_button_action_system.run_if(on_event::<UiClickEvent>()));
     }
 }
 

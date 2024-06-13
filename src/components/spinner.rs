@@ -4,21 +4,13 @@ use crate::*;
 // #=========================#
 // #=== EXPOSED COMPONENT ===#
 
-
 /// When this component is added, a UI system is built
 #[derive(Component, Debug, Default, Clone, PartialEq)]
 pub struct Spinner {
+    pub name: String,
     pub index: usize,
     pub options: Vec<String>,
 }
-
-/// Event that gets triggered if we change the spinner
-#[derive(Event)]
-pub struct SpinnerChange {
-    pub target: Entity,
-    pub value: String,
-}
-
 
 // #===============================#
 // #=== SANDBOXED USER INTEFACE ===#
@@ -99,20 +91,17 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
             )).id();
 
-            // Spawn button text
-            let text = ui.spawn((
+            // Spawn spinner text
+            ui.spawn((
                 // Link this widget
                 UiLink::<SpinnerUi>::path("Image/Text"),
 
                 // Add layout
-                UiLayout::window().pos(Rl((50., 50.))).anchor(Anchor::Center).pack::<Base>(),
-
-                // Make it non-obsructable for hit checking (mouse detection)
-                Pickable::IGNORE,
+                UiLayout::window().pos(Rl((95., 50.))).anchor(Anchor::CenterRight).pack::<Base>(),
 
                 // Add text
                 UiText2dBundle {
-                    text: Text::from_section(spinner.options[0].clone(),
+                    text: Text::from_section(spinner.options[spinner.index].clone(),
                         TextStyle {
                             font: assets.font_medium.clone(),
                             font_size: 60.0,
@@ -121,19 +110,31 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                     ..default()
                 },
 
-                // This will set the color to red
-                BaseColor::new(Color::BEVYPUNK_RED.with_a(1.0)),
-
-                // This is required to control our hover animation
-                Hover::new().receiver(true),
-
-                // This will set hover color to yellow
-                HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
-
                 // Spinner control
                 SpinnerControl { chevron_left, chevron_right }
-            )).id();
+            ));
 
+            // Spawn spinner name
+            ui.spawn((
+                // Link this widget
+                UiLink::<SpinnerUi>::path("Image/Name"),
+
+                // Add layout
+                UiLayout::window().pos(Rl((5., 50.))).anchor(Anchor::CenterLeft).pack::<Base>(),
+
+                // Add text
+                UiText2dBundle {
+                    text: Text::from_section(spinner.name.clone(),
+                        TextStyle {
+                            font: assets.font_semibold.clone(),
+                            font_size: 60.0,
+                            color: Color::BEVYPUNK_RED,
+                        }),
+                    ..default()
+                },
+            ));
+
+            // Spawn spinner image
             ui.spawn((
                 // Link this widget
                 UiLink::<SpinnerUi>::path("Image"),
@@ -150,23 +151,9 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
 
                 // Make the background scalable
                 ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(32.0), ..default() }),
-
-                // Make it non-obsructable for hit checking (mouse detection)
-                PickableBundle::default(),
-
-                // This is required to control our hover animation
-                Hover::new().forward_speed(20.0).backward_speed(5.0),
-
-                // This will pipe this hover data to the specified entities
-                HoverPipe::new(vec![text]),
-
-                // This will set the color to red
-                BaseColor::new(Color::BEVYPUNK_RED.with_a(0.15)),
-
-                // This will set hover color to yellow
-                HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
             ));
 
+            // Spawn left
             ui.spawn((
                 // Link this widget
                 UiLink::<SpinnerUi>::path("Left"),
@@ -203,9 +190,10 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
 
                 // If we click on this, it will emmit UiClick event
-                UiClickEmitter::new(Some(chevron_left)),
+                UiClickEmitter::new(chevron_left),
             ));
 
+            // Spawn right
             ui.spawn((
                 // Link this widget
                 UiLink::<SpinnerUi>::path("Right"),
@@ -242,7 +230,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
 
                 // If we click on this, it will emmit UiClick event
-                UiClickEmitter::new(Some(chevron_right)),
+                UiClickEmitter::new(chevron_right),
             ));
 
         });
@@ -254,7 +242,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
 // #=== INTERACTIVITY ===#
 
 /// System that will react to chevron presses
-fn spinner_change_system(mut events: EventReader<UiClick>, mut change: EventWriter<SpinnerChange>, mut query: Query<(&mut Spinner, &Children, Entity)>, mut text: Query<(&SpinnerControl, &mut Text)>) {
+fn spinner_change_system(mut events: EventReader<UiClickEvent>, mut change: EventWriter<UiChangeEvent>, mut query: Query<(&mut Spinner, &Children, Entity)>, mut text: Query<(&SpinnerControl, &mut Text)>) {
     for event in events.read() {
         for (mut spinner, children, entity) in &mut query {
             for child in children {
@@ -262,18 +250,19 @@ fn spinner_change_system(mut events: EventReader<UiClick>, mut change: EventWrit
                     if spinner_control.chevron_left == event.target  {
                         if spinner.index == 0 { spinner.index = spinner.options.len() - 1 } else { spinner.index -= 1 }
                         text.sections[0].value = spinner.options[spinner.index].clone();
-                        change.send(SpinnerChange { target: entity, value: spinner.options[spinner.index].clone() });
+                        change.send(UiChangeEvent { target: entity, value: spinner.options[spinner.index].clone() });
                     }
                     if spinner_control.chevron_right == event.target {
                         if spinner.index + 1 == spinner.options.len() { spinner.index = 0 } else { spinner.index += 1 }
                         text.sections[0].value = spinner.options[spinner.index].clone();
-                        change.send(SpinnerChange { target: entity, value: spinner.options[spinner.index].clone() });
+                        change.send(UiChangeEvent { target: entity, value: spinner.options[spinner.index].clone() });
                     }
                 }
             }
         }
     }
 }
+
 
 // #========================#
 // #=== COMPONENT PLUGIN ===#
@@ -286,10 +275,8 @@ impl Plugin for SpinnerPlugin {
             // Add Lunex plugins for our sandboxed UI
             .add_plugins(UiPlugin::<SpinnerUi>::new())
 
-            .add_event::<SpinnerChange>()
-
             // Add general systems
-            .add_systems(Update, spinner_change_system.run_if(on_event::<UiClick>()))
+            .add_systems(Update, spinner_change_system.run_if(on_event::<UiClickEvent>()))
             .add_systems(Update, build_component);
     }
 }

@@ -62,7 +62,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
             let root = UiLink::<MenuUi>::path("Root");  // Here we can define the name of the node
             ui.spawn((
                 root.clone(),                           // Here we add the link
-                UiLayout::window_full().pack::<Base>(),         // This is where we define layout
+                UiLayout::window_full().pack::<Base>(), // This is where we define layout
             ));
 
             // Spawn the background
@@ -114,7 +114,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
                 ui.spawn((
                     list.add(array.0),
                     UiLayout::window().y(Rl(offset)).size(Rl((100.0, size))).pack::<Base>(),
-                    Spinner { index: 0, options },
+                    Spinner { name: array.0.into(), index: 0, options },
                 ));
 
                 offset += gap + size;
@@ -158,7 +158,7 @@ fn showcase_rotate_system(mut query: Query<&mut Transform, With<Showcase>>, mut 
     }
 }
 
-fn showcase_swap_system(mut events: EventReader<SpinnerChange>, asset_server: Res<AssetServer>, mut query: Query<&mut Handle<Scene>, With<Showcase>>) {
+fn showcase_swap_system(mut events: EventReader<UiChangeEvent>, asset_server: Res<AssetServer>, mut query: Query<&mut Handle<Scene>, With<Showcase>>) {
     for event in events.read() {
         info!("{}", event.value);
         if event.value == "Male".to_string() {
@@ -185,7 +185,7 @@ impl Plugin for CharacterCreatorRoutePlugin {
     fn build(&self, app: &mut App) {
         app
             .add_systems(Update, showcase_rotate_system)
-            .add_systems(Update, showcase_swap_system.run_if(on_event::<SpinnerChange>()))
+            .add_systems(Update, showcase_swap_system.run_if(on_event::<UiChangeEvent>()))
 
             .add_systems(Update, build_route.before(UiSystems::Compute));
     }

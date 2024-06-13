@@ -113,7 +113,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
                 HoverCursor::new(CursorIcon::Pointer),
 
                 // If we click on this hover zone, it will emmit UiClick event from parent entity
-                UiClickEmitter::new(Some(entity)),
+                UiClickEmitter::new(entity),
             ));
             
         });
