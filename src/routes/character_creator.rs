@@ -70,13 +70,27 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
                 root.add("Background"), // You can see here that we used existing "root" link to create chained link (same as "Root/Background")
                 UiLayout::solid().size((2968.0, 1656.0)).scaling(Scaling::Fill).pack::<Base>(),
                 UiImage2dBundle::from(assets.settings_background.clone()),  // We use this bundle to add background image to our node
+                // Make it non-obsructable for hit checking (mouse detection)
+                Pickable::IGNORE,
             ));
 
+            // Spawn 3D camera view
             ui.spawn((
                 root.add("Background/Camera"),
                 UiLayout::solid().size((1920.0, 1080.0)).scaling(Scaling::Fill).pack::<Base>(),
                 UiImage2dBundle::from(render_image),
+                // Make it non-obsructable for hit checking (mouse detection)
+                Pickable::IGNORE,
             ));
+
+            ui.spawn((
+                root.add("Return"),
+                UiLayout::window().pos(Rl((5.0, 10.0))).size(Rl((10.0, 7.0))).pack::<Base>(),
+                Button { text: "Return".into() },
+                // OnClick<Despawn>::new(vec![entity])
+                // OnClick<Event>::new(vec![event { .. }])
+            ));
+
 
             let board = root.add("Solid");
             ui.spawn((

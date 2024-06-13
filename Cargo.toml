@@ -26,7 +26,7 @@ opt-level = 3
   bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex", features=["picking"] }
 
   # Game engine
-  bevy = { version = "0.13.2", default_features = true, features = [
+  bevy = { version = "0.13.2", default_features = false, features = [
     # Core
     "bevy_core_pipeline",
     "multi-threaded",
@@ -34,6 +34,7 @@ opt-level = 3
     "bevy_audio",
     "bevy_sprite",
     "bevy_text",
+    "webgl2",
 
     # Core formats
     "vorbis",
