@@ -16,12 +16,12 @@ pub struct IntroRoute;
 struct IntroGif;
 
 /// System that builds the route
-fn build_route(mut commands: Commands, assets: Res<AssetCache>, _preloader: Res<PreLoader>, query: Query<Entity, Added<IntroRoute>>, mut event: EventWriter<HideCursor2d>) {
+fn build_route(mut commands: Commands, assets: Res<AssetCache>, _preloader: Res<PreLoader>, query: Query<Entity, Added<IntroRoute>>, mut event: EventWriter<actions::HideCursor2d>) {
     for entity in &query {
         // #======================#
         // #=== USER INTERFACE ===#
 
-        event.send(HideCursor2d(true));
+        event.send(actions::HideCursor2d(true));
 
         // Spawn the master ui tree
         commands.entity(entity).insert((

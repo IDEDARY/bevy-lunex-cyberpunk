@@ -57,7 +57,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 BaseColor::new(Color::BEVYPUNK_RED.with_a(1.0)),
 
                 // This is required to control our hover animation
-                Hover::new().receiver(true),
+                Animation::new().receiver(true),
 
                 // This will set hover color to yellow
                 HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
@@ -85,7 +85,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 BaseColor::new(Color::BEVYPUNK_RED.with_a(1.0)),
 
                 // This is required to control our hover animation
-                Hover::new().receiver(true),
+                Animation::new().receiver(true),
 
                 // This will set hover color to yellow
                 HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
@@ -175,7 +175,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 PickableBundle::default(),
 
                 // This is required to control our hover animation
-                Hover::new().forward_speed(20.0).backward_speed(5.0),
+                Animation::new().forward_speed(20.0).backward_speed(5.0),
 
                 // This will pipe this hover data to the specified entities
                 HoverPipe::new(vec![chevron_left]),
@@ -215,7 +215,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 PickableBundle::default(),
 
                 // This is required to control our hover animation
-                Hover::new().forward_speed(20.0).backward_speed(5.0),
+                Animation::new().forward_speed(20.0).backward_speed(5.0),
 
                 // This will pipe this hover data to the specified entities
                 HoverPipe::new(vec![chevron_right]),

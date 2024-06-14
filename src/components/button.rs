@@ -49,7 +49,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Button), Adde
                 Pickable::IGNORE,
 
                 // This is required to control our hover animation
-                Hover::new().receiver(true),
+                Animation::new().receiver(true),
 
                 // This will set the color to red
                 BaseColor::new(Color::BEVYPUNK_RED.with_a(0.0)),
@@ -83,7 +83,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Button), Adde
                 Pickable::IGNORE,
 
                 // This is required to control our hover animation
-                Hover::new().receiver(true),
+                Animation::new().receiver(true),
 
                 // This will set the color to red
                 BaseColor::new(Color::BEVYPUNK_RED),
@@ -104,7 +104,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Button), Adde
                 UiInteractibleBundle::default(),
 
                 // This is required to control our hover animation
-                Hover::new().forward_speed(20.0).backward_speed(5.0),
+                Animation::new().forward_speed(20.0).backward_speed(5.0),
 
                 // This will pipe this hover data to the specified entities
                 HoverPipe::new(vec![text, image]),

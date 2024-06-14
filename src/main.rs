@@ -1,5 +1,5 @@
 pub(crate) use bevy::{prelude::*, sprite::Anchor};
-pub(crate) use bevy_lunex::{prelude::*, HideCursor2d};
+pub(crate) use bevy_lunex::prelude::*;
 pub(crate) use bevy_mod_picking::prelude::*;
 //pub(crate) use vleue_kinetoscope::*;
 
