@@ -133,6 +133,6 @@ impl Plugin for MainButtonPlugin {
             .add_plugins(UiPlugin::<MainButtonUi>::new())
 
             // Add general systems
-            .add_systems(Update, build_component);
+            .add_systems(Update, build_component.before(UiSystems::Compute));
     }
 }

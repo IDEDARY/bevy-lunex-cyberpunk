@@ -277,6 +277,6 @@ impl Plugin for SpinnerPlugin {
 
             // Add general systems
             .add_systems(Update, spinner_change_system.run_if(on_event::<UiClickEvent>()))
-            .add_systems(Update, build_component);
+            .add_systems(Update, build_component.before(UiSystems::Compute));
     }
 }

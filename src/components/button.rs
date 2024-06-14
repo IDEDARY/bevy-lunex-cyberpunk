@@ -115,7 +115,6 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Button), Adde
                 // If we click on this hover zone, it will emmit UiClick event from parent entity
                 UiClickEmitter::new(entity),
             ));
-            
         });
     }
 }
@@ -133,6 +132,6 @@ impl Plugin for ButtonPlugin {
             .add_plugins(UiPlugin::<ButtonUi>::new())
 
             // Add general systems
-            .add_systems(Update, build_component);
+            .add_systems(Update, build_component.before(UiSystems::Compute));
     }
 }
