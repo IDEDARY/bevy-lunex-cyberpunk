@@ -14,90 +14,98 @@ pub struct MainMenuRoute;
 
 /// System that builds the route
 fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Entity, Added<MainMenuRoute>>) {
-    for entity in &query {
+    for route_entity in &query {
         // #======================#
         // #=== USER INTERFACE ===#
 
-        // Spawn the master ui tree
-        commands.entity(entity).insert((
-            UiTreeBundle::<MenuUi>::from(UiTree::new("MainMenu")),
-        )).with_children(|ui| {
-
-            // Spawn the root div
-            let root = UiLink::<MenuUi>::path("Root");  // Here we can define the name of the node
-            ui.spawn((
-                root.clone(),                           // Here we add the link
-                UiLayout::window_full().pack::<Base>(),         // This is where we define layout
-            ));
-
-            // Spawn the background
-            ui.spawn((
-                root.add("Background"), // You can see here that we used existing "root" link to create chained link (same as "Root/Background")
-                UiLayout::solid().size((2968.0, 1656.0)).scaling(Scaling::Fill).pack::<Base>(),
-                UiImage2dBundle::from(assets.main_background.clone()),  // We use this bundle to add background image to our node
-            ));
+        // Spawn the route
+        commands.entity(route_entity).insert(
+            SpatialBundle::default(),
+        ).with_children(|route| {
 
 
-            // Spawn the board
-            let board = root.add("Solid");
-            ui.spawn((
-                board.clone(),
-                UiLayout::solid().size((881.0, 1600.0)).align_x(-0.74).pack::<Base>(), // Just different layout type that preserves aspect ratio
-            ));
+            // Spawn the master ui tree        
+            route.spawn((
+                UiTreeBundle::<MainUi>::from(UiTree::new("MainMenu")),
+                MovableByCamera,
+            )).with_children(|ui| {
 
-            let board = board.add("Board");
-            ui.spawn((
-                board.clone(),
-                UiLayout::window().x(Rl(50.0)).anchor(Anchor::TopCenter).size(Rl(105.0)).pack::<Base>(),
-                UiImage2dBundle::from(assets.main_board.clone())
-            ));
-
-
-            // Spawn the logo
-            ui.spawn((
-                board.add("Boundary"),
-                UiLayout::window().y(Rl(11.0)).size(Rl((105.0, 20.0))).pack::<Base>(),
-            ));
-            ui.spawn((
-                board.add("Boundary/Logo"),
-                UiLayout::solid().size((1240.0, 381.0)).pack::<Base>(),
-                UiImage2dBundle::from(assets.main_logo.clone())
-            ));
-
-
-            // #=========================#
-            // #=== MAIN MENU BUTTONS ===#
-
-            // Spawn button boundary
-            let list = board.add("List");
-            ui.spawn((
-                list.clone(),
-                UiLayout::window().pos(Rl((22.0, 33.0))).size(Rl((55.0, 34.0))).pack::<Base>(),
-            ));
-
-            // Spawn buttons
-            let gap = 3.0;
-            let size = 14.0;
-            let mut offset = 0.0;
-            for button in [
-                MainMenuButton::Continue,
-                MainMenuButton::NewGame,
-                MainMenuButton::LoadGame,
-                MainMenuButton::Settings,
-                MainMenuButton::AdditionalContent,
-                MainMenuButton::Credits,
-                MainMenuButton::QuitGame,
-            ] {
-
+                // Spawn the root div
+                let root = UiLink::<MainUi>::path("Root");  // Here we can define the name of the node
                 ui.spawn((
-                    list.add(button.str()),
-                    UiLayout::window().y(Rl(offset)).size(Rl((100.0, size))).pack::<Base>(),
-                    MainButton { text: button.str().into() },
-                    button.clone(),
+                    root.clone(),                           // Here we add the link
+                    UiLayout::window_full().pack::<Base>(),         // This is where we define layout
                 ));
 
-                offset += gap + size;
-            }
+                // Spawn the background
+                ui.spawn((
+                    root.add("Background"), // You can see here that we used existing "root" link to create chained link (same as "Root/Background")
+                    UiLayout::solid().size((2968.0, 1656.0)).scaling(Scaling::Fill).pack::<Base>(),
+                    UiImage2dBundle::from(assets.main_background.clone()),  // We use this bundle to add background image to our node
+                ));
+
+
+                // Spawn the board
+                let board = root.add("Solid");
+                ui.spawn((
+                    board.clone(),
+                    UiLayout::solid().size((881.0, 1600.0)).align_x(-0.74).pack::<Base>(), // Just different layout type that preserves aspect ratio
+                ));
+
+                let board = board.add("Board");
+                ui.spawn((
+                    board.clone(),
+                    UiLayout::window().x(Rl(50.0)).anchor(Anchor::TopCenter).size(Rl(105.0)).pack::<Base>(),
+                    UiImage2dBundle::from(assets.main_board.clone())
+                ));
+
+
+                // Spawn the logo
+                ui.spawn((
+                    board.add("Boundary"),
+                    UiLayout::window().y(Rl(11.0)).size(Rl((105.0, 20.0))).pack::<Base>(),
+                ));
+                ui.spawn((
+                    board.add("Boundary/Logo"),
+                    UiLayout::solid().size((1240.0, 381.0)).pack::<Base>(),
+                    UiImage2dBundle::from(assets.main_logo.clone())
+                ));
+
+
+                // #=========================#
+                // #=== MAIN MENU BUTTONS ===#
+
+                // Spawn button boundary
+                let list = board.add("List");
+                ui.spawn((
+                    list.clone(),
+                    UiLayout::window().pos(Rl((22.0, 33.0))).size(Rl((55.0, 34.0))).pack::<Base>(),
+                ));
+
+                // Spawn buttons
+                let gap = 3.0;
+                let size = 14.0;
+                let mut offset = 0.0;
+                for button in [
+                    MainMenuButton::Continue,
+                    MainMenuButton::NewGame,
+                    MainMenuButton::LoadGame,
+                    MainMenuButton::Settings,
+                    MainMenuButton::AdditionalContent,
+                    MainMenuButton::Credits,
+                    MainMenuButton::QuitGame,
+                ] {
+
+                    ui.spawn((
+                        list.add(button.str()),
+                        UiLayout::window().y(Rl(offset)).size(Rl((100.0, size))).pack::<Base>(),
+                        MainButton { text: button.str().into() },
+                        button.clone(),
+                    ));
+
+                    offset += gap + size;
+                }
+            });
         });
     }
 }

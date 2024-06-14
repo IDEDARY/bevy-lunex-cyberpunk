@@ -25,11 +25,11 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, _preloader: Res<
 
         // Spawn the master ui tree
         commands.entity(entity).insert((
-            UiTreeBundle::<MenuUi>::from(UiTree::new("Intro")),
+            UiTreeBundle::<MainUi>::from(UiTree::new("Intro")),
         )).with_children(|ui| {
 
             // Spawn the root div
-            let root = UiLink::<MenuUi>::path("Root");  // Here we can define the name of the node
+            let root = UiLink::<MainUi>::path("Root");  // Here we can define the name of the node
             ui.spawn((
                 root.clone(),                               // Here we add the link
                 UiLayout::window_full().pack::<Base>(),             // This is where we define layout

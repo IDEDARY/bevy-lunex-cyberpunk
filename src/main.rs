@@ -23,8 +23,8 @@ fn main() {
     // Add plugins
     let app = app
         .insert_resource(bevy::asset::AssetMetaCheck::Never)
-        .add_plugins((default_plugins(), UiGeneralPlugin, UiPlugin::<MenuUi>::new()))
-        //.add_plugins(UiDebugPlugin::<MenuUi>::new())
+        .add_plugins((default_plugins(), UiGeneralPlugin))
+        //.add_plugins(UiDebugPlugin::<MainUi>::new())
 
         // General setup
         .add_plugins(VFXPlugin)
@@ -52,8 +52,7 @@ fn main() {
 // #=====================#
 // #=== GENERIC SETUP ===#
 
-fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>){ //,mut _webp: ResMut<bevy_webp_anim::WebpAnimator>) {
-
+fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>){
     // Spawn 2D camera
     commands.spawn(camera()).with_children(|camera| {
 

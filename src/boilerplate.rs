@@ -1,15 +1,12 @@
 use bevy::render::settings::WgpuSettings;
 use bevy::core_pipeline::bloom::BloomSettings;
-use bevy::{app::PluginGroupBuilder, prelude::*};
+use bevy::app::PluginGroupBuilder;
+use crate::*;
 //use vleue_kinetoscope::AnimatedGif;
 
 
 // #=========================================#
 // #=== BOILERPLATE REQUIRED FOR BEVYPUNK ===#
-
-/// Marker struct for UI framework entities
-#[derive(Component, Debug, Default, Clone, PartialEq)]
-pub struct MenuUi;
 
 /// Custom color palette for Bevypunk
 pub trait BevypunkColorPalette {
@@ -158,7 +155,7 @@ pub fn default_plugins() -> PluginGroupBuilder {
 /// Function to return camera will all appropriate settings
 pub fn camera() -> impl Bundle {
     (
-        MenuUi,
+        MainUi,
         Camera2dBundle {
             transform: Transform::from_xyz(0.0, 0.0, 1000.0),
             camera: Camera {

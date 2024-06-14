@@ -80,12 +80,12 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
 
             // Spawn the master ui tree
             route.spawn((
-                UiTreeBundle::<MenuUi>::from(UiTree::new("CharacterCreator")),
+                UiTreeBundle::<MainUi>::from(UiTree::new("CharacterCreator")),
                 MovableByCamera,
             )).with_children(|ui| {
     
                 // Spawn the root div
-                let root = UiLink::<MenuUi>::path("Root");  // Here we can define the name of the node
+                let root = UiLink::<MainUi>::path("Root");  // Here we can define the name of the node
                 ui.spawn((
                     root.clone(),                           // Here we add the link
                     UiLayout::window_full().pack::<Base>(), // This is where we define layout
