@@ -90,8 +90,5 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
     commands.spawn( AudioBundle { source: assets.music.clone(), settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new(0.5)) } );
 
     // Spawn intro route
-    commands.spawn((
-        MainMenuRoute,
-        MovableByCamera,    // Marks this ui to receive Transform & Dimension updates from camera size
-    ));
+    commands.spawn(MainMenuRoute);
 }

@@ -115,7 +115,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
 
                     // If it detects UiClick event for this entity it will despawn route_entity and run a closure
                     OnUiClickDespawn::new(route_entity),
-                    OnUiClickRun::new(|commands| { commands.spawn((MainMenuRoute, MovableByCamera)); })
+                    OnUiClickCommands::new(|commands| { commands.spawn((MainMenuRoute, MovableByCamera)); })
                 ));
     
                 // Spawn panel boundary

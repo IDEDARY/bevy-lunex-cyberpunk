@@ -86,22 +86,32 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
                 let gap = 3.0;
                 let size = 14.0;
                 let mut offset = 0.0;
-                for button in [
-                    MainMenuButton::Continue,
-                    MainMenuButton::NewGame,
-                    MainMenuButton::LoadGame,
-                    MainMenuButton::Settings,
-                    MainMenuButton::AdditionalContent,
-                    MainMenuButton::Credits,
-                    MainMenuButton::QuitGame,
-                ] {
+                for button in [MainMenuButton::Continue, MainMenuButton::NewGame, MainMenuButton::LoadGame, MainMenuButton::Settings, MainMenuButton::AdditionalContent, MainMenuButton::Credits, MainMenuButton::QuitGame] {
 
-                    ui.spawn((
+                    let mut btn = ui.spawn((
+                        // Link the entity
                         list.add(button.str()),
-                        UiLayout::window().y(Rl(offset)).size(Rl((100.0, size))).pack::<Base>(),
-                        MainButton { text: button.str().into() },
+
+                        // Add the button type
                         button.clone(),
+
+                        // Add layout
+                        UiLayout::window().y(Rl(offset)).size(Rl((100.0, size))).pack::<Base>(),
+
+                        // Add the button component
+                        MainButton { text: button.str().into() },
                     ));
+
+                    // Insert specific components if the condition is true
+                    if button == MainMenuButton::NewGame {
+                        btn.insert((
+                            // Despawn this entity on UiClick
+                            OnUiClickDespawn::new(route_entity),
+
+                            // Run this command on UiClick
+                            OnUiClickCommands::new(|commands| { commands.spawn(CharacterCreatorRoute); })
+                        ));
+                    }
 
                     offset += gap + size;
                 }
@@ -115,7 +125,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
 // #=== INTERACTIVITY ===#
 
 /// Good practice is to use custom component for buttons, so we can easily know what type of button was pressed
-#[derive(Component, Clone)]
+#[derive(Component, Clone, PartialEq)]
 enum MainMenuButton {
     Continue,
     NewGame,
@@ -139,35 +149,18 @@ impl MainMenuButton {
     }
 }
 
-/// System that will resolve our event
-fn main_menu_button_action_system(mut events: EventReader<UiClickEvent>, query: Query<&MainMenuButton, With<MainButton>>, mut exit: EventWriter<bevy::app::AppExit>, mut commands: Commands,
-    main_menu_route: Query<Entity, With<MainMenuRoute>>,
-) {
+/// In this system we run our button click logic
+fn main_menu_button_clicked_system(mut events: EventReader<UiClickEvent>, query: Query<&MainMenuButton, With<MainButton>>, mut exit: EventWriter<bevy::app::AppExit>) {
     for event in events.read() {
         if let Ok(button) = query.get(event.target) {
-
             info!("Pressed: {}", button.str());
 
-            // Here we can do our logic for each button
+            // Here we can run code on button click
             match button {
-                MainMenuButton::Continue => {},
-                MainMenuButton::NewGame => {
-                    commands.entity(main_menu_route.single()).despawn_recursive();
-                    commands.spawn((CharacterCreatorRoute, MovableByCamera));
-                },
-                MainMenuButton::LoadGame => {
-                    //commands.entity(main_menu_route.single()).despawn_recursive();
-                    //commands.spawn((LoadGameRoute, MovableByCamera));
-                },
-                MainMenuButton::Settings => {
-                    //commands.entity(main_menu_route.single()).despawn_recursive();
-                    //commands.spawn((SettingsRoute, MovableByCamera));
-                },
-                MainMenuButton::AdditionalContent => {},
-                MainMenuButton::Credits => {},
                 MainMenuButton::QuitGame => {
                     exit.send(bevy::app::AppExit);
                 },
+                _ => {},
             }
         }
     }
@@ -183,7 +176,7 @@ impl Plugin for MainMenuRoutePlugin {
     fn build(&self, app: &mut App) {
         app
             .add_systems(Update, build_route.before(UiSystems::Compute))
-            .add_systems(Update, main_menu_button_action_system.run_if(on_event::<UiClickEvent>()));
+            .add_systems(Update, main_menu_button_clicked_system.run_if(on_event::<UiClickEvent>()));
     }
 }
 
