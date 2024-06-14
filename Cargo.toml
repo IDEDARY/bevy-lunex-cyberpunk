@@ -19,7 +19,7 @@ opt-level = 3
   rand = "0.8.5"
 
   # Required for animations
-  #vleue_kinetoscope = "0.1.1"
+  vleue_kinetoscope = "0.1.1"
 
   # UI framework
   #bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev", features=[] }

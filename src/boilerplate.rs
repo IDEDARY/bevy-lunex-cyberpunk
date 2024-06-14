@@ -2,7 +2,6 @@ use bevy::render::settings::WgpuSettings;
 use bevy::core_pipeline::bloom::BloomSettings;
 use bevy::app::PluginGroupBuilder;
 use crate::*;
-//use vleue_kinetoscope::AnimatedGif;
 
 
 // #=========================================#
@@ -40,7 +39,7 @@ impl LerpColor for Color {
 // Load the gif before the app is run
 #[derive(Resource)]
 pub struct PreLoader {
-    //pub intro: Handle<AnimatedGif>,
+    pub intro: Handle<AnimatedGif>,
 }
 
 // Load all assets at startup for faster loading during runtime
