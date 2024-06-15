@@ -49,7 +49,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
                 Pickable::IGNORE,
 
                 // This is required to control our hover animation
-                Hover::new().receiver(true),
+                Animation::new().receiver(true),
 
                 // This will set the color to red
                 BaseColor::new(Color::BEVYPUNK_RED.with_a(0.15)),
@@ -66,7 +66,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
 
                 // Here we can define where we want to position our text within the parent node,
                 // don't worry about size, that is picked up and overwritten automaticaly by Lunex to match text size.
-                UiLayout::window().pos(Rl((5., 50.))).anchor(Anchor::CenterLeft).pack::<Base>(),
+                UiLayout::window().pos(Rl((6., 50.))).anchor(Anchor::CenterLeft).pack::<Base>(),
 
                 // Add text
                 UiText2dBundle {
@@ -83,7 +83,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
                 Pickable::IGNORE,
 
                 // This is required to control our hover animation
-                Hover::new().receiver(true),
+                Animation::new().receiver(true),
 
                 // This will set the color to red
                 BaseColor::new(Color::BEVYPUNK_RED),
@@ -101,10 +101,10 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
                 UiLayout::window_full().pack::<Base>(),
 
                 // Make this spacial & clickable entity
-                UiInteractibleBundle::default(),
+                UiZoneBundle::default(),
 
                 // This is required to control our hover animation
-                Hover::new().forward_speed(20.0).backward_speed(5.0),
+                Animation::new().forward_speed(20.0).backward_speed(5.0),
 
                 // This will pipe this hover data to the specified entities
                 HoverPipe::new(vec![text, image]),
@@ -113,7 +113,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
                 HoverCursor::new(CursorIcon::Pointer),
 
                 // If we click on this hover zone, it will emmit UiClick event from parent entity
-                UiClickEmitter::new(Some(entity)),
+                UiClickEmitter::new(entity),
             ));
             
         });
@@ -130,9 +130,9 @@ impl Plugin for MainButtonPlugin {
     fn build(&self, app: &mut App) {
         app
             // Add Lunex plugins for our sandboxed UI
-            .add_plugins(UiPlugin::<MainButtonUi>::new())
+            .add_plugins(UiGenericPlugin::<MainButtonUi>::new())
 
             // Add general systems
-            .add_systems(Update, build_component);
+            .add_systems(Update, build_component.before(UiSystems::Compute));
     }
 }

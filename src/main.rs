@@ -1,7 +1,7 @@
 pub(crate) use bevy::{prelude::*, sprite::Anchor};
-pub(crate) use bevy_lunex::{prelude::*, HideCursor2d};
+pub(crate) use bevy_lunex::prelude::*;
 pub(crate) use bevy_mod_picking::prelude::*;
-//pub(crate) use vleue_kinetoscope::*;
+pub(crate) use vleue_kinetoscope::*;
 
 mod boilerplate;
 use boilerplate::*;
@@ -22,8 +22,8 @@ fn main() {
 
     // Add plugins
     let app = app
-        .add_plugins((default_plugins(), DefaultPickingPlugins, UiGeneralPlugin, UiPlugin::<MenuUi>::new()))
-        //.add_plugins(UiDebugPlugin::<MenuUi>::new())
+        .insert_resource(bevy::asset::AssetMetaCheck::Never)
+        .add_plugins((default_plugins(), UiPlugin))
 
         // General setup
         .add_plugins(VFXPlugin)
@@ -35,13 +35,14 @@ fn main() {
         .add_plugins(LogicPlugin)
         .add_plugins(RoutePlugin);
 
+
     // Load gif before starting our app
-    //let gif = AnimatedGifLoader::load_now("assets/images/intro/intro-lossy.gif".into(), app);
+    let gif = AnimatedGifLoader::load_now("assets/images/intro/intro-lossy.gif".into(), app);
 
     // Insert the loaded handle and start our app
     app
     .insert_resource(PreLoader {
-        //intro: gif
+        intro: gif
     })
     .run()
 }
@@ -50,8 +51,7 @@ fn main() {
 // #=====================#
 // #=== GENERIC SETUP ===#
 
-fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>){ //,mut _webp: ResMut<bevy_webp_anim::WebpAnimator>) {
-
+fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>){
     // Spawn 2D camera
     commands.spawn(camera()).with_children(|camera| {
 
@@ -59,7 +59,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
         camera.spawn ((
 
             // Here we can map different native cursor icons to texture atlas indexes and sprite offsets
-            Cursor2d::new().native_cursor(false)
+            Cursor2d::new().native_cursor(true)
                 .register_cursor(CursorIcon::Default, 0, (14.0, 14.0))
                 .register_cursor(CursorIcon::Pointer, 1, (10.0, 12.0))
                 .register_cursor(CursorIcon::Grab, 2, (40.0, 40.0)),
@@ -89,8 +89,5 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
     commands.spawn( AudioBundle { source: assets.music.clone(), settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new(0.5)) } );
 
     // Spawn intro route
-    commands.spawn((
-        MainMenuRoute,
-        MovableByCamera,    // Marks this ui to receive Transform & Dimension updates from camera size
-    ));
+    commands.spawn(MainMenuRoute);
 }
