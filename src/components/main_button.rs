@@ -101,7 +101,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
                 UiLayout::window_full().pack::<Base>(),
 
                 // Make this spacial & clickable entity
-                UiInteractibleBundle::default(),
+                UiZoneBundle::default(),
 
                 // This is required to control our hover animation
                 Animation::new().forward_speed(20.0).backward_speed(5.0),
