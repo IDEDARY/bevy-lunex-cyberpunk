@@ -1,15 +1,11 @@
 use bevy::render::settings::WgpuSettings;
 use bevy::core_pipeline::bloom::BloomSettings;
-use bevy::{app::PluginGroupBuilder, prelude::*};
-//use vleue_kinetoscope::AnimatedGif;
+use bevy::app::PluginGroupBuilder;
+use crate::*;
 
 
 // #=========================================#
 // #=== BOILERPLATE REQUIRED FOR BEVYPUNK ===#
-
-/// Marker struct for UI framework entities
-#[derive(Component, Debug, Default, Clone, PartialEq)]
-pub struct MenuUi;
 
 /// Custom color palette for Bevypunk
 pub trait BevypunkColorPalette {
@@ -43,7 +39,7 @@ impl LerpColor for Color {
 // Load the gif before the app is run
 #[derive(Resource)]
 pub struct PreLoader {
-    //pub intro: Handle<AnimatedGif>,
+    pub intro: Handle<AnimatedGif>,
 }
 
 // Load all assets at startup for faster loading during runtime
@@ -158,7 +154,7 @@ pub fn default_plugins() -> PluginGroupBuilder {
 /// Function to return camera will all appropriate settings
 pub fn camera() -> impl Bundle {
     (
-        MenuUi,
+        MainUi,
         Camera2dBundle {
             transform: Transform::from_xyz(0.0, 0.0, 1000.0),
             camera: Camera {

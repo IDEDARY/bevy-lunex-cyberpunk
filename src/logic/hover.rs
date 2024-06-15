@@ -7,7 +7,7 @@ use crate::*;
 
 /// Control struct for the button state
 #[derive(Component, Debug, Clone, PartialEq)]
-pub struct Hover {
+pub struct Animation {
     /// -1.0 backwards, 1.0 forward
     animation_direction: f32,
     /// Range from `0.0` to `1.0`
@@ -23,10 +23,10 @@ pub struct Hover {
     /// Hover animation speed when transitioning back to default
     pub animation_speed_backward: f32,
 }
-impl Hover {
+impl Animation {
     /// Creates new struct
     pub fn new() -> Self {
-        Hover {
+        Animation {
             animation_direction: 0.0,
             animation_transition: 0.0,
             previous_transition: 0.0,
@@ -135,7 +135,7 @@ pub struct SetHoverTransition {
     pub target: Entity,
     pub transition: f32,
 }
-fn apply_event_set_hover_transition(mut events: EventReader<SetHoverTransition>, mut query: Query<&mut Hover>) {
+fn apply_event_set_hover_transition(mut events: EventReader<SetHoverTransition>, mut query: Query<&mut Animation>) {
     for event in events.read() {
         if let Ok(mut hover) = query.get_mut(event.target) {
             if hover.animation_transition != event.transition {
@@ -153,7 +153,7 @@ fn apply_event_set_hover_transition(mut events: EventReader<SetHoverTransition>,
 // #=== Core systems
 
 /// System that updates the hover transition
-fn hover_update_system(time: Res<Time>, mut query: Query<&mut Hover>) {
+fn hover_update_system(time: Res<Time>, mut query: Query<&mut Animation>) {
     for mut control in &mut query {
         control.is_changing = control.previous_transition != control.animation_transition;
         control.previous_transition = control.animation_transition;
@@ -164,7 +164,7 @@ fn hover_update_system(time: Res<Time>, mut query: Query<&mut Hover>) {
 }
 
 /// System that changes animation direction on hover
-fn hover_enter_system(mut events: EventReader<Pointer<Over>>, mut query: Query<&mut Hover>) {
+fn hover_enter_system(mut events: EventReader<Pointer<Over>>, mut query: Query<&mut Animation>) {
     for event in events.read() {
         if let Ok(mut hover) = query.get_mut(event.target) {
             hover.animation_direction = 1.0;
@@ -173,7 +173,7 @@ fn hover_enter_system(mut events: EventReader<Pointer<Over>>, mut query: Query<&
 }
 
 /// System that changes animation direction on hover
-fn hover_leave_system(mut events: EventReader<Pointer<Out>>, mut query: Query<&mut Hover>) {
+fn hover_leave_system(mut events: EventReader<Pointer<Out>>, mut query: Query<&mut Animation>) {
     for event in events.read() {
         if let Ok(mut hover) = query.get_mut(event.target) {
             hover.animation_direction = -1.0;
@@ -185,7 +185,7 @@ fn hover_leave_system(mut events: EventReader<Pointer<Out>>, mut query: Query<&m
 // #=== Piping systems
 
 /// System that sends color change events on hover
-fn hover_pipe_update_system(query: Query<(&Hover, &HoverPipe), Changed<Hover>>, mut event: EventWriter<SetHoverTransition>) {
+fn hover_pipe_update_system(query: Query<(&Animation, &HoverPipe), Changed<Animation>>, mut event: EventWriter<SetHoverTransition>) {
     for (hover, pipe) in &query {
         if hover.is_changing() {
             for e in &pipe.entity {
@@ -202,11 +202,11 @@ fn hover_pipe_update_system(query: Query<(&Hover, &HoverPipe), Changed<Hover>>, 
 // #=== Styling systems
 
 /// System that sends color change events on hover
-fn hover_color_update_system(query: Query<(&Hover, &BaseColor, &HoverColor, Entity)>, mut set_color: EventWriter<SetColor>) {
+fn hover_color_update_system(query: Query<(&Animation, &BaseColor, &HoverColor, Entity)>, mut set_color: EventWriter<actions::SetColor>) {
     for (hover, basecolor, hovercolor, entity) in &query {
         if hover.is_changing() {
             let color = basecolor.color.lerp(hovercolor.color, hover.animation_transition);
-            set_color.send(SetColor {
+            set_color.send(actions::SetColor {
                 target: entity,
                 color,
             });
@@ -239,7 +239,7 @@ fn hover_color_update_system(query: Query<(&Hover, &BaseColor, &HoverColor, Enti
 } */
 
 /// System that request cursor icon on hover
-fn hover_cursor_request_system(query: Query<(&Hover, &HoverCursor)>, mut cursor: Query<&mut Cursor2d>) {
+fn hover_cursor_request_system(query: Query<(&Animation, &HoverCursor)>, mut cursor: Query<&mut Cursor2d>) {
     for (control, hover_cursor) in &query {
         if control.is_forward() {
             let mut cursor = cursor.single_mut();
