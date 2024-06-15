@@ -5,5 +5,5 @@ runner = "wasm-server-runner"
 linker = "clang"
 rustflags = ["-C", "link-arg=-fuse-ld=/usr/bin/mold"]
 
-[build]
+#[build]
 #rustflags = ["-Z", "threads=8"]

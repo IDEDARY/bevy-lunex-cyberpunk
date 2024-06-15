@@ -49,13 +49,13 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Button), Adde
                 Pickable::IGNORE,
 
                 // This is required to control our hover animation
-                Animation::new().receiver(true),
+                UiAnimation::<Hover>::new().receiver(true),
 
                 // This will set the color to red
-                BaseColor::new(Color::BEVYPUNK_RED.with_a(0.0)),
+                UiColor::<Base>::new(Color::BEVYPUNK_RED.with_a(0.0)),
 
                 // This will set hover color to yellow
-                HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
+                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
 
             )).id();
 
@@ -83,13 +83,13 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Button), Adde
                 Pickable::IGNORE,
 
                 // This is required to control our hover animation
-                Animation::new().receiver(true),
+                UiAnimation::<Hover>::new().receiver(true),
 
                 // This will set the color to red
-                BaseColor::new(Color::BEVYPUNK_RED),
+                UiColor::<Base>::new(Color::BEVYPUNK_RED),
 
                 // This will set hover color to yellow
-                HoverColor::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
+                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
             )).id();
 
             // Spawn button hover-zone
@@ -104,13 +104,13 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Button), Adde
                 UiZoneBundle::default(),
 
                 // This is required to control our hover animation
-                Animation::new().forward_speed(20.0).backward_speed(5.0),
+                UiAnimation::<Hover>::new().forward_speed(20.0).backward_speed(5.0),
 
                 // This will pipe this hover data to the specified entities
-                HoverPipe::new(vec![text, image]),
+                UiStatePipe::<Hover>::new(vec![text, image]),
 
                 // This will change cursor icon on mouse hover
-                HoverCursor::new(CursorIcon::Pointer),
+                OnHoverSetCursor::new(CursorIcon::Pointer),
 
                 // If we click on this hover zone, it will emmit UiClick event from parent entity
                 UiClickEmitter::new(entity),
