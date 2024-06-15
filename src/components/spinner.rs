@@ -273,7 +273,7 @@ impl Plugin for SpinnerPlugin {
     fn build(&self, app: &mut App) {
         app
             // Add Lunex plugins for our sandboxed UI
-            .add_plugins(UiPlugin::<SpinnerUi>::new())
+            .add_plugins(UiGenericPlugin::<SpinnerUi>::new())
 
             // Add general systems
             .add_systems(Update, spinner_change_system.run_if(on_event::<UiClickEvent>()))

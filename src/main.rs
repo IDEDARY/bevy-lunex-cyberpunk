@@ -23,8 +23,7 @@ fn main() {
     // Add plugins
     let app = app
         .insert_resource(bevy::asset::AssetMetaCheck::Never)
-        .add_plugins((default_plugins(), UiGeneralPlugin))
-        //.add_plugins(UiDebugPlugin::<MainUi>::new())
+        .add_plugins((default_plugins(), UiPlugin))
 
         // General setup
         .add_plugins(VFXPlugin)
