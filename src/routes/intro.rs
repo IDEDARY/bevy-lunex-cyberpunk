@@ -16,7 +16,7 @@ pub struct IntroRoute;
 struct IntroGif;
 
 /// System that builds the route
-fn build_route(mut commands: Commands, assets: Res<AssetCache>, preloader: Res<PreLoader>, query: Query<Entity, Added<IntroRoute>>, mut event: EventWriter<actions::HideCursor2d>) {
+fn build_route(mut commands: Commands, assets: Res<AssetCache>, _preloader: Res<PreLoader>, query: Query<Entity, Added<IntroRoute>>, mut event: EventWriter<actions::HideCursor2d>) {
     for route_entity in &query {
         // #======================#
         // #=== USER INTERFACE ===#
@@ -58,10 +58,10 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, preloader: Res<P
                     Dimension::default(),
 
                     // Spawn the gif bundle
-                    AnimatedGifImageBundle {
+                    /* AnimatedGifImageBundle {
                         animated_gif: preloader.intro.clone(),
                         ..default()
-                    },
+                    }, */
                     IntroGif,
                 ));
 
@@ -74,7 +74,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, preloader: Res<P
 // #=====================#
 // #=== INTERACTIVITY ===#
 
-/// Function that checks if our main intro has finished playing
+/* /// Function that checks if our main intro has finished playing
 fn despawn_intro_and_spawn_main_menu(
     mut commands: Commands,
     mut event: EventWriter<actions::HideCursor2d>,
@@ -88,7 +88,7 @@ fn despawn_intro_and_spawn_main_menu(
             commands.spawn(MainMenuRoute);
         }
     }
-}
+} */
 
 
 // #====================#
@@ -99,9 +99,9 @@ pub struct IntroRoutePlugin;
 impl Plugin for IntroRoutePlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_plugins(AnimatedGifPlugin)
+            //.add_plugins(AnimatedGifPlugin)
 
-            .add_systems(Update, despawn_intro_and_spawn_main_menu)
+            //.add_systems(Update, despawn_intro_and_spawn_main_menu)
             .add_systems(Update, build_route.before(UiSystems::Compute));
     }
 }

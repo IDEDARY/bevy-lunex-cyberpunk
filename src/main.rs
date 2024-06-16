@@ -1,16 +1,12 @@
 pub(crate) use bevy::{prelude::*, sprite::Anchor};
 pub(crate) use bevy_lunex::prelude::*;
-pub(crate) use bevy_mod_picking::prelude::*;
-pub(crate) use vleue_kinetoscope::*;
+//pub(crate) use vleue_kinetoscope::*;
 
 mod boilerplate;
 use boilerplate::*;
 
 mod components;
 use components::*;
-
-mod logic;
-use logic::*;
 
 mod routes;
 use routes::*;
@@ -32,17 +28,16 @@ fn main() {
 
         // Add our plugins
         .add_plugins(ComponentPlugin)
-        .add_plugins(LogicPlugin)
         .add_plugins(RoutePlugin);
 
 
     // Load gif before starting our app
-    let gif = AnimatedGifLoader::load_now("assets/images/intro/intro-lossy.gif".into(), app);
+    //let gif = AnimatedGifLoader::load_now("assets/images/intro/intro-lossy.gif".into(), app);
 
     // Insert the loaded handle and start our app
     app
     .insert_resource(PreLoader {
-        intro: gif
+        //intro: gif
     })
     .run()
 }
@@ -59,7 +54,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
         camera.spawn ((
 
             // Here we can map different native cursor icons to texture atlas indexes and sprite offsets
-            Cursor2d::new().native_cursor(true)
+            Cursor2d::new().native_cursor(false)
                 .register_cursor(CursorIcon::Default, 0, (14.0, 14.0))
                 .register_cursor(CursorIcon::Pointer, 1, (10.0, 12.0))
                 .register_cursor(CursorIcon::Grab, 2, (40.0, 40.0)),

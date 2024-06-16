@@ -6,4 +6,4 @@ linker = "clang"
 rustflags = ["-C", "link-arg=-fuse-ld=/usr/bin/mold"]
 
 [build]
-#rustflags = ["-Z", "threads=8"]
+rustflags = ["-Z", "threads=8"]
