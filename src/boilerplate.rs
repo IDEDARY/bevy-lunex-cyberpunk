@@ -27,9 +27,10 @@ impl BevypunkColorPalette for Color {
 // Load the gif before the app is run
 #[derive(Resource)]
 pub struct PreLoader {
-    pub intro: Handle<AnimatedGif>,
+    //pub intro: Handle<AnimatedGif>,
 }
 
+#[allow(dead_code)]
 // Load all assets at startup for faster loading during runtime
 #[derive(Resource)]
 pub struct AssetCache {
@@ -119,7 +120,7 @@ pub fn default_plugins() -> PluginGroupBuilder {
         WindowPlugin {
             primary_window: Some(Window {
                 title: "Bevypunk".into(),
-                mode: bevy::window::WindowMode::BorderlessFullscreen,
+                mode: bevy::window::WindowMode::Windowed,
                 present_mode: bevy::window::PresentMode::AutoNoVsync,
                 resolution: bevy::window::WindowResolution::new(1280.0, 720.0),
                 ..default()

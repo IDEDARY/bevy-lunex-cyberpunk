@@ -3,11 +3,12 @@
   authors     = ["Dominik Kaspar"]
   version     = "0.0.1"
   edition     = "2021"
+  resolver    = "2"
   license     = "MIT OR Apache-2.0"
   repository  = "https://github.com/idedary/bevypunk"
 
 [profile.dev]
-opt-level = 2
+opt-level = 1
 
 [profile.dev.package."*"]
 opt-level = 3
@@ -19,7 +20,7 @@ opt-level = 3
   rand = "0.8.5"
 
   # Required for animations
-  vleue_kinetoscope = "0.1.1"
+  #vleue_kinetoscope = "0.1.1"
 
   # UI framework
   #bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev", features=[] }
@@ -48,8 +49,7 @@ opt-level = 3
     "jpeg",
     "bevy_gltf",
 
-    # Asset preprocessor
-    #"asset_processor",
+    "dynamic_linking",
   ] }
 
   # Will be upstreamed into Bevy in the future
@@ -63,7 +63,3 @@ opt-level = 3
   # Platform specific
   [target.'cfg(unix)'.dependencies]
   bevy = { version = "0.13.2", default_features = false, features = ["x11"] }
-
-  # Dev
-  [dev-dependencies]
-  bevy = { version = "0.13.2", default_features = false, features = ["dynamic_linking"] }
