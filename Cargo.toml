@@ -52,10 +52,6 @@ opt-level = 3
     #"dynamic_linking",
   ] }
 
-  # Will be upstreamed into Bevy in the future
-  bevy_eventlistener = { version = "0.7.0" }
-  bevy_mod_picking = { version = "0.19.0", default-features = false, features = ["debug", "selection", "highlight"] }
-
   # Platform specific
   [target.'cfg(unix)'.dependencies]
   bevy = { version = "0.13.2", default-features = false, features = ["x11"] }
