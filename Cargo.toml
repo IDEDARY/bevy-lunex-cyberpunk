@@ -27,7 +27,7 @@ opt-level = 3
   bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex", features=[] }
 
   # Game engine
-  bevy = { version = "0.13.2", default_features = false, features = [
+  bevy = { version = "0.13.2", default-features = false, features = [
     # Core
     "bevy_core_pipeline",
     "multi-threaded",
@@ -49,17 +49,13 @@ opt-level = 3
     "jpeg",
     "bevy_gltf",
 
-    "dynamic_linking",
+    #"dynamic_linking",
   ] }
 
   # Will be upstreamed into Bevy in the future
   bevy_eventlistener = { version = "0.7.0" }
-  bevy_mod_picking = { version = "0.19.0", default_features = false, features = [
-    "debug",
-    "selection",
-    "highlight",
-  ] }
+  bevy_mod_picking = { version = "0.19.0", default-features = false, features = ["debug", "selection", "highlight"] }
 
   # Platform specific
   [target.'cfg(unix)'.dependencies]
-  bevy = { version = "0.13.2", default_features = false, features = ["x11"] }
+  bevy = { version = "0.13.2", default-features = false, features = ["x11"] }

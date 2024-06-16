@@ -49,7 +49,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Button), Adde
                 Pickable::IGNORE,
 
                 // This is required to control our hover animation
-                UiAnimation::<Hover>::new().receiver(true),
+                UiAnimator::<Hover>::new().receiver(true),
 
                 // This will set the color to red
                 UiColor::<Base>::new(Color::BEVYPUNK_RED.with_a(0.0)),
@@ -83,7 +83,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Button), Adde
                 Pickable::IGNORE,
 
                 // This is required to control our hover animation
-                UiAnimation::<Hover>::new().receiver(true),
+                UiAnimator::<Hover>::new().receiver(true),
 
                 // This will set the color to red
                 UiColor::<Base>::new(Color::BEVYPUNK_RED),
@@ -104,10 +104,10 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Button), Adde
                 UiZoneBundle::default(),
 
                 // This is required to control our hover animation
-                UiAnimation::<Hover>::new().forward_speed(20.0).backward_speed(5.0),
+                UiAnimator::<Hover>::new().forward_speed(5.0).backward_speed(1.0),
 
                 // This will pipe this hover data to the specified entities
-                UiStatePipe::<Hover>::new(vec![text, image]),
+                UiAnimatorPipe::<Hover>::new(vec![text, image]),
 
                 // This will change cursor icon on mouse hover
                 OnHoverSetCursor::new(CursorIcon::Pointer),

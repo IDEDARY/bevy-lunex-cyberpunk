@@ -57,7 +57,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 UiColor::<Base>::new(Color::BEVYPUNK_RED.with_a(1.0)),
 
                 // This is required to control our hover animation
-                UiAnimation::<Hover>::new().receiver(true),
+                UiAnimator::<Hover>::new().receiver(true),
 
                 // This will set hover color to yellow
                 UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
@@ -85,7 +85,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 UiColor::<Base>::new(Color::BEVYPUNK_RED.with_a(1.0)),
 
                 // This is required to control our hover animation
-                UiAnimation::<Hover>::new().receiver(true),
+                UiAnimator::<Hover>::new().receiver(true),
 
                 // This will set hover color to yellow
                 UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
@@ -175,10 +175,10 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 PickableBundle::default(),
 
                 // This is required to control our hover animation
-                UiAnimation::<Hover>::new().forward_speed(20.0).backward_speed(5.0),
+                UiAnimator::<Hover>::new().forward_speed(5.0).backward_speed(1.0),
 
                 // This will pipe this hover data to the specified entities
-                UiStatePipe::<Hover>::new(vec![chevron_left]),
+                UiAnimatorPipe::<Hover>::new(vec![chevron_left]),
 
                 // This will set the color to red
                 UiColor::<Base>::new(Color::BEVYPUNK_RED.with_a(0.15)),
@@ -215,10 +215,10 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 PickableBundle::default(),
 
                 // This is required to control our hover animation
-                UiAnimation::<Hover>::new().forward_speed(20.0).backward_speed(5.0),
+                UiAnimator::<Hover>::new().forward_speed(5.0).backward_speed(1.0),
 
                 // This will pipe this hover data to the specified entities
-                UiStatePipe::<Hover>::new(vec![chevron_right]),
+                UiAnimatorPipe::<Hover>::new(vec![chevron_right]),
 
                 // This will set the color to red
                 UiColor::<Base>::new(Color::BEVYPUNK_RED.with_a(0.15)),
