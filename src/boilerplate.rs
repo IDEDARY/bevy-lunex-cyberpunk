@@ -36,6 +36,7 @@ pub struct PreLoader {
 pub struct AssetCache {
     // Music
     pub music: Handle<AudioSource>,
+    pub ui_ping: Handle<AudioSource>,
 
     // Fonts
     pub font_light: Handle<Font>,
@@ -74,6 +75,7 @@ pub fn cache_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.insert_resource(AssetCache {
         // Music
         music: asset_server.load("sounds/main_menu.ogg"),
+        ui_ping: asset_server.load("sounds/ui_ping.ogg"),
 
         // Fonts
         font_light: asset_server.load("fonts/rajdhani/Rajdhani-Light.ttf"),

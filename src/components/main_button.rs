@@ -115,6 +115,8 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
                 // This will change cursor icon on mouse hover
                 OnHoverSetCursor::new(CursorIcon::Pointer),
 
+                OnHoverPlaySound::new(assets.ui_ping.clone()),
+
                 // If we click on this hover zone, it will emmit UiClick event from parent entity
                 UiClickEmitter::new(entity),
             ));
