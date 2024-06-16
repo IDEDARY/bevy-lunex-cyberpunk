@@ -1,22 +1,29 @@
 # Bevypunk
 
-This repo is a recreation of ***Cyberpunk*** UI in ***Bevy*** using **[Bevy-Lunex](https://github.com/bytestring-net/bevy_lunex)** crate.
+This repository is a recreation of ***Cyberpunk*** UI in ***Bevy*** using **[`Bevy-Lunex`](https://github.com/bytestring-net/bevy_lunex)** crate.
 
-This project serves as advanced example on Bevy and Lunex workflow.
+This project is intended to be production ready example/template for Lunex. It highlights the following features:
 
-***[You can try it here! (github pages)](https://idedary.github.io/Bevypunk/)***
+* Button components
+* Main menu route
+* Character creator route
+* Animated gif intro route
 
 #
 
-![image](promo/image.png)
+![image](promo/bevypunk_1.png)
+
+![image](promo/bevypunk_2.png)
 
 https://github.com/IDEDARY/Bevypunk/assets/49441831/f417d411-63ff-46c1-a0e0-74233b73e7ca
+
+> *Try out the live WASM demo on [`Itch.io`](https://idedary.itch.io/bevypunk) or [`GitHub Pages`](https://idedary.github.io/Bevypunk/).*
 
 ## Credits
 
 Assets used:
  * Logo svg : [Nicola Papale](https://github.com/nicopap)
- * Images   : Recreated by [1D3D4RY](https://github.com/IDEDARY) in Krita and Aseprite + screenshot from game as background
+ * Images   : Recreated by [1D3D4RY](https://github.com/IDEDARY) in Krita and Aseprite
  * Fonts    : [Rajdhani](https://fonts.google.com/specimen/Rajdhani) - provided by *Google Fonts*
  * Music    : [AffectEffect - V Theme cover on Youtube](https://youtu.be/t4XllslwbYc?si=yOS-MXzFvecrIgNc)
 
@@ -27,7 +34,6 @@ Assets used:
  * Female2: [SketchFab](https://sketchfab.com/3d-models/readyplayerme-cyberpunk-bc1e5da743a24625a554f7293fe7a323) - CC Attribution-NonCommercial-ShareAlike
  * Female3: [SketchFab](https://sketchfab.com/3d-models/readyplayerme-cyberpunk-f8dc753a6dc1482590c1bc993b41c42e) - CC Attribution-NonCommercial-ShareAlike
  * Female4: [SketchFab](https://sketchfab.com/3d-models/full-body-cyberpunk-girl-ed3138dab70f4808af8b68a55aaa0c8b) - CC Attribution-NonCommercial-ShareAlike
-
 
 ## Contributing
 
