@@ -54,13 +54,13 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 },
 
                 // This will set the color to red
-                UiColor::<Base>::new(Color::BEVYPUNK_RED.with_a(1.0)),
+                UiColor::<Base>::new(Color::BEVYPUNK_RED.with_alpha(1.0)),
 
                 // This is required to control our hover animation
                 UiAnimator::<Hover>::new().receiver(true),
 
                 // This will set hover color to yellow
-                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
+                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_luminance(0.68)),
             )).id();
 
             // Spawn chevron right
@@ -82,13 +82,13 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 },
 
                 // This will set the color to red
-                UiColor::<Base>::new(Color::BEVYPUNK_RED.with_a(1.0)),
+                UiColor::<Base>::new(Color::BEVYPUNK_RED.with_alpha(1.0)),
 
                 // This is required to control our hover animation
                 UiAnimator::<Hover>::new().receiver(true),
 
                 // This will set hover color to yellow
-                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
+                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_luminance(0.68)),
             )).id();
 
             // Spawn spinner text
@@ -145,7 +145,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 // Give it a background image
                 UiImage2dBundle {
                     texture: assets.button_symetric_sliced.clone(),
-                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_a(0.15), ..default() },
+                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_alpha(0.15), ..default() },
                     ..default()
                 },
 
@@ -164,7 +164,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 // Give it a background image
                 UiImage2dBundle {
                     texture: assets.button_sliced_bottom_left.clone(),
-                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_a(0.15), ..default() },
+                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_alpha(0.15), ..default() },
                     ..default()
                 },
 
@@ -181,13 +181,13 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 UiAnimatorPipe::<Hover>::new(vec![chevron_left]),
 
                 // This will set the color to red
-                UiColor::<Base>::new(Color::BEVYPUNK_RED.with_a(0.15)),
+                UiColor::<Base>::new(Color::BEVYPUNK_RED.with_alpha(0.15)),
 
                 // This will change cursor icon on mouse hover
                 OnHoverSetCursor::new(CursorIcon::Pointer),
 
                 // This will set hover color to yellow
-                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
+                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_luminance(0.68)),
 
                 // If we click on this, it will emmit UiClick event
                 UiClickEmitter::new(chevron_left),
@@ -204,7 +204,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 // Give it a background image
                 UiImage2dBundle {
                     texture: assets.button_sliced_bottom_right.clone(),
-                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_a(0.15), ..default() },
+                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_alpha(0.15), ..default() },
                     ..default()
                 },
 
@@ -221,13 +221,13 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 UiAnimatorPipe::<Hover>::new(vec![chevron_right]),
 
                 // This will set the color to red
-                UiColor::<Base>::new(Color::BEVYPUNK_RED.with_a(0.15)),
+                UiColor::<Base>::new(Color::BEVYPUNK_RED.with_alpha(0.15)),
 
                 // This will change cursor icon on mouse hover
                 OnHoverSetCursor::new(CursorIcon::Pointer),
 
                 // This will set hover color to yellow
-                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
+                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_luminance(0.68)),
 
                 // If we click on this, it will emmit UiClick event
                 UiClickEmitter::new(chevron_right),

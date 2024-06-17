@@ -158,7 +158,7 @@ fn main_menu_button_clicked_system(mut events: EventReader<UiClickEvent>, query:
             // Here we can run code on button click
             match button {
                 MainMenuButton::QuitGame => {
-                    exit.send(bevy::app::AppExit);
+                    exit.send(bevy::app::AppExit::Success);
                 },
                 _ => {},
             }

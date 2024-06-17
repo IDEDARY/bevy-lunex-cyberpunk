@@ -38,7 +38,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Button), Adde
                 // Give it a background image
                 UiImage2dBundle {
                     texture: assets.button_symetric.clone(),
-                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_a(0.0), ..default() },
+                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_alpha(0.0), ..default() },
                     ..default()
                 },
 
@@ -52,10 +52,10 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Button), Adde
                 UiAnimator::<Hover>::new().receiver(true),
 
                 // This will set the base color to red
-                UiColor::<Base>::new(Color::BEVYPUNK_RED.with_a(0.0)),
+                UiColor::<Base>::new(Color::BEVYPUNK_RED.with_alpha(0.0)),
 
                 // This will set hover color to yellow
-                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
+                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_luminance(0.68)),
 
             )).id();
 
@@ -89,7 +89,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Button), Adde
                 UiColor::<Base>::new(Color::BEVYPUNK_RED),
 
                 // This will set hover color to yellow
-                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
+                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_luminance(0.68)),
             )).id();
 
             // Spawn button hover-zone

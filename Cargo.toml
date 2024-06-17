@@ -28,10 +28,10 @@ opt-level = 3
   bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex", features=[] }
 
   # Game engine
-  bevy = { version = "0.13.2", default-features = false, features = [
+  bevy = { version = "0.14.0-rc.3", default-features = false, features = [
     # Core
     "bevy_core_pipeline",
-    "multi-threaded",
+    "multi_threaded",
     "bevy_winit",
     "bevy_audio",
     "bevy_sprite",
@@ -56,4 +56,4 @@ opt-level = 3
 
   # Platform specific
   [target.'cfg(unix)'.dependencies]
-  bevy = { version = "0.13.2", default-features = false, features = ["x11"] }
+  bevy = { version = "0.14.0-rc.3", default-features = false, features = ["x11"] }

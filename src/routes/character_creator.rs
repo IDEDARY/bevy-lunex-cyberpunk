@@ -50,7 +50,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
                 camera: Camera {
                     order: -1,
                     target: render_image.clone().into(),
-                    clear_color: ClearColorConfig::Custom(Color::rgba(0.0, 0.0, 0.0, 0.0)),
+                    clear_color: ClearColorConfig::Custom(Color::srgba(0.0, 0.0, 0.0, 0.0)),
                     hdr: true,
                     ..default()
                 },

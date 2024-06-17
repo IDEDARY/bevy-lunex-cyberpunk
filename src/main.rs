@@ -18,7 +18,6 @@ fn main() {
 
     // Add plugins
     let app = app
-        .insert_resource(bevy::asset::AssetMetaCheck::Never)
         .add_plugins((default_plugins(), UiPlugin))
 
         // General setup
@@ -39,7 +38,7 @@ fn main() {
     .insert_resource(PreLoader {
         //intro: gif
     })
-    .run()
+    .run();
 }
 
 
@@ -60,15 +59,15 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
                 .register_cursor(CursorIcon::Grab, 2, (40.0, 40.0)),
 
             // Add texture atlas to the cursor
-            SpriteSheetBundle {
+            TextureAtlas {
+                layout: atlas_layout.add(TextureAtlasLayout::from_grid(UVec2::splat(80), 3, 1, None, None)),
+                index: 0,
+            },
+            SpriteBundle {
                 texture: assets.cursor.clone(),
-                atlas: TextureAtlas {
-                    layout: atlas_layout.add(TextureAtlasLayout::from_grid(Vec2::splat(80.0), 3, 1, None, None)),
-                    index: 0,
-                },
                 transform: Transform { scale: Vec3::new(0.45, 0.45, 1.0), ..default() },
                 sprite: Sprite {
-                    color: Color::BEVYPUNK_YELLOW.with_a(2.0).with_l(0.68),
+                    color: Color::BEVYPUNK_YELLOW.with_alpha(2.0).with_luminance(0.68),
                     anchor: bevy::sprite::Anchor::TopLeft,
                     ..default()
                 },
