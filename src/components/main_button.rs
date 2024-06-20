@@ -36,11 +36,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
                 UiLayout::window_full().pack::<Base>(),
 
                 // Give it a background image
-                UiImage2dBundle {
-                    texture: assets.button_symetric_sliced.clone(),
-                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_a(0.15), ..default() },
-                    ..default()
-                },
+                UiImage2dBundle::from(assets.button_symetric_sliced.clone()),
 
                 // Make the background scalable
                 ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(32.0), ..default() }),
@@ -52,10 +48,10 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
                 UiAnimator::<Hover>::new().receiver(true),
 
                 // This will set the color to red
-                UiColor::<Base>::new(Color::BEVYPUNK_RED.with_a(0.15)),
+                UiColor::<Base>::new(Color::BEVYPUNK_RED.with_alpha(0.15)),
 
                 // This will set hover color to yellow
-                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
+                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_alpha(1.2)),
 
                 // Hover layout
                 UiLayout::window_full().x(Rl(10.0)).pack::<Hover>(),
@@ -69,7 +65,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
 
                 // Here we can define where we want to position our text within the parent node,
                 // don't worry about size, that is picked up and overwritten automaticaly by Lunex to match text size.
-                UiLayout::window().pos(Rl((6., 50.))).anchor(Anchor::CenterLeft).pack::<Base>(),
+                UiLayout::window().pos((Rh(40.0), Rl(50.0))).anchor(Anchor::CenterLeft).pack::<Base>(),
 
                 // Add text
                 UiText2dBundle {
@@ -77,7 +73,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
                         TextStyle {
                             font: assets.font_medium.clone(),
                             font_size: 60.0,    // Currently hardcoded as Relative height (Rh) - so 60% of the node height
-                            color: Color::BEVYPUNK_RED,
+                            ..default()
                         }),
                     ..default()
                 },
@@ -92,7 +88,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
                 UiColor::<Base>::new(Color::BEVYPUNK_RED),
 
                 // This will set hover color to yellow
-                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_l(0.68)),
+                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_alpha(1.2)),
             )).id();
 
             // Spawn button hover-zone
@@ -114,6 +110,9 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
 
                 // This will change cursor icon on mouse hover
                 OnHoverSetCursor::new(CursorIcon::Pointer),
+
+                // Play sound on hover event
+                OnHoverPlaySound::new(assets.ui_ping.clone()),
 
                 // If we click on this hover zone, it will emmit UiClick event from parent entity
                 UiClickEmitter::new(entity),

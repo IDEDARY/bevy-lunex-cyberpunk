@@ -102,7 +102,7 @@ impl Plugin for IntroRoutePlugin {
             //.add_plugins(AnimatedGifPlugin)
 
             //.add_systems(Update, despawn_intro_and_spawn_main_menu)
-            .add_systems(Update, build_route.before(UiSystems::Compute));
+            .add_systems(PreUpdate, build_route.before(UiSystems::Compute));
     }
 }
 
