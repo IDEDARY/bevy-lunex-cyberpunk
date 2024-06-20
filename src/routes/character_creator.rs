@@ -60,7 +60,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
             // Spawn 3D model in the scene
             route.spawn((
                 SceneBundle {
-                    scene: asset_server.load("models/female1.glb#Scene0"),
+                    scene: asset_server.load("models/Female1.glb#Scene0"),
                     transform: Transform::from_xyz(-0.3, -1.5, -1.0),
                     ..default()
                 },
@@ -185,6 +185,12 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
 // #=====================#
 // #=== INTERACTIVITY ===#
 
+#[derive(Resource)]
+struct CharacterData {
+    gender: String,
+    body: u8,
+}
+
 #[derive(Component)]
 struct Showcase;
 fn showcase_rotate_system(mut query: Query<&mut Transform, With<Showcase>>, mut local: Local<f32>, time: Res<Time>) {
@@ -193,20 +199,22 @@ fn showcase_rotate_system(mut query: Query<&mut Transform, With<Showcase>>, mut 
         *transform = transform.with_rotation(Quat::from_euler(EulerRot::XYZ, 0.0, (20.0 * local.sin()).to_radians(), 0.0));
     }
 }
-fn showcase_swap_system(mut events: EventReader<UiChangeEvent>, asset_server: Res<AssetServer>, mut query: Query<&mut Handle<Scene>, With<Showcase>>) {
+fn showcase_swap_system(mut events: EventReader<UiChangeEvent>, asset_server: Res<AssetServer>, mut data: ResMut<CharacterData>, mut query: Query<&mut Handle<Scene>, With<Showcase>>) {
     for event in events.read() {
         info!("{}", event.value);
-        if event.value == "Male".to_string() {
-            for mut mesh in &mut query {
-                let new: Handle<Scene> = asset_server.load("models/female2.glb#Scene0");
-                *mesh = new;
-            }
+
+        match event.value.as_str() {
+            "Male" => data.gender = "Male".into(),
+            "Female" => data.gender = "Female".into(),
+            "Body 1" => data.body = 1,
+            "Body 2" => data.body = 2,
+            "Body 3" => data.body = 3,
+            _ => {},
         }
-        if event.value == "Female".to_string() {
-            for mut mesh in &mut query {
-                let new: Handle<Scene> = asset_server.load("models/female1.glb#Scene0");
-                *mesh = new;
-            }
+
+        for mut mesh in &mut query {
+            let new: Handle<Scene> = asset_server.load(&format!("models/{}{}.glb#Scene0", data.gender, data.body));
+            *mesh = new;
         }
     }
 }
@@ -220,6 +228,7 @@ pub struct CharacterCreatorRoutePlugin;
 impl Plugin for CharacterCreatorRoutePlugin {
     fn build(&self, app: &mut App) {
         app
+            .insert_resource(CharacterData { gender: "female".into(), body: 1})
             .add_systems(Update, showcase_rotate_system)
             .add_systems(Update, showcase_swap_system.run_if(on_event::<UiChangeEvent>()))
 
