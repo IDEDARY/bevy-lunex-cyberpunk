@@ -141,7 +141,7 @@ impl MainMenuButton {
             MainMenuButton::Continue => "CONTINUE".into(),
             MainMenuButton::NewGame => "NEW GAME".into(),
             MainMenuButton::LoadGame => "LOAD GAME".into(),
-            MainMenuButton::Settings => "SETTINGS".into(),
+            MainMenuButton::Settings => "FULLSCREEN".into(),
             MainMenuButton::AdditionalContent => "ADDITIONAL CONTENT".into(),
             MainMenuButton::Credits => "CREDITS".into(),
             MainMenuButton::QuitGame => "QUIT GAME".into(),
@@ -150,7 +150,10 @@ impl MainMenuButton {
 }
 
 /// In this system we run our button click logic
-fn main_menu_button_clicked_system(mut events: EventReader<UiClickEvent>, query: Query<&MainMenuButton, With<MainButton>>, mut exit: EventWriter<bevy::app::AppExit>) {
+fn main_menu_button_clicked_system(mut events: EventReader<UiClickEvent>, query: Query<&MainMenuButton, With<MainButton>>, mut exit: EventWriter<bevy::app::AppExit>,
+    mut event1: EventWriter<actions::SetWindowMode>,
+    mut event2: EventWriter<actions::SetWindowResolution>
+) {
     for event in events.read() {
         if let Ok(button) = query.get(event.target) {
             info!("Pressed: {}", button.str());
@@ -159,6 +162,10 @@ fn main_menu_button_clicked_system(mut events: EventReader<UiClickEvent>, query:
             match button {
                 MainMenuButton::QuitGame => {
                     exit.send(bevy::app::AppExit::Success);
+                },
+                MainMenuButton::Settings => {
+                    event1.send(actions::SetWindowMode(bevy::window::WindowMode::BorderlessFullscreen));
+                    event2.send(actions::SetWindowResolution(Vec2::new(1920.0, 1080.0)));
                 },
                 _ => {},
             }
@@ -175,7 +182,7 @@ pub struct MainMenuRoutePlugin;
 impl Plugin for MainMenuRoutePlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_systems(Update, build_route.before(UiSystems::Compute))
+            .add_systems(PreUpdate, build_route.before(UiSystems::Compute))
             .add_systems(Update, main_menu_button_clicked_system.run_if(on_event::<UiClickEvent>()));
     }
 }

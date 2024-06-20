@@ -232,7 +232,7 @@ impl Plugin for CharacterCreatorRoutePlugin {
             .add_systems(Update, showcase_rotate_system)
             .add_systems(Update, showcase_swap_system.run_if(on_event::<UiChangeEvent>()))
 
-            .add_systems(Update, build_route.before(UiSystems::Compute));
+            .add_systems(PreUpdate, build_route.before(UiSystems::Compute));
     }
 }
 

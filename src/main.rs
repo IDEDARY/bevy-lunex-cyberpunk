@@ -1,5 +1,6 @@
 pub(crate) use bevy::{prelude::*, sprite::Anchor};
 pub(crate) use bevy_lunex::prelude::*;
+use bevy_embedded_assets::{EmbeddedAssetPlugin, PluginMode};
 //pub(crate) use vleue_kinetoscope::*;
 
 mod boilerplate;
@@ -18,6 +19,7 @@ fn main() {
 
     // Add plugins
     let app = app
+        .add_plugins(EmbeddedAssetPlugin { mode: PluginMode::ReplaceDefault})
         .add_plugins((default_plugins(), UiPlugin))
 
         // General setup
@@ -68,7 +70,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
                 transform: Transform { scale: Vec3::new(0.45, 0.45, 1.0), ..default() },
                 sprite: Sprite {
                     color: Color::BEVYPUNK_YELLOW.with_alpha(2.0),
-                    anchor: bevy::sprite::Anchor::TopLeft,
+                    anchor: Anchor::TopLeft,
                     ..default()
                 },
                 ..default()

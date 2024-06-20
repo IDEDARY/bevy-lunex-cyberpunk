@@ -27,6 +27,8 @@ opt-level = 3
   #bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev", features=[] }
   bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex", features=[] }
 
+  bevy_embedded_assets = { version = "0.11.0-rc.2" }
+
   # Game engine
   bevy = { version = "0.14.0-rc.3", default-features = false, features = [
     # Core
@@ -51,7 +53,7 @@ opt-level = 3
     "jpeg",
     "bevy_gltf",
 
-    "dynamic_linking",
+    #"dynamic_linking",
   ] }
 
   # Platform specific
