@@ -15,7 +15,7 @@ Cargo.lock
 
 **/*.kra~
 assets_src
-#**/*.png~
+**/*.png~
 
 bevypunk
 webbuild.zip
