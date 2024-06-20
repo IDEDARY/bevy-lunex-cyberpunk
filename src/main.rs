@@ -1,6 +1,5 @@
 pub(crate) use bevy::{prelude::*, sprite::Anchor};
 pub(crate) use bevy_lunex::prelude::*;
-use bevy_embedded_assets::{EmbeddedAssetPlugin, PluginMode};
 //pub(crate) use vleue_kinetoscope::*;
 
 mod boilerplate;
@@ -17,9 +16,11 @@ fn main() {
     // Our app
     let mut app = App::new();
 
+    #[cfg(not(target_family = "wasm"))]
+    app.add_plugins(bevy_embedded_assets::EmbeddedAssetPlugin { mode: bevy_embedded_assets::PluginMode::ReplaceDefault});
+
     // Add plugins
     let app = app
-        .add_plugins(EmbeddedAssetPlugin { mode: PluginMode::ReplaceDefault})
         .add_plugins((default_plugins(), UiPlugin))
 
         // General setup
