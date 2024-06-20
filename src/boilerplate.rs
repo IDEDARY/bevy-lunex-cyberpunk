@@ -1,4 +1,3 @@
-use bevy::render::settings::WgpuSettings;
 use bevy::core_pipeline::bloom::BloomSettings;
 use bevy::app::PluginGroupBuilder;
 use crate::*;
@@ -122,7 +121,7 @@ pub fn default_plugins() -> PluginGroupBuilder {
         WindowPlugin {
             primary_window: Some(Window {
                 title: "Bevypunk".into(),
-                mode: bevy::window::WindowMode::BorderlessFullscreen,
+                mode: bevy::window::WindowMode::Windowed,
                 present_mode: bevy::window::PresentMode::AutoNoVsync,
                 resolution: bevy::window::WindowResolution::new(1280.0, 720.0),
                 ..default()
@@ -132,7 +131,7 @@ pub fn default_plugins() -> PluginGroupBuilder {
     ).set (
         bevy::render::RenderPlugin {
             render_creation: bevy::render::settings::RenderCreation::Automatic(
-                WgpuSettings {
+                bevy::render::settings::WgpuSettings {
                     power_preference: bevy::render::settings::PowerPreference::HighPerformance,
                     ..default()
                 }

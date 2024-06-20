@@ -103,7 +103,12 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
                 UiLayout::window_full().pack::<Base>(),
 
                 // Make this spacial & clickable entity
-                UiZoneBundle::default(),
+                UiSpatialBundle::default(),
+                
+                PickableBundle {
+                    pickable: Pickable { should_block_lower: true, is_hoverable: true },
+                    ..default()
+                },
 
                 // This is required to control our hover animation
                 UiAnimator::<Hover>::new().forward_speed(5.0).backward_speed(1.0),

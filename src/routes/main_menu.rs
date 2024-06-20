@@ -56,7 +56,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
                 ui.spawn((
                     board.clone(),
                     UiLayout::window().x(Rl(50.0)).anchor(Anchor::TopCenter).size(Rl(105.0)).pack::<Base>(),
-                    UiImage2dBundle::from(assets.main_board.clone())
+                    UiImage2dBundle::from(assets.main_board.clone()),
                 ));
 
 
@@ -68,7 +68,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
                 ui.spawn((
                     board.add("Boundary/Logo"),
                     UiLayout::solid().size((1240.0, 381.0)).pack::<Base>(),
-                    UiImage2dBundle::from(assets.main_logo.clone())
+                    UiImage2dBundle::from(assets.main_logo.clone()),
                 ));
 
 

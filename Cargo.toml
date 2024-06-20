@@ -51,7 +51,7 @@ opt-level = 3
     "jpeg",
     "bevy_gltf",
 
-    #"dynamic_linking",
+    "dynamic_linking",
   ] }
 
   # Platform specific
