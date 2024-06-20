@@ -67,7 +67,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
                 texture: assets.cursor.clone(),
                 transform: Transform { scale: Vec3::new(0.45, 0.45, 1.0), ..default() },
                 sprite: Sprite {
-                    color: Color::BEVYPUNK_YELLOW.with_alpha(2.0).with_luminance(0.68),
+                    color: Color::BEVYPUNK_YELLOW.with_alpha(2.0),
                     anchor: bevy::sprite::Anchor::TopLeft,
                     ..default()
                 },
@@ -80,7 +80,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
     });
 
     // Spawn audio
-    //commands.spawn( AudioBundle { source: assets.music.clone(), settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new(0.5)) } );
+    commands.spawn( AudioBundle { source: assets.music.clone(), settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new(0.5)) } );
 
     // Spawn intro route
     commands.spawn(MainMenuRoute);

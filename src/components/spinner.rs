@@ -47,11 +47,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 Pickable::IGNORE,
 
                 // Give it a background image
-                UiImage2dBundle {
-                    texture: assets.chevron_left.clone(),
-                    sprite: Sprite { color: Color::BEVYPUNK_RED, ..default() },
-                    ..default()
-                },
+                UiImage2dBundle::from(assets.chevron_left.clone()),
 
                 // This will set the color to red
                 UiColor::<Base>::new(Color::BEVYPUNK_RED.with_alpha(1.0)),
@@ -60,7 +56,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 UiAnimator::<Hover>::new().receiver(true),
 
                 // This will set hover color to yellow
-                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_luminance(0.68)),
+                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW),
             )).id();
 
             // Spawn chevron right
@@ -75,11 +71,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 Pickable::IGNORE,
 
                 // Give it a background image
-                UiImage2dBundle {
-                    texture: assets.chevron_right.clone(),
-                    sprite: Sprite { color: Color::BEVYPUNK_RED, ..default() },
-                    ..default()
-                },
+                UiImage2dBundle::from(assets.chevron_right.clone()),
 
                 // This will set the color to red
                 UiColor::<Base>::new(Color::BEVYPUNK_RED.with_alpha(1.0)),
@@ -88,7 +80,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 UiAnimator::<Hover>::new().receiver(true),
 
                 // This will set hover color to yellow
-                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_luminance(0.68)),
+                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW),
             )).id();
 
             // Spawn spinner text
@@ -162,11 +154,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 UiLayout::window().pos(Rl((0.0, 55.0))).size((Rl(50.0) - Rh(2.5), Rl(45.0))).pack::<Base>(),
 
                 // Give it a background image
-                UiImage2dBundle {
-                    texture: assets.button_sliced_bottom_left.clone(),
-                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_alpha(0.15), ..default() },
-                    ..default()
-                },
+                UiImage2dBundle::from(assets.button_sliced_bottom_left.clone()),
 
                 // Make the background scalable
                 ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(32.0), ..default() }),
@@ -187,7 +175,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 OnHoverSetCursor::new(CursorIcon::Pointer),
 
                 // This will set hover color to yellow
-                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_luminance(0.68)),
+                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW),
 
                 // If we click on this, it will emmit UiClick event
                 UiClickEmitter::new(chevron_left),
@@ -227,7 +215,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 OnHoverSetCursor::new(CursorIcon::Pointer),
 
                 // This will set hover color to yellow
-                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_luminance(0.68)),
+                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW),
 
                 // If we click on this, it will emmit UiClick event
                 UiClickEmitter::new(chevron_right),

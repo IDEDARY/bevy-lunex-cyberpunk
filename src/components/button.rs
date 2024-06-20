@@ -36,11 +36,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Button), Adde
                 UiLayout::window_full().pack::<Base>(),
 
                 // Give it a background image
-                UiImage2dBundle {
-                    texture: assets.button_symetric.clone(),
-                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_alpha(0.0), ..default() },
-                    ..default()
-                },
+                UiImage2dBundle::from(assets.button_symetric.clone()),
 
                 // Make the background scalable
                 ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(32.0), ..default() }),
@@ -55,7 +51,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Button), Adde
                 UiColor::<Base>::new(Color::BEVYPUNK_RED.with_alpha(0.0)),
 
                 // This will set hover color to yellow
-                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_luminance(0.68)),
+                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW),
 
             )).id();
 
@@ -74,7 +70,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Button), Adde
                         TextStyle {
                             font: assets.font_medium.clone(),
                             font_size: 60.0,    // Currently hardcoded as Relative height (Rh) - so 60% of the node height
-                            color: Color::BEVYPUNK_RED,
+                            ..default()
                         }),
                     ..default()
                 },
@@ -89,7 +85,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Button), Adde
                 UiColor::<Base>::new(Color::BEVYPUNK_RED),
 
                 // This will set hover color to yellow
-                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW.with_luminance(0.68)),
+                UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW),
             )).id();
 
             // Spawn button hover-zone
