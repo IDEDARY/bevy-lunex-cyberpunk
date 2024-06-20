@@ -65,7 +65,7 @@ pub struct SettingsRoutePlugin;
 impl Plugin for SettingsRoutePlugin {
     fn build(&self, app: &mut App) {
         app
-            .add_systems(Update, build_route.before(UiSystems::Compute))
+            .add_systems(PreUpdate, build_route.before(UiSystems::Compute))
 
             // Add events that change the app settings
             .add_event::<SetCameraHdr>()

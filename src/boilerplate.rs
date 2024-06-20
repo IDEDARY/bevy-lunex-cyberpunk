@@ -1,4 +1,3 @@
-use bevy::render::settings::WgpuSettings;
 use bevy::core_pipeline::bloom::BloomSettings;
 use bevy::app::PluginGroupBuilder;
 use crate::*;
@@ -15,10 +14,10 @@ pub trait BevypunkColorPalette {
     const BEVYPUNK_BLUE: Color;
 }
 impl BevypunkColorPalette for Color {
-    const BEVYPUNK_RED: Color = Color::rgba(255./255., 98./255., 81./255., 1.0);
-    const BEVYPUNK_RED_DIM: Color = Color::rgba(172./255., 64./255., 63./255., 1.0);
-    const BEVYPUNK_YELLOW: Color = Color::rgba(252./255., 226./255., 8./255., 1.0);
-    const BEVYPUNK_BLUE: Color = Color::rgba(8./255., 226./255., 252./255., 1.0);
+    const BEVYPUNK_RED: Color = Color::srgba(255./255., 98./255., 81./255., 1.0);
+    const BEVYPUNK_RED_DIM: Color = Color::srgba(172./255., 64./255., 63./255., 1.0);
+    const BEVYPUNK_YELLOW: Color = Color::linear_rgba(252./255., 226./255., 8./255., 1.0);
+    const BEVYPUNK_BLUE: Color = Color::srgba(8./255., 226./255., 252./255., 1.0);
 }
 
 // #======================================#
@@ -36,6 +35,7 @@ pub struct PreLoader {
 pub struct AssetCache {
     // Music
     pub music: Handle<AudioSource>,
+    pub ui_ping: Handle<AudioSource>,
 
     // Fonts
     pub font_light: Handle<Font>,
@@ -74,6 +74,7 @@ pub fn cache_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
     commands.insert_resource(AssetCache {
         // Music
         music: asset_server.load("sounds/main_menu.ogg"),
+        ui_ping: asset_server.load("sounds/ui_ping.ogg"),
 
         // Fonts
         font_light: asset_server.load("fonts/rajdhani/Rajdhani-Light.ttf"),
@@ -120,7 +121,7 @@ pub fn default_plugins() -> PluginGroupBuilder {
         WindowPlugin {
             primary_window: Some(Window {
                 title: "Bevypunk".into(),
-                mode: bevy::window::WindowMode::BorderlessFullscreen,
+                mode: bevy::window::WindowMode::Windowed,
                 present_mode: bevy::window::PresentMode::AutoNoVsync,
                 resolution: bevy::window::WindowResolution::new(1280.0, 720.0),
                 ..default()
@@ -130,14 +131,17 @@ pub fn default_plugins() -> PluginGroupBuilder {
     ).set (
         bevy::render::RenderPlugin {
             render_creation: bevy::render::settings::RenderCreation::Automatic(
-                WgpuSettings {
+                bevy::render::settings::WgpuSettings {
                     power_preference: bevy::render::settings::PowerPreference::HighPerformance,
                     ..default()
                 }
             ),
             ..default()
         }
-    )
+    ).set(AssetPlugin {
+        meta_check: bevy::asset::AssetMetaCheck::Never,
+        ..default()
+    })
 }
 
 /// Function to return camera will all appropriate settings
