@@ -198,7 +198,7 @@ fn showcase_swap_system(mut events: EventReader<UiChangeEvent>, asset_server: Re
         info!("{}", event.value);
         if event.value == "Male".to_string() {
             for mut mesh in &mut query {
-                let new: Handle<Scene> = asset_server.load("models/male1.glb#Scene0");
+                let new: Handle<Scene> = asset_server.load("models/female2.glb#Scene0");
                 *mesh = new;
             }
         }
