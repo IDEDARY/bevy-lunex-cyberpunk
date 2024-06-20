@@ -80,7 +80,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
     });
 
     // Spawn audio
-    commands.spawn( AudioBundle { source: assets.music.clone(), settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new(0.5)) } );
+    //commands.spawn( AudioBundle { source: assets.music.clone(), settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new(0.5)) } );
 
     // Spawn intro route
     commands.spawn(MainMenuRoute);

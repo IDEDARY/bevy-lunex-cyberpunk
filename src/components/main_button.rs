@@ -103,12 +103,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
                 UiLayout::window_full().pack::<Base>(),
 
                 // Make this spacial & clickable entity
-                UiSpatialBundle::default(),
-                
-                PickableBundle {
-                    pickable: Pickable { should_block_lower: true, is_hoverable: true },
-                    ..default()
-                },
+                UiZoneBundle::default(),
 
                 // This is required to control our hover animation
                 UiAnimator::<Hover>::new().forward_speed(5.0).backward_speed(1.0),
@@ -119,6 +114,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
                 // This will change cursor icon on mouse hover
                 OnHoverSetCursor::new(CursorIcon::Pointer),
 
+                // Play sound on hover event
                 OnHoverPlaySound::new(assets.ui_ping.clone()),
 
                 // If we click on this hover zone, it will emmit UiClick event from parent entity
