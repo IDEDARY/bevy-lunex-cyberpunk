@@ -17,7 +17,7 @@ fn main() {
     let mut app = App::new();
 
     #[cfg(not(target_family = "wasm"))]
-    app.add_plugins(bevy_embedded_assets::EmbeddedAssetPlugin { mode: bevy_embedded_assets::PluginMode::ReplaceDefault});
+    //app.add_plugins(bevy_embedded_assets::EmbeddedAssetPlugin { mode: bevy_embedded_assets::PluginMode::ReplaceDefault});
 
     // Add plugins
     let app = app
@@ -83,7 +83,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
     });
 
     // Spawn audio
-    commands.spawn( AudioBundle { source: assets.music.clone(), settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new(0.5)) } );
+    commands.spawn(AudioBundle { source: assets.music.clone(), settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new(0.5)) });
 
     // Spawn intro route
     commands.spawn(MainMenuRoute);

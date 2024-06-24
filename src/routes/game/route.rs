@@ -16,10 +16,15 @@ pub struct GameRoute;
 // #=== SANDBOXED USER INTEFACE ===#
 
 /// System that builds the route
-fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Query<Entity, Added<GameRoute>>) {
+fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Query<Entity, Added<GameRoute>>, mut meshes: ResMut<Assets<Mesh>>, mut materials: ResMut<Assets<StandardMaterial>>, flicker: Query<Entity, With<VFXBloomFlicker>>) {
     for route_entity in &query {
         // #======================#
         // #=== USER INTERFACE ===#
+
+        if let Ok(entity) = flicker.get_single() {
+            commands.entity(entity).remove::<VFXBloomFlicker>();
+        }
+        
 
         // Render 3D camera onto a texture
         let size = Extent3d { width: 1920, height: 1080, ..default() };
@@ -46,11 +51,45 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
             SpatialBundle::default(),
         ).with_children(|route| {
 
-            route.spawn(SceneBundle {
+            /* route.spawn(SceneBundle {
                 scene: asset_server.load("scenes/bedroom.glb#Scene0"),
                 transform: Transform::from_xyz(0.0, 0.0, -10.0),
                 ..default()
-            });
+            }); */
+
+            for y in 5..6 {
+                for x in -2..2 {
+                    for z in -2..2 {
+                        route.spawn((
+                            RigidBody::Dynamic,
+                            Velocity::linear(Vec3::new(0.0, 1.0, 0.0)),
+                            Collider::ball(0.3 + 0.1 * x as f32),
+                            Restitution::coefficient(0.7),
+                            PbrBundle {
+                                mesh: meshes.add(Sphere::new(0.3 + 0.1 * x as f32).mesh().ico(5).unwrap()),
+                                material: materials.add(StandardMaterial {
+                                    //emissive: LinearRgba::rgb(3.0, 23.0, 9.0) * 0.1,
+                                    emissive: Color::BEVYPUNK_YELLOW.into(),
+                                    ..default()
+                                }),
+                                transform: Transform::from_xyz(x as f32, y as f32, z as f32),
+                                ..default()
+                            }
+                        )).with_children(|obj| {
+                            obj.spawn(PointLightBundle {
+                                point_light: PointLight {
+                                    intensity: 1.0,
+                                    shadows_enabled: false,
+                                    //color: (LinearRgba::rgb(3.0, 23.0, 9.0) * 0.1).into(),
+                                    color: Color::BEVYPUNK_YELLOW.into(),
+                                    ..default()
+                                },
+                                ..default()
+                            });
+                        });
+                    }
+                }
+            }
 
 
             // Spawn player
@@ -78,13 +117,6 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                     transform: Transform::from_xyz(0.0, -1.0, 0.0),
                     ..default()
                 }).with_children(|obj|{
-
-                    // Body
-                    /* obj.spawn(SceneBundle {
-                        scene: asset_server.load("objects/male/thin.gltf#Scene0"),
-                        transform: Transform::from_xyz(0.0, 0.0, 0.4),
-                        ..default()
-                    }); */
 
                     // Spawn POV
                     obj.spawn((
@@ -131,13 +163,53 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
             
             });
 
+            let mat = materials.add(Color::srgb_u8(50, 50, 50));
+
             // Spawn floor
             route.spawn((
-                Collider::cuboid(25.0, 1.0, 25.0),
-                SpatialBundle {
+                PbrBundle {
+                    mesh: meshes.add(Cuboid::new(50.0, 2.0, 50.0)),
+                    material: mat.clone(),
                     transform: Transform::from_xyz(0.0, -1.0, 0.0),
                     ..default()
                 },
+                Collider::cuboid(25.0, 1.0, 25.0),
+            ));
+            route.spawn((
+                PbrBundle {
+                    mesh: meshes.add(Cuboid::new(50.0, 2.0, 2.0)),
+                    material: mat.clone(),
+                    transform: Transform::from_xyz(0.0, 1.0, -25.0),
+                    ..default()
+                },
+                Collider::cuboid(25.0, 1.0, 1.0),
+            ));
+            route.spawn((
+                PbrBundle {
+                    mesh: meshes.add(Cuboid::new(50.0, 2.0, 2.0)),
+                    material: mat.clone(),
+                    transform: Transform::from_xyz(0.0, 1.0, 25.0),
+                    ..default()
+                },
+                Collider::cuboid(25.0, 1.0, 1.0),
+            ));
+            route.spawn((
+                PbrBundle {
+                    mesh: meshes.add(Cuboid::new(2.0, 2.0, 50.0)),
+                    material: mat.clone(),
+                    transform: Transform::from_xyz(-25.0, 1.0, 0.0),
+                    ..default()
+                },
+                Collider::cuboid(1.0, 1.0, 25.0),
+            ));
+            route.spawn((
+                PbrBundle {
+                    mesh: meshes.add(Cuboid::new(2.0, 2.0, 50.0)),
+                    material: mat.clone(),
+                    transform: Transform::from_xyz(25.0, 1.0, 0.0),
+                    ..default()
+                },
+                Collider::cuboid(1.0, 1.0, 25.0),
             ));
 
             // Spawn the master ui tree        

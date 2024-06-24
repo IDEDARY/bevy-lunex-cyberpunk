@@ -157,6 +157,7 @@ pub fn camera() -> impl Bundle {
             //tonemapping: Tonemapping::None,
             ..default()
         },
+        VFXBloomFlicker,
         BloomSettings::OLD_SCHOOL,
         InheritedVisibility::default(),
         /*VfxWiggleCamera {
@@ -178,8 +179,11 @@ pub fn camera() -> impl Bundle {
 use std::f32::consts::TAU;
 use rand::Rng;
 
+#[derive(Component)]
+pub struct VFXBloomFlicker;
+
 /// System for immitating flickering by randomly adjusting cameras bloom values
-fn vfx_bloom_flicker(mut query: Query<&mut BloomSettings>) {
+fn vfx_bloom_flicker(mut query: Query<&mut BloomSettings, With<VFXBloomFlicker>>) {
     for mut bloom in &mut query {
         let mut rng = rand::thread_rng();
         if rng.gen_range(0..100) < 20 {
