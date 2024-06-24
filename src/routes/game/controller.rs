@@ -4,7 +4,7 @@ use crate::*;
 
 pub const PRONE_MOVEMENT_SPEED: f32 = 1.0;      // ~1 m/s
 pub const CROUCH_MOVEMENT_SPEED: f32 = 2.0;     // 1.5-2.5 m/s
-pub const ADS_MOVEMENT_SPEED: f32 = 2.5;        // 2-3 m/s
+//pub const ADS_MOVEMENT_SPEED: f32 = 2.5;        // 2-3 m/s
 pub const BASE_MOVEMENT_SPEED: f32 = 3.5;       // 3-4 m/s
 pub const RUNNING_MOVEMENT_SPEED: f32 = 7.0;    // 5-8 m/s
 pub const SPRINTING_MOVEMENT_SPEED: f32 = 8.0;  // ~8m/s
@@ -69,7 +69,7 @@ pub enum ControllerState {
     Sprinting,
     Running,
     #[default] Base,
-    ADS,
+    //ADS,
     Crouch,
     Prone,
 }
@@ -116,7 +116,7 @@ fn controller_movement(mut query: Query<(&ControllerInput, &ControllerState, &Co
             ControllerState::Sprinting => SPRINTING_MOVEMENT_SPEED,
             ControllerState::Running => RUNNING_MOVEMENT_SPEED,
             ControllerState::Base => BASE_MOVEMENT_SPEED,
-            ControllerState::ADS => ADS_MOVEMENT_SPEED,
+            //ControllerState::ADS => ADS_MOVEMENT_SPEED,
             ControllerState::Crouch => CROUCH_MOVEMENT_SPEED,
             ControllerState::Prone => PRONE_MOVEMENT_SPEED,
         };

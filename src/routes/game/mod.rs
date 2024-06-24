@@ -4,8 +4,8 @@ pub mod controller;
 use bevy_rapier3d::plugin::{NoUserData, RapierPhysicsPlugin};
 pub use controller::*;
 
-pub mod entry;
-pub use entry::*;
+pub mod route;
+pub use route::*;
 
 pub mod input;
 pub use input::*;

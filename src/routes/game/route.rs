@@ -47,8 +47,8 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
         ).with_children(|route| {
 
             route.spawn(SceneBundle {
-                scene: asset_server.load("scenes/apartment_nomat.glb#Scene0"),
-                //transform: Transform::from_xyz(0.0, 0.0, 0.0),
+                scene: asset_server.load("scenes/bedroom.glb#Scene0"),
+                transform: Transform::from_xyz(0.0, 0.0, -10.0),
                 ..default()
             });
 
@@ -91,7 +91,7 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                         SpatialBundle { transform: Transform::from_xyz(0.0, 1.7, 0.0), ..default() },
                     )).with_children(|obj| {
 
-                        let light = 300.0;
+                        let light = 50.0;
 
                         // Spawn camera
                         obj.spawn((
@@ -134,7 +134,10 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
             // Spawn floor
             route.spawn((
                 Collider::cuboid(25.0, 1.0, 25.0),
-                SpatialBundle::default(),
+                SpatialBundle {
+                    transform: Transform::from_xyz(0.0, -1.0, 0.0),
+                    ..default()
+                },
             ));
 
             // Spawn the master ui tree        
@@ -146,7 +149,8 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                 // Spawn 3D camera view
                 ui.spawn((
                     UiLink::<MainUi>::path("Camera"),
-                    UiLayout::solid().size((1920.0, 1080.0)).scaling(Scaling::Fit).pack::<Base>(),
+                    UiLayout::window_full().pack::<Base>(), // Make this resizable
+                    MovableByCamera,                        // This will resize the texture on Dimension change
                     UiImage2dBundle::from(render_image),
                     Pickable::IGNORE,
                 ));

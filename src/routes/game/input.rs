@@ -31,9 +31,10 @@ fn update_mouse_capture_focus(mut windows: Query<&mut Window, With<PrimaryWindow
         }
     }
 }
-fn switch_mouse_capture_focus(keyboard_input: Res<ButtonInput<KeyCode>>, mut capture: ResMut<MouseCapture>) {
+fn switch_mouse_capture_focus(keyboard_input: Res<ButtonInput<KeyCode>>, mut capture: ResMut<MouseCapture>, mut event: EventWriter<actions::HideCursor2d>) {
     if keyboard_input.just_pressed(KeyCode::Escape) {
         capture.focus = !capture.focus;
+        event.send(actions::HideCursor2d(capture.focus));
     }
 }
 
