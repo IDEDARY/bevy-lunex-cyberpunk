@@ -112,6 +112,15 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
                             OnUiClickCommands::new(|commands| { commands.spawn(CharacterCreatorRoute); })
                         ));
                     }
+                    if button == MainMenuButton::Continue {
+                        btn.insert((
+                            // Despawn this entity on UiClick
+                            OnUiClickDespawn::new(route_entity),
+
+                            // Run this command on UiClick
+                            OnUiClickCommands::new(|commands| { commands.spawn(GameRoute); })
+                        ));
+                    }
 
                     offset += gap + size;
                 }

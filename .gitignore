@@ -17,5 +17,7 @@ Cargo.lock
 assets_src
 **/*.png~
 
+assets/scenes/apartment_nomat.glb
+
 bevypunk
 webbuild.zip

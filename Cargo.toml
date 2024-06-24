@@ -23,9 +23,12 @@ opt-level = 3
   #vleue_kinetoscope = "0.1.1"
 
   # UI framework
-  #bevy_lunex = "0.1.0"
-  bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev", features=[] }
-  #bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex", features=[] }
+  #bevy_lunex = "0.1.1"
+  #bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev", features=[] }
+  bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex", features=[] }
+
+  # Physics
+  bevy_rapier3d = "0.27.0-rc.1"
 
   # Game engine
   bevy = { version = "0.14.0-rc.3", default-features = false, features = [
