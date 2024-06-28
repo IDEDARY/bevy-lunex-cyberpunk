@@ -1,4 +1,4 @@
-use bevy::{core_pipeline::{bloom::BloomSettings, contrast_adaptive_sharpening::ContrastAdaptiveSharpeningSettings, experimental::taa::{TemporalAntiAliasBundle, TemporalAntiAliasPlugin}, Skybox}, render::render_resource::{Extent3d, TextureDescriptor, TextureDimension, TextureFormat, TextureUsages}};
+use bevy::{core_pipeline::{bloom::BloomSettings, contrast_adaptive_sharpening::ContrastAdaptiveSharpeningSettings, experimental::taa::{TemporalAntiAliasBundle, TemporalAntiAliasPlugin}, Skybox}, render::render_resource::{Extent3d, TextureDescriptor, TextureDimension, TextureFormat, TextureUsages}, sprite::SpriteSource};
 
 use crate::*;
 use bevy_rapier3d::prelude::*;
@@ -21,11 +21,11 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
         // #======================#
         // #=== USER INTERFACE ===#
 
+        // Disable flickering
         if let Ok(entity) = flicker.get_single() {
             commands.entity(entity).remove::<VFXBloomFlicker>();
         }
         
-
         // Render 3D camera onto a texture
         let size = Extent3d { width: 1920, height: 1080, ..default() };
         let mut image = Image {
@@ -51,13 +51,15 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
             SpatialBundle::default(),
         ).with_children(|route| {
 
+            // Spawn scene
             /* route.spawn(SceneBundle {
                 scene: asset_server.load("scenes/bedroom.glb#Scene0"),
                 transform: Transform::from_xyz(0.0, 0.0, -10.0),
                 ..default()
             }); */
 
-            for y in 5..6 {
+            // Spawn balls
+            /* for y in 5..6 {
                 for x in -2..2 {
                     for z in -2..2 {
                         route.spawn((
@@ -89,7 +91,7 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                         });
                     }
                 }
-            }
+            } */
 
 
             // Spawn player
@@ -106,10 +108,7 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
 
                 RigidBody::KinematicPositionBased,
                 Collider::capsule_y(0.5, 0.25),
-                KinematicCharacterController {
-                    translation: Some(Vec3::new(5.0, 0.0, 5.0)),
-                    ..default()
-                }
+                KinematicCharacterController::default(),
 
             )).with_children(|obj| {
 
@@ -211,6 +210,66 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                 },
                 Collider::cuboid(1.0, 1.0, 25.0),
             ));
+
+            route.spawn((
+                UiTreeBundle::<Ui3d> {
+                    spatial: UiSpatialBundle {
+                        spatial: SpatialBundle {
+                            transform: Transform::from_xyz(0.0, 2.0, -2.0),
+                            ..default()
+                        },
+                        ..default()
+                    },
+                    tree: UiTree::new("Worldspace"),
+                    ..default()
+                },
+            )).with_children(|ui|{
+                ui.spawn((
+                    UiLink::<Ui3d>::path("Display"),
+
+                    UiLayout::window_full().size((1920.0/1000.0, 1080.0/1000.0)).pack::<Base>(),
+                    UiLayout::window_full().size((1920.0/1000.0, 1080.0/1000.0)).x(1.0).pack::<Hover>(),
+                    UiLayoutController::default(),
+
+                    PickableBundle::default(),
+                    SpriteSource::default(),
+                    UiAnimator::<Hover>::new().forward_speed(5.0).backward_speed(1.0),
+                    OnHoverSetCursor::new(CursorIcon::Pointer),
+
+                    //UiMaterial3dBundle::from_image(&mut material, asset_server.load("images/hud/hud.png")),
+                    UiMaterial3dBundle::from_transparent_image(&mut materials, asset_server.load("images/hud/hud.png")),
+                ));
+            });
+
+            route.spawn((
+                UiTreeBundle::<Ui3d> {
+                    spatial: UiSpatialBundle {
+                        spatial: SpatialBundle {
+                            transform: Transform::from_xyz(0.0, 2.0, -2.5),
+                            ..default()
+                        },
+                        ..default()
+                    },
+                    tree: UiTree::new("Worldspace"),
+                    ..default()
+                },
+            )).with_children(|ui|{
+                ui.spawn((
+                    UiLink::<Ui3d>::path("Display"),
+
+                    UiLayout::window_full().size((1920.0/1000.0, 1080.0/1000.0)).pack::<Base>(),
+                    UiLayout::window_full().size((1920.0/1000.0, 1080.0/1000.0)).x(1.0).pack::<Hover>(),
+                    UiLayoutController::default(),
+
+                    PickableBundle::default(),
+                    SpriteSource::default(),
+                    UiAnimator::<Hover>::new().forward_speed(5.0).backward_speed(1.0),
+                    OnHoverSetCursor::new(CursorIcon::Pointer),
+
+                    //UiMaterial3dBundle::from_image(&mut material, asset_server.load("images/hud/hud.png")),
+                    UiMaterial3dBundle::from_transparent_image(&mut materials, asset_server.load("images/hud/hud.png")),
+                ));
+            });
 
             // Spawn the master ui tree        
             route.spawn((

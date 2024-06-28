@@ -2,6 +2,8 @@ use bevy::core_pipeline::bloom::BloomSettings;
 use bevy::app::PluginGroupBuilder;
 use crate::*;
 
+#[derive(Component, Default)]
+pub struct Ui3d;
 
 // #=========================================#
 // #=== BOILERPLATE REQUIRED FOR BEVYPUNK ===#
@@ -142,6 +144,8 @@ pub fn default_plugins() -> PluginGroupBuilder {
         meta_check: bevy::asset::AssetMetaCheck::Never,
         ..default()
     })
+    .add(UiGenericPlugin::<Ui3d>::new())
+    .add(UiDebugPlugin::<Ui3d>::new())
 }
 
 /// Function to return camera will all appropriate settings
