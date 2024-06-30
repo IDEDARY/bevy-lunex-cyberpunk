@@ -27,6 +27,9 @@ opt-level = 3
   #bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev", features=[] }
   bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex", features=[] }
 
+  # Audio
+  bevy_kira_audio = { version = "0.20.0-rc.1" }
+
   # Physics
   bevy_rapier3d = "0.27.0-rc.1"
 
@@ -36,25 +39,24 @@ opt-level = 3
     "bevy_core_pipeline",
     "multi_threaded",
     "bevy_winit",
-    "bevy_audio",
+    #"bevy_audio",
     "bevy_sprite",
     "bevy_text",
     "webgl2",
 
     # Core formats
-    "vorbis",
+    #"vorbis",
     "png",
-    "wav",
 
     # VFX
     "hdr",
     "tonemapping_luts",
     
     # 3D
-    "jpeg",
+    #"jpeg",
     "bevy_gltf",
 
-    #"dynamic_linking",
+    "dynamic_linking",
   ] }
 
 # Not WASM

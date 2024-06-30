@@ -104,6 +104,7 @@ pub fn default_plugins() -> PluginGroupBuilder {
     })
     .add(UiGenericPlugin::<Ui3d>::new())
     .add(UiDebugPlugin::<Ui3d>::new())
+    .add(AudioPlugin)
 }
 
 /// Function to return camera will all appropriate settings

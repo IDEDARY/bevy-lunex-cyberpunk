@@ -1,5 +1,6 @@
 pub(crate) use bevy::{prelude::*, sprite::Anchor};
 pub(crate) use bevy_lunex::prelude::*;
+pub(crate) use bevy_kira_audio::prelude::*;
 //pub(crate) use vleue_kinetoscope::*;
 
 mod boilerplate;
@@ -48,7 +49,7 @@ fn main() {
 // #=====================#
 // #=== GENERIC SETUP ===#
 
-fn setup(mut commands: Commands, assets: Res<AssetServer>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>){
+fn setup(mut commands: Commands, assets: Res<AssetServer>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>, audio: Res<Audio>){
     // Spawn 2D camera
     commands.spawn(camera()).with_children(|camera| {
 
@@ -83,7 +84,8 @@ fn setup(mut commands: Commands, assets: Res<AssetServer>, mut atlas_layout: Res
     });
 
     // Spawn audio
-    commands.spawn(AudioBundle { source: assets.load(PreLoader::MUSIC), settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new(0.5)) });
+    //commands.spawn(AudioBundle { source: assets.load(PreLoader::MUSIC), settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new(0.5)) });
+    audio.play(assets.load(PreLoader::MUSIC)).looped();
 
     // Spawn intro route
     commands.spawn(MainMenuRoute);
