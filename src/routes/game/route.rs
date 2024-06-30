@@ -226,12 +226,36 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                     UiLink::<Ui3d>::path("Display"),
 
                     UiLayout::boundary().pos2((1920.0/1000.0, 1080.0/1000.0)).pack::<Base>(),
-                    UiLayout::boundary().pos1(-10.0/1000.0).pos2((1930.0/1000.0, 1090.0/1000.0)).pack::<Hover>(),
+                    UiLayout::boundary().pos1((-100.0/1000.0, 0.0)).pos2((2020.0/1000.0, 1080.0/1000.0)).pack::<Hover>(),
                     UiLayoutController::default(),
 
                     PickableBundle::default(),
                     SpriteSource::default(),
-                    UiAnimator::<Hover>::new().forward_speed(5.0).backward_speed(1.0),
+                    UiAnimator::<Hover>::new().forward_speed(6.0).backward_speed(6.0),
+                    OnHoverSetCursor::new(CursorIcon::Pointer),
+
+                    //UiMaterial3dBundle::from_image(&mut material, asset_server.load("images/hud/hud.png")),
+                    UiMaterial3dBundle::from_transparent_image(&mut materials, asset_server.load("images/hud/hud.png")),
+                ));
+            });
+
+            route.spawn((
+                UiTreeBundle::<Ui3d> {
+                    transform: Transform::from_xyz(0.0, 2.0, -2.5),
+                    tree: UiTree::new("Worldspace"),
+                    ..default()
+                },
+            )).with_children(|ui|{
+                ui.spawn((
+                    UiLink::<Ui3d>::path("Display"),
+
+                    UiLayout::boundary().pos2((1920.0/1000.0, 1080.0/1000.0)).pack::<Base>(),
+                    UiLayout::boundary().pos1((-100.0/1000.0, 0.0)).pos2((2020.0/1000.0, 1080.0/1000.0)).pack::<Hover>(),
+                    UiLayoutController::default(),
+
+                    PickableBundle::default(),
+                    SpriteSource::default(),
+                    UiAnimator::<Hover>::new().forward_speed(6.0).backward_speed(6.0),
                     OnHoverSetCursor::new(CursorIcon::Pointer),
 
                     //UiMaterial3dBundle::from_image(&mut material, asset_server.load("images/hud/hud.png")),
