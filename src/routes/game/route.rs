@@ -213,13 +213,7 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
 
             route.spawn((
                 UiTreeBundle::<Ui3d> {
-                    spatial: UiSpatialBundle {
-                        spatial: SpatialBundle {
-                            transform: Transform::from_xyz(0.0, 2.0, -2.0),
-                            ..default()
-                        },
-                        ..default()
-                    },
+                    transform: Transform::from_xyz(0.0, 2.0, -2.0),
                     tree: UiTree::new("Worldspace"),
                     ..default()
                 },
@@ -243,13 +237,7 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
 
             route.spawn((
                 UiTreeBundle::<Ui3d> {
-                    spatial: UiSpatialBundle {
-                        spatial: SpatialBundle {
-                            transform: Transform::from_xyz(0.0, 2.0, -2.5),
-                            ..default()
-                        },
-                        ..default()
-                    },
+                    transform: Transform::from_xyz(0.0, 2.0, -2.5),
                     tree: UiTree::new("Worldspace"),
                     ..default()
                 },
