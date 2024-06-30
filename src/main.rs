@@ -83,8 +83,7 @@ fn setup(mut commands: Commands, assets: Res<AssetServer>, mut atlas_layout: Res
         ));
     });
 
-    // Spawn audio
-    //commands.spawn(AudioBundle { source: assets.load(PreLoader::MUSIC), settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new(0.5)) });
+    // Play audio
     audio.play(assets.load(PreLoader::MUSIC)).looped();
 
     // Spawn intro route

@@ -25,7 +25,7 @@ opt-level = 3
   # UI framework
   #bevy_lunex = "0.1.1"
   #bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev", features=[] }
-  bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex", features=[] }
+  bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex", features=["kira"] }
 
   # Audio
   bevy_kira_audio = { version = "0.20.0-rc.1" }
