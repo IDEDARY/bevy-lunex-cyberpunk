@@ -5,14 +5,23 @@ use crate::*;
 
 pub const SMOOTH_SAMPLES_LEN: usize = 3;
 
-#[derive(Resource, Default)]
+#[derive(Resource)]
 pub struct MouseCapture {
     focus: bool,
     pub delta: Vec2,
     delta_buffer: VecDeque<Vec2>,
 }
-fn update_mouse_capture(mut mouse_motion_events: EventReader<MouseMotion>, mut capture: ResMut<MouseCapture>) {
-    let mut delta: Vec2 = mouse_motion_events.read().map(|e| e.delta).sum();
+impl Default for MouseCapture {
+    fn default() -> Self {
+        MouseCapture {
+            focus: false,
+            delta: Default::default(),
+            delta_buffer: Default::default(),
+        }
+    }
+}
+fn update_mouse_capture(mut mouse_motion_events: EventReader<CursorMoved>, mut capture: ResMut<MouseCapture>) {
+    let mut delta: Vec2 = mouse_motion_events.read().map(|e| e.delta.unwrap_or_default()).sum();
     if !capture.focus { delta = Vec2::ZERO }
     while capture.delta_buffer.len() >= SMOOTH_SAMPLES_LEN { capture.delta_buffer.pop_front(); }
     capture.delta_buffer.push_back(delta);
@@ -32,7 +41,7 @@ fn update_mouse_capture_focus(mut windows: Query<&mut Window, With<PrimaryWindow
     }
 }
 fn switch_mouse_capture_focus(keyboard_input: Res<ButtonInput<KeyCode>>, mut capture: ResMut<MouseCapture>, mut event: EventWriter<actions::HideCursor2d>) {
-    if keyboard_input.just_pressed(KeyCode::Escape) {
+    if keyboard_input.just_pressed(KeyCode::Tab) {
         capture.focus = !capture.focus;
         event.send(actions::HideCursor2d(capture.focus));
     }

@@ -4,20 +4,24 @@ This repository is a recreation of ***Cyberpunk*** UI in ***Bevy*** using **[`Be
 
 This project is intended to be production ready example/template for Lunex. It highlights the following features:
 
-* Button components
-* Main menu route
-* Character creator route
-* Animated gif intro route
+* **Main menu**
+* **Character creator**
+* **Animated gif intro**
+* **Interactive buttons**
+* **Worldspace (diegetic) UI**
+* **2D + 3D dual camera setup (HUD)**
 
 #
 
-![image](promo/bevypunk_1.png)
+![image](promo/bevypunk_1.jpeg)
 
-![image](promo/bevypunk_2.png)
+![image](promo/bevypunk_2.jpeg)
+
+![image](promo/bevypunk_3.jpeg)
 
 https://github.com/IDEDARY/Bevypunk/assets/49441831/f417d411-63ff-46c1-a0e0-74233b73e7ca
 
-> *Try out the live WASM demo on [`Itch.io`](https://idedary.itch.io/bevypunk) or [`GitHub Pages`](https://idedary.github.io/Bevypunk/).*
+> *Try out the live WASM demo on [`Itch.io`](https://idedary.itch.io/bevypunk) or [`GitHub Pages`](https://idedary.github.io/Bevypunk/) (Limited performance & stutter due to running on a single thread). For best experience compile the project natively.*
 
 ## Credits
 
@@ -33,7 +37,6 @@ Assets used:
  * Female1: [SketchFab](https://sketchfab.com/3d-models/female-full-body-cyberpunk-themed-avatar-7a8fa15955084fa3bf7103ed1818c584) - CC Attribution-NonCommercial-ShareAlike
  * Female2: [SketchFab](https://sketchfab.com/3d-models/readyplayerme-cyberpunk-bc1e5da743a24625a554f7293fe7a323) - CC Attribution-NonCommercial-ShareAlike
  * Female3: [SketchFab](https://sketchfab.com/3d-models/readyplayerme-cyberpunk-f8dc753a6dc1482590c1bc993b41c42e) - CC Attribution-NonCommercial-ShareAlike
- * Female4: [SketchFab](https://sketchfab.com/3d-models/full-body-cyberpunk-girl-ed3138dab70f4808af8b68a55aaa0c8b) - CC Attribution-NonCommercial-ShareAlike
 
 ## Contributing
 

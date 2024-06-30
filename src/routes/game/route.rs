@@ -125,9 +125,7 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                         let light = 50.0;
 
                         // Spawn camera
-                        obj.spawn((
-                            TemporalAntiAliasBundle::default(),
-                            ContrastAdaptiveSharpeningSettings::default(),
+                        let mut cam = obj.spawn((
                             BloomSettings::NATURAL,
                             Skybox {
                                 image: asset_server.load("scenes/skybox/skybox.ktx2"),
@@ -154,6 +152,12 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                             },
                             VisibilityBundle::default(),
                             ControllerTiltRotation::default(),
+                        ));
+
+                        #[cfg(not(target_family = "wasm"))]
+                        cam.insert((
+                            TemporalAntiAliasBundle::default(),
+                            ContrastAdaptiveSharpeningSettings::default(),
                         ));
 
                     });
@@ -221,9 +225,9 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                 ui.spawn((
                     UiLink::<Ui3d>::path("Display"),
 
-                    UiLayout::window_full().size((1920.0/1000.0, 1080.0/1000.0)).pack::<Base>(),
-                    //UiLayout::window_full().size((1920.0/1000.0, 1080.0/1000.0)).x(1.0).pack::<Hover>(),
-                    //UiLayoutController::default(),
+                    UiLayout::boundary().pos2((1920.0/1000.0, 1080.0/1000.0)).pack::<Base>(),
+                    UiLayout::boundary().pos1(-10.0/1000.0).pos2((1930.0/1000.0, 1090.0/1000.0)).pack::<Hover>(),
+                    UiLayoutController::default(),
 
                     PickableBundle::default(),
                     SpriteSource::default(),
@@ -271,8 +275,10 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
 pub struct EntryPlugin;
 impl Plugin for EntryPlugin {
     fn build(&self, app: &mut App) {
+        #[cfg(not(target_family = "wasm"))]
+        app.add_plugins(TemporalAntiAliasPlugin);
+
         app
-            .add_plugins(TemporalAntiAliasPlugin)
             .add_systems(PreUpdate, build_route.before(UiSystems::Compute));
     }
 }
