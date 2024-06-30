@@ -17,7 +17,7 @@ fn main() {
     let mut app = App::new();
 
     #[cfg(not(target_family = "wasm"))]
-    app.add_plugins(bevy_embedded_assets::EmbeddedAssetPlugin { mode: bevy_embedded_assets::PluginMode::ReplaceDefault});
+    //app.add_plugins(bevy_embedded_assets::EmbeddedAssetPlugin { mode: bevy_embedded_assets::PluginMode::ReplaceDefault});
 
     // Add plugins
     let app = app
@@ -26,7 +26,6 @@ fn main() {
 
         // General setup
         .add_plugins(VFXPlugin)
-        .add_systems(PreStartup, cache_assets)
         .add_systems(Startup, setup)
 
         // Add our plugins
@@ -49,7 +48,7 @@ fn main() {
 // #=====================#
 // #=== GENERIC SETUP ===#
 
-fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>){
+fn setup(mut commands: Commands, assets: Res<AssetServer>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>){
     // Spawn 2D camera
     commands.spawn(camera()).with_children(|camera| {
 
@@ -68,7 +67,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
                 index: 0,
             },
             SpriteBundle {
-                texture: assets.cursor.clone(),
+                texture: assets.load(PreLoader::CURSOR),
                 transform: Transform { scale: Vec3::new(0.45, 0.45, 1.0), ..default() },
                 sprite: Sprite {
                     color: Color::BEVYPUNK_YELLOW.with_alpha(2.0),
@@ -84,7 +83,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
     });
 
     // Spawn audio
-    commands.spawn(AudioBundle { source: assets.music.clone(), settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new(0.5)) });
+    commands.spawn(AudioBundle { source: assets.load(PreLoader::MUSIC), settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new(0.5)) });
 
     // Spawn intro route
     commands.spawn(MainMenuRoute);

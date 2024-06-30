@@ -13,7 +13,7 @@ pub struct MainMenuRoute;
 // #=== SANDBOXED USER INTEFACE ===#
 
 /// System that builds the route
-fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Entity, Added<MainMenuRoute>>) {
+fn build_route(mut commands: Commands, assets: Res<AssetServer>, query: Query<Entity, Added<MainMenuRoute>>) {
     for route_entity in &query {
         // #======================#
         // #=== USER INTERFACE ===#
@@ -41,7 +41,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
                 ui.spawn((
                     root.add("Background"), // You can see here that we used existing "root" link to create chained link (same as "Root/Background")
                     UiLayout::solid().size((2968.0, 1656.0)).scaling(Scaling::Fill).pack::<Base>(),
-                    UiImage2dBundle::from(assets.main_background.clone()),  // We use this bundle to add background image to our node
+                    UiImage2dBundle::from(assets.load(PreLoader::MAIN_BACKGROUND)),  // We use this bundle to add background image to our node
                 ));
 
 
@@ -56,7 +56,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
                 ui.spawn((
                     board.clone(),
                     UiLayout::window().x(Rl(50.0)).anchor(Anchor::TopCenter).size(Rl(105.0)).pack::<Base>(),
-                    UiImage2dBundle::from(assets.main_board.clone()),
+                    UiImage2dBundle::from(assets.load(PreLoader::MAIN_BOARD)),
                 ));
 
 
@@ -68,7 +68,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
                 ui.spawn((
                     board.add("Boundary/Logo"),
                     UiLayout::solid().size((1240.0, 381.0)).pack::<Base>(),
-                    UiImage2dBundle::from(assets.main_logo.clone()),
+                    UiImage2dBundle::from(assets.load(PreLoader::MAIN_LOGO)),
                 ));
 
 

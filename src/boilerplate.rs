@@ -32,85 +32,43 @@ pub struct PreLoader {
 }
 
 #[allow(dead_code)]
-// Load all assets at startup for faster loading during runtime
-#[derive(Resource)]
-pub struct AssetCache {
+impl PreLoader {
     // Music
-    pub music: Handle<AudioSource>,
-    pub ui_ping: Handle<AudioSource>,
+    pub const MUSIC: &'static str = "sounds/main_menu.ogg";
+    pub const SFX_UI: &'static str = "sounds/ui_ping.ogg";
 
     // Fonts
-    pub font_light: Handle<Font>,
-    pub font_regular: Handle<Font>,
-    pub font_medium: Handle<Font>,
-    pub font_semibold: Handle<Font>,
-    pub font_bold: Handle<Font>,
+    pub const FONT_LIGHT: &'static str = "fonts/rajdhani/Rajdhani-Light.ttf";
+    pub const FONT_REGULAR: &'static str = "fonts/rajdhani/Rajdhani-Regular.ttf";
+    pub const FONT_MEDIUM: &'static str = "fonts/rajdhani/Rajdhani-Medium.ttf";
+    pub const FONT_SEMIBOLD: &'static str = "fonts/rajdhani/Rajdhani-SemiBold.ttf";
+    pub const FONT_BOLD: &'static str = "fonts/rajdhani/Rajdhani-Bold.ttf";
 
     // Cursor
-    pub cursor: Handle<Image>,
+    pub const CURSOR: &'static str = "images/cursor.png";
 
     // Symbols
-    pub button_symetric: Handle<Image>,
-    pub button_symetric_sliced: Handle<Image>,
-    pub button_sliced_bottom_left: Handle<Image>,
-    pub button_sliced_bottom_right: Handle<Image>,
-    pub button_sliced_top_left: Handle<Image>,
-    pub button_sliced_top_right: Handle<Image>,
-    pub chevron_left: Handle<Image>,
-    pub chevron_right: Handle<Image>,
-    pub switch_base: Handle<Image>,
-    pub switch_head: Handle<Image>,
+    pub const BUTTON_SYMETRIC: &'static str = "images/button_symetric.png";
+    pub const BUTTON_SYMETRIC_SLICED: &'static str = "images/button_symetric_sliced.png";
+    pub const BUTTON_SLICED_BOTTOM_LEFT: &'static str = "images/button_sliced_bottom_left.png";
+    pub const BUTTON_SLICED_BOTTOM_RIGHT: &'static str = "images/button_sliced_bottom_right.png";
+    pub const BUTTON_SLICED_TOP_LEFT: &'static str = "images/button_sliced_top_left.png";
+    pub const BUTTON_SLICED_TOP_RIGHT: &'static str = "images/button_sliced_top_right.png";
+    pub const CHEVRON_LEFT: &'static str = "images/chevron_left.png";
+    pub const CHEVRON_RIGHT: &'static str = "images/chevron_right.png";
+    pub const SWITCH_BASE: &'static str = "images/switch_base.png";
+    pub const SWITCH_HEAD: &'static str = "images/switch_head.png";
 
     // Routes
-    pub intro_background: Handle<Image>,
+    pub const INTRO_BACKGROUND: &'static str = "images/intro/frame0.png";
 
-    pub main_background: Handle<Image>,
-    pub main_board: Handle<Image>,
-    pub main_logo: Handle<Image>,
+    pub const MAIN_BACKGROUND: &'static str = "images/settings/background.png";
+    pub const MAIN_BOARD: &'static str = "images/main_menu/board.png";
+    pub const MAIN_LOGO: &'static str = "images/main_menu/bevypunk.png";
 
-    pub settings_background: Handle<Image>,
+    pub const SETTINGS_BACKGROUND: &'static str = "images/settings/background.png";
 
-    pub character_creator_panel: Handle<Image>,
-}
-pub fn cache_assets(mut commands: Commands, asset_server: Res<AssetServer>) {
-    commands.insert_resource(AssetCache {
-        // Music
-        music: asset_server.load("sounds/main_menu.ogg"),
-        ui_ping: asset_server.load("sounds/ui_ping.ogg"),
-
-        // Fonts
-        font_light: asset_server.load("fonts/rajdhani/Rajdhani-Light.ttf"),
-        font_regular: asset_server.load("fonts/rajdhani/Rajdhani-Regular.ttf"),
-        font_medium: asset_server.load("fonts/rajdhani/Rajdhani-Medium.ttf"),
-        font_semibold: asset_server.load("fonts/rajdhani/Rajdhani-SemiBold.ttf"),
-        font_bold: asset_server.load("fonts/rajdhani/Rajdhani-Bold.ttf"),
-
-        // Cursor
-        cursor: asset_server.load("images/cursor.png"),
-
-        // Symbols
-        button_symetric: asset_server.load("images/button_symetric.png"),
-        button_symetric_sliced: asset_server.load("images/button_symetric_sliced.png"),
-        button_sliced_bottom_left: asset_server.load("images/button_sliced_bottom_left.png"),
-        button_sliced_bottom_right: asset_server.load("images/button_sliced_bottom_right.png"),
-        button_sliced_top_left: asset_server.load("images/button_sliced_top_left.png"),
-        button_sliced_top_right: asset_server.load("images/button_sliced_top_right.png"),
-        chevron_left: asset_server.load("images/chevron_left.png"),
-        chevron_right: asset_server.load("images/chevron_right.png"),
-        switch_base: asset_server.load("images/switch_base.png"),
-        switch_head: asset_server.load("images/switch_head.png"),
-
-        // Routes
-        intro_background: asset_server.load("images/intro/frame0.png"),
-
-        main_background: asset_server.load("images/settings/background.png"),
-        main_board: asset_server.load("images/main_menu/board.png"),
-        main_logo: asset_server.load("images/main_menu/bevypunk.png"),
-
-        settings_background: asset_server.load("images/settings/background.png"),
-
-        character_creator_panel: asset_server.load("images/character_creator/panel.png"),
-    });
+    pub const CHARACTER_CREATOR_PANEL: &'static str = "images/character_creator/panel.png";
 }
 
 
