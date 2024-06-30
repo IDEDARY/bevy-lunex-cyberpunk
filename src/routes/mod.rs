@@ -1,3 +1,6 @@
+pub mod game;
+pub use game::*;
+
 pub mod character_creator;
 pub use character_creator::*;
 
@@ -21,6 +24,7 @@ pub struct RoutePlugin;
 impl Plugin for RoutePlugin {
     fn build(&self, app: &mut App) {
         app
+            .add_plugins(GamePlugin)
             .add_plugins(CharacterCreatorRoutePlugin)
             .add_plugins(IntroRoutePlugin)
             .add_plugins(MainMenuRoutePlugin)

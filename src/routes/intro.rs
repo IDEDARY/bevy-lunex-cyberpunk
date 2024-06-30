@@ -16,7 +16,7 @@ pub struct IntroRoute;
 struct IntroGif;
 
 /// System that builds the route
-fn build_route(mut commands: Commands, assets: Res<AssetCache>, _preloader: Res<PreLoader>, query: Query<Entity, Added<IntroRoute>>, mut event: EventWriter<actions::HideCursor2d>) {
+fn build_route(mut commands: Commands, assets: Res<AssetServer>, _preloader: Res<PreLoader>, query: Query<Entity, Added<IntroRoute>>, mut event: EventWriter<actions::HideCursor2d>) {
     for route_entity in &query {
         // #======================#
         // #=== USER INTERFACE ===#
@@ -45,7 +45,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, _preloader: Res<
                 ui.spawn((
                     root.add("Background"), // You can see here that we used existing "root" link to create chained link (same as "Root/Background")
                     UiLayout::solid().size((1920.0, 1080.0)).scaling(Scaling::Fill).pack::<Base>(),
-                    UiImage2dBundle::from(assets.intro_background.clone()),  // We use this bundle to add background image to our node
+                    UiImage2dBundle::from(assets.load(PreLoader::INTRO_BACKGROUND)),  // We use this bundle to add background image to our node
                 ));
 
                 // Spawn the intro

@@ -27,7 +27,7 @@ struct SpinnerControl {
 }
 
 /// System that builds the component UI
-fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Added<Spinner>>, assets: Res<AssetCache>) {
+fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Added<Spinner>>, assets: Res<AssetServer>) {
     for (entity, spinner) in &query {
 
         // This will create a private sandboxed UiTree within the entity just for the button
@@ -47,7 +47,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 Pickable::IGNORE,
 
                 // Give it a background image
-                UiImage2dBundle::from(assets.chevron_left.clone()),
+                UiImage2dBundle::from(assets.load(PreLoader::CHEVRON_LEFT)),
 
                 // This will set the color to red
                 UiColor::<Base>::new(Color::BEVYPUNK_RED.with_alpha(1.0)),
@@ -71,7 +71,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 Pickable::IGNORE,
 
                 // Give it a background image
-                UiImage2dBundle::from(assets.chevron_right.clone()),
+                UiImage2dBundle::from(assets.load(PreLoader::CHEVRON_RIGHT)),
 
                 // This will set the color to red
                 UiColor::<Base>::new(Color::BEVYPUNK_RED.with_alpha(1.0)),
@@ -95,7 +95,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 UiText2dBundle {
                     text: Text::from_section(spinner.options[spinner.index].clone(),
                         TextStyle {
-                            font: assets.font_medium.clone(),
+                            font: assets.load(PreLoader::FONT_MEDIUM),
                             font_size: 60.0,
                             color: Color::BEVYPUNK_RED,
                         }),
@@ -118,7 +118,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 UiText2dBundle {
                     text: Text::from_section(spinner.name.clone(),
                         TextStyle {
-                            font: assets.font_semibold.clone(),
+                            font: assets.load(PreLoader::FONT_SEMIBOLD),
                             font_size: 60.0,
                             color: Color::BEVYPUNK_RED,
                         }),
@@ -136,7 +136,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
 
                 // Give it a background image
                 UiImage2dBundle {
-                    texture: assets.button_symetric_sliced.clone(),
+                    texture: assets.load(PreLoader::BUTTON_SYMETRIC_SLICED),
                     sprite: Sprite { color: Color::BEVYPUNK_RED.with_alpha(0.15), ..default() },
                     ..default()
                 },
@@ -154,7 +154,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 UiLayout::window().pos(Rl((0.0, 55.0))).size((Rl(50.0) - Rh(2.5), Rl(45.0))).pack::<Base>(),
 
                 // Give it a background image
-                UiImage2dBundle::from(assets.button_sliced_bottom_left.clone()),
+                UiImage2dBundle::from(assets.load(PreLoader::BUTTON_SLICED_BOTTOM_LEFT)),
 
                 // Make the background scalable
                 ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(32.0), ..default() }),
@@ -190,11 +190,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 UiLayout::window().pos((Rl(50.0) + Rh(2.5), Rl(55.0))).size((Rl(50.0) - Rh(2.5), Rl(45.0))).pack::<Base>(),
 
                 // Give it a background image
-                UiImage2dBundle {
-                    texture: assets.button_sliced_bottom_right.clone(),
-                    sprite: Sprite { color: Color::BEVYPUNK_RED.with_alpha(0.15), ..default() },
-                    ..default()
-                },
+                UiImage2dBundle::from(assets.load(PreLoader::BUTTON_SLICED_BOTTOM_RIGHT)),
 
                 // Make the background scalable
                 ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(32.0), ..default() }),

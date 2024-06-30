@@ -13,7 +13,7 @@ pub struct SettingsRoute;
 // #=== SANDBOXED USER INTEFACE ===#
 
 /// System that builds the route
-fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Entity, Added<SettingsRoute>>) {
+fn build_route(mut commands: Commands, assets: Res<AssetServer>, query: Query<Entity, Added<SettingsRoute>>) {
     for entity in &query {
         // #======================#
         // #=== USER INTERFACE ===#
@@ -34,7 +34,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
             ui.spawn((
                 root.add("Background"), // You can see here that we used existing "root" link to create chained link (same as "Root/Background")
                 UiLayout::solid().size((2968.0, 1656.0)).scaling(Scaling::Fill).pack::<Base>(),
-                UiImage2dBundle::from(assets.settings_background.clone()),  // We use this bundle to add background image to our node
+                UiImage2dBundle::from(assets.load(PreLoader::SETTINGS_BACKGROUND)),  // We use this bundle to add background image to our node
             ));
 
         });

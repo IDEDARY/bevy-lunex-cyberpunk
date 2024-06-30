@@ -15,7 +15,7 @@ pub struct CharacterCreatorRoute;
 // #=== SANDBOXED USER INTEFACE ===#
 
 /// System that builds the route
-fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Entity, Added<CharacterCreatorRoute>>, asset_server: Res<AssetServer>) {
+fn build_route(mut commands: Commands, assets: Res<AssetServer>, query: Query<Entity, Added<CharacterCreatorRoute>>, asset_server: Res<AssetServer>) {
     for route_entity in &query {
         // #======================#
         // #=== USER INTERFACE ===#
@@ -95,7 +95,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
                 ui.spawn((
                     root.add("Background"), // You can see here that we used existing "root" link to create chained link (same as "Root/Background")
                     UiLayout::solid().size((2968.0, 1656.0)).scaling(Scaling::Fill).pack::<Base>(),
-                    UiImage2dBundle::from(assets.settings_background.clone()),  // We use this bundle to add background image to our node
+                    UiImage2dBundle::from(assets.load(PreLoader::SETTINGS_BACKGROUND)),  // We use this bundle to add background image to our node
                     Pickable::IGNORE,
                 ));
     
@@ -130,7 +130,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetCache>, query: Query<Ent
                 ui.spawn((
                     panel.clone(),
                     UiLayout::window().x(Rl(50.0)).anchor(Anchor::TopCenter).size(Rl(105.0)).pack::<Base>(),
-                    UiImage2dBundle::from(assets.character_creator_panel.clone())
+                    UiImage2dBundle::from(assets.load(PreLoader::CHARACTER_CREATOR_PANEL))
                 ));
 
                 // Spawn text
