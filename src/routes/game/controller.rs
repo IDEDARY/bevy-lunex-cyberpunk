@@ -153,9 +153,12 @@ fn controller_gravity(mut query: Query<(&mut ControllerGravity, &ControllerInput
 
         if input.jump { gravity.z = 6.0 };
 
-        if let Some(t) = &mut physics.translation {
-            t.y = gravity.z * time.delta_seconds();
+        if !physics_output.grounded {
+            if let Some(t) = &mut physics.translation {
+                t.y = gravity.z * time.delta_seconds();
+            }
         }
+        
     }
 }
 
