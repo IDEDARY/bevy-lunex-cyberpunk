@@ -19,7 +19,7 @@ pub struct MainButton {
 struct MainButtonUi;
 
 /// System that builds the component UI
-fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), Added<MainButton>>, assets: Res<AssetCache>) {
+fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), Added<MainButton>>, assets: Res<AssetServer>) {
     for (entity, button_source) in &query {
 
         // This will create a private sandboxed UiTree within the entity just for the button
@@ -36,7 +36,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
                 UiLayout::window_full().pack::<Base>(),
 
                 // Give it a background image
-                UiImage2dBundle::from(assets.button_symetric_sliced.clone()),
+                UiImage2dBundle::from(assets.load(PreLoader::BUTTON_SYMETRIC_SLICED)),
 
                 // Make the background scalable
                 ImageScaleMode::Sliced(TextureSlicer { border: BorderRect::square(32.0), ..default() }),
@@ -71,7 +71,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
                 UiText2dBundle {
                     text: Text::from_section(&button_source.text,
                         TextStyle {
-                            font: assets.font_medium.clone(),
+                            font: assets.load(PreLoader::FONT_MEDIUM),
                             font_size: 60.0,    // Currently hardcoded as Relative height (Rh) - so 60% of the node height
                             ..default()
                         }),
@@ -112,7 +112,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
                 OnHoverSetCursor::new(CursorIcon::Pointer),
 
                 // Play sound on hover event
-                OnHoverPlaySound::new(assets.ui_ping.clone()),
+                OnHoverPlaySound::new(assets.load(PreLoader::SFX_UI)),
 
                 // If we click on this hover zone, it will emmit UiClick event from parent entity
                 UiClickEmitter::new(entity),

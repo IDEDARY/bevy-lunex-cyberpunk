@@ -1,5 +1,6 @@
 pub(crate) use bevy::{prelude::*, sprite::Anchor};
 pub(crate) use bevy_lunex::prelude::*;
+pub(crate) use bevy_kira_audio::prelude::*;
 //pub(crate) use vleue_kinetoscope::*;
 
 mod boilerplate;
@@ -22,10 +23,10 @@ fn main() {
     // Add plugins
     let app = app
         .add_plugins((default_plugins(), UiPlugin))
+        //.add_plugins(UiDebugPlugin::<MainUi>::new())
 
         // General setup
         .add_plugins(VFXPlugin)
-        .add_systems(PreStartup, cache_assets)
         .add_systems(Startup, setup)
 
         // Add our plugins
@@ -48,7 +49,7 @@ fn main() {
 // #=====================#
 // #=== GENERIC SETUP ===#
 
-fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>){
+fn setup(mut commands: Commands, assets: Res<AssetServer>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>, audio: Res<Audio>){
     // Spawn 2D camera
     commands.spawn(camera()).with_children(|camera| {
 
@@ -56,7 +57,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
         camera.spawn ((
 
             // Here we can map different native cursor icons to texture atlas indexes and sprite offsets
-            Cursor2d::new().native_cursor(false)
+            Cursor2d::new().native_cursor(false).confined(true)
                 .register_cursor(CursorIcon::Default, 0, (14.0, 14.0))
                 .register_cursor(CursorIcon::Pointer, 1, (10.0, 12.0))
                 .register_cursor(CursorIcon::Grab, 2, (40.0, 40.0)),
@@ -67,7 +68,7 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
                 index: 0,
             },
             SpriteBundle {
-                texture: assets.cursor.clone(),
+                texture: assets.load(PreLoader::CURSOR),
                 transform: Transform { scale: Vec3::new(0.45, 0.45, 1.0), ..default() },
                 sprite: Sprite {
                     color: Color::BEVYPUNK_YELLOW.with_alpha(2.0),
@@ -82,8 +83,8 @@ fn setup(mut commands: Commands, assets: Res<AssetCache>, mut atlas_layout: ResM
         ));
     });
 
-    // Spawn audio
-    commands.spawn( AudioBundle { source: assets.music.clone(), settings: PlaybackSettings::LOOP.with_volume(bevy::audio::Volume::new(0.5)) } );
+    // Play audio
+    audio.play(assets.load(PreLoader::MUSIC)).looped();
 
     // Spawn intro route
     commands.spawn(MainMenuRoute);
