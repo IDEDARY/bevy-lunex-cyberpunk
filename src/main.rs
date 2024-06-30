@@ -18,7 +18,7 @@ fn main() {
     let mut app = App::new();
 
     #[cfg(not(target_family = "wasm"))]
-    //app.add_plugins(bevy_embedded_assets::EmbeddedAssetPlugin { mode: bevy_embedded_assets::PluginMode::ReplaceDefault});
+    app.add_plugins(bevy_embedded_assets::EmbeddedAssetPlugin { mode: bevy_embedded_assets::PluginMode::ReplaceDefault});
 
     // Add plugins
     let app = app

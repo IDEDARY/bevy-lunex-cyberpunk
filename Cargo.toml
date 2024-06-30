@@ -53,7 +53,7 @@ opt-level = 3
     "tonemapping_luts",
     
     # 3D
-    #"jpeg",
+    "jpeg",
     "bevy_gltf",
 
     "dynamic_linking",
