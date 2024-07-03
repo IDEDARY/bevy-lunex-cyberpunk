@@ -228,7 +228,7 @@ pub struct CharacterCreatorRoutePlugin;
 impl Plugin for CharacterCreatorRoutePlugin {
     fn build(&self, app: &mut App) {
         app
-            .insert_resource(CharacterData { gender: "female".into(), body: 1})
+            .insert_resource(CharacterData { gender: "Female".into(), body: 1})
             .add_systems(Update, showcase_rotate_system)
             .add_systems(Update, showcase_swap_system.run_if(on_event::<UiChangeEvent>()))
 
