@@ -28,13 +28,13 @@ opt-level = 3
   bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex", features=["kira"] }
 
   # Audio
-  bevy_kira_audio = { version = "0.20.0-rc.1" }
+  bevy_kira_audio = { version = "^0.20.0-rc.1" }
 
   # Physics
-  bevy_rapier3d = "0.27.0-rc.1"
+  bevy_rapier3d = "^0.27.0-rc.1"
 
   # Game engine
-  bevy = { version = "0.14.0-rc.4", default-features = false, features = [
+  bevy = { version = "^0.14.0", default-features = false, features = [
     # Core
     "bevy_core_pipeline",
     "multi_threaded",
@@ -61,8 +61,8 @@ opt-level = 3
 
 # Not WASM
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
-  bevy_embedded_assets = { version = "0.11.0-rc.2" }
+  bevy_embedded_assets = { version = "^0.11.0-rc.2" }
 
 # Platform specific
 [target.'cfg(unix)'.dependencies]
-  bevy = { version = "0.14.0-rc.4", default-features = false, features = ["x11"] }
+  bevy = { version = "^0.14.0", default-features = false, features = ["x11"] }
