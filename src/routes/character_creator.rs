@@ -134,19 +134,20 @@ fn build_route(mut commands: Commands, assets: Res<AssetServer>, query: Query<En
                 ));
 
                 // Spawn text
-               /*  ui.spawn((
+                ui.spawn((
                     panel.add("Text"),
-                    UiLayout::window().pos(Rl((50., 5.))).anchor(Anchor::TopCenter).pack::<Base>(),
+                    UiLayout::window().pos(Rl((53., 8.))).anchor(Anchor::TopCenter).pack::<Base>(),
                     UiText2dBundle {
                         text: Text::from_section("Character creator",
                             TextStyle {
-                                font: assets.font_medium.clone(),
-                                font_size: 8.0,
+                                font: assets.load(PreLoader::FONT_SEMIBOLD),
+                                font_size: 60.0,
                                 color: Color::BEVYPUNK_RED,
                             }),
                         ..default()
                     },
-                )); */
+                    UiTextSize::new().size(Rh(5.0)),
+                ));
     
                 // Spawn button boundary
                 let list = panel.add("List");
