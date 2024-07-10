@@ -68,7 +68,8 @@
 # Not WASM
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
   bevy_embedded_assets = { version = "^0.11.0" }
-  vleue_kinetoscope = "0.2.0"
+  #vleue_kinetoscope = "0.2.0"
+  vleue_kinetoscope = { git = "https://github.com/IDEDARY/vleue_kinetoscope" }
 
 # Platform specific
 [target.'cfg(unix)'.dependencies]

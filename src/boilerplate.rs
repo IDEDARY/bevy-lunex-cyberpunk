@@ -36,6 +36,7 @@ pub struct PreLoader {
 impl PreLoader {
     // Music
     pub const MUSIC: &'static str = "sounds/main_menu.ogg";
+    pub const MUSIC_INTRO: &'static str = "sounds/intro.ogg";
     pub const SFX_UI: &'static str = "sounds/ui_ping.ogg";
 
     // Fonts

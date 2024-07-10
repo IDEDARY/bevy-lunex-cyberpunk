@@ -16,11 +16,13 @@ pub struct IntroRoute;
 struct IntroGif;
 
 /// System that builds the route
+#[cfg(not(target_family = "wasm"))]
 fn build_route(mut commands: Commands, assets: Res<AssetServer>, preloader: Res<PreLoader>, query: Query<Entity, Added<IntroRoute>>, mut event: EventWriter<actions::HideCursor2d>) {
     for route_entity in &query {
         // #======================#
         // #=== USER INTERFACE ===#
 
+        // Hide cursor
         event.send(actions::HideCursor2d(true));
 
         // Spawn route
@@ -48,7 +50,6 @@ fn build_route(mut commands: Commands, assets: Res<AssetServer>, preloader: Res<
                     UiImage2dBundle::from(assets.load(PreLoader::INTRO_BACKGROUND)),  // We use this bundle to add background image to our node
                 ));
 
-                #[cfg(not(target_family = "wasm"))]
                 // Spawn the intro
                 ui.spawn((
                     root.add("Intro"), // You can see here that we used existing "root" link to create chained link (same as "Root/Intro")
@@ -82,12 +83,26 @@ fn despawn_intro_and_spawn_main_menu(
     mut event: EventWriter<actions::HideCursor2d>,
     route: Query<Entity, With<IntroRoute>>,
     intro: Query<&AnimatedImageController, With<IntroGif>>,
+    assets: Res<AssetServer>,
+    audio: Res<Audio>,
 ) {
     for gif in &intro {
+        if gif.current_frame() == 0 {
+            // Play audio
+            audio.play(assets.load(PreLoader::MUSIC_INTRO)).with_volume(0.5);
+        }
         if gif.current_frame() + 1 == gif.frame_count() {
+
+            // Unhide cursor
             event.send(actions::HideCursor2d(false));
+
+            // Change to main menu
             commands.entity(route.single()).despawn_recursive();
             commands.spawn(MainMenuRoute);
+
+            // Play music
+            audio.stop();
+            audio.play(assets.load(PreLoader::MUSIC)).looped();
         }
     }
 }

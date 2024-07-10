@@ -36,10 +36,9 @@ fn main() {
 
 
     #[cfg(not(target_family = "wasm"))]
-    let intro = AnimatedImageLoader::load_now("assets/images/intro/intro.gif".into(), app).unwrap();
-
-    #[cfg(not(target_family = "wasm"))]
-    app.insert_resource(PreLoader { intro });
+    if let Ok(intro) = AnimatedImageLoader::load_now_gif_bytes(include_bytes!("../assets/images/intro/intro.gif"), app){
+        app.insert_resource(PreLoader { intro }); 
+    }
 
     app.run();
 }
@@ -82,13 +81,19 @@ fn setup(mut commands: Commands, assets: Res<AssetServer>, mut atlas_layout: Res
         ));
     });
 
-    // Play audio
-    audio.play(assets.load(PreLoader::MUSIC)).looped();
-
-    // Spawn intro route
     #[cfg(not(target_family = "wasm"))]
-    commands.spawn(IntroRoute);
+    {   
+        // Spawn intro route
+        commands.spawn(IntroRoute);
+    }
+    
 
     #[cfg(target_family = "wasm")]
-    commands.spawn(MainMenuRoute);
+    {   
+        // Skip intro on wasm
+        commands.spawn(MainMenuRoute);
+
+        // Play audio
+        audio.play(assets.load(PreLoader::MUSIC)).looped();
+    }
 }
