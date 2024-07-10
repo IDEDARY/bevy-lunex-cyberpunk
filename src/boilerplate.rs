@@ -28,7 +28,8 @@ impl BevypunkColorPalette for Color {
 // Load the gif before the app is run
 #[derive(Resource)]
 pub struct PreLoader {
-    //pub intro: Handle<AnimatedGif>,
+    #[cfg(not(target_family = "wasm"))]
+    pub intro: Handle<AnimatedImage>,
 }
 
 #[allow(dead_code)]
@@ -60,7 +61,7 @@ impl PreLoader {
     pub const SWITCH_HEAD: &'static str = "images/switch_head.png";
 
     // Routes
-    pub const INTRO_BACKGROUND: &'static str = "images/intro/frame0.png";
+    pub const INTRO_BACKGROUND: &'static str = "images/intro/frame_blank.png";
 
     pub const MAIN_BACKGROUND: &'static str = "images/settings/background.png";
     pub const MAIN_BOARD: &'static str = "images/main_menu/board.png";

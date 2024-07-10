@@ -16,7 +16,7 @@ pub struct IntroRoute;
 struct IntroGif;
 
 /// System that builds the route
-fn build_route(mut commands: Commands, assets: Res<AssetServer>, _preloader: Res<PreLoader>, query: Query<Entity, Added<IntroRoute>>, mut event: EventWriter<actions::HideCursor2d>) {
+fn build_route(mut commands: Commands, assets: Res<AssetServer>, preloader: Res<PreLoader>, query: Query<Entity, Added<IntroRoute>>, mut event: EventWriter<actions::HideCursor2d>) {
     for route_entity in &query {
         // #======================#
         // #=== USER INTERFACE ===#
@@ -48,6 +48,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetServer>, _preloader: Res
                     UiImage2dBundle::from(assets.load(PreLoader::INTRO_BACKGROUND)),  // We use this bundle to add background image to our node
                 ));
 
+                #[cfg(not(target_family = "wasm"))]
                 // Spawn the intro
                 ui.spawn((
                     root.add("Intro"), // You can see here that we used existing "root" link to create chained link (same as "Root/Intro")
@@ -58,10 +59,10 @@ fn build_route(mut commands: Commands, assets: Res<AssetServer>, _preloader: Res
                     Dimension::default(),
 
                     // Spawn the gif bundle
-                    /* AnimatedGifImageBundle {
-                        animated_gif: preloader.intro.clone(),
+                    AnimatedImageBundle {
+                        animated_image: preloader.intro.clone(),
                         ..default()
-                    }, */
+                    },
                     IntroGif,
                 ));
 
@@ -74,12 +75,13 @@ fn build_route(mut commands: Commands, assets: Res<AssetServer>, _preloader: Res
 // #=====================#
 // #=== INTERACTIVITY ===#
 
-/* /// Function that checks if our main intro has finished playing
+/// Function that checks if our main intro has finished playing
+#[cfg(not(target_family = "wasm"))]
 fn despawn_intro_and_spawn_main_menu(
     mut commands: Commands,
     mut event: EventWriter<actions::HideCursor2d>,
     route: Query<Entity, With<IntroRoute>>,
-    intro: Query<&AnimatedGifController, With<IntroGif>>,
+    intro: Query<&AnimatedImageController, With<IntroGif>>,
 ) {
     for gif in &intro {
         if gif.current_frame() + 1 == gif.frame_count() {
@@ -88,7 +90,7 @@ fn despawn_intro_and_spawn_main_menu(
             commands.spawn(MainMenuRoute);
         }
     }
-} */
+}
 
 
 // #====================#
@@ -98,10 +100,11 @@ fn despawn_intro_and_spawn_main_menu(
 pub struct IntroRoutePlugin;
 impl Plugin for IntroRoutePlugin {
     fn build(&self, app: &mut App) {
+        #[cfg(not(target_family = "wasm"))]
         app
-            //.add_plugins(AnimatedGifPlugin)
+            .add_plugins(AnimatedImagePlugin)
 
-            //.add_systems(Update, despawn_intro_and_spawn_main_menu)
+            .add_systems(Update, despawn_intro_and_spawn_main_menu)
             .add_systems(PreUpdate, build_route.before(UiSystems::Compute));
     }
 }

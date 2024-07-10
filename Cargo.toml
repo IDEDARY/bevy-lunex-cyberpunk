@@ -28,11 +28,8 @@
   # Required for VFX
   rand = "0.8.5"
 
-  # Required for animations
-  #vleue_kinetoscope = "0.1.1"
-
   # UI framework
-  #bevy_lunex = "0.2.0"
+  #bevy_lunex = "0.2.1"
   #bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev", features=["kira"] }
   bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex", features=["kira"] }
 
@@ -40,7 +37,7 @@
   bevy_kira_audio = { version = "^0.20.0" }
 
   # Physics
-  bevy_rapier3d = "^0.27.0-rc.1"
+  bevy_rapier3d = "^0.27.0"
 
   # Game engine
   bevy = { version = "^0.14.0", default-features = false, features = [
@@ -71,7 +68,8 @@
 # Not WASM
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
   bevy_embedded_assets = { version = "^0.11.0" }
+  vleue_kinetoscope = "0.2.0"
 
 # Platform specific
 [target.'cfg(unix)'.dependencies]
-  bevy = { version = "^0.14.0", default-features = false, features = ["x11"] }
+  bevy = { version = "^0.14.0", default-features = false, features = ["x11", "wayland"] }

@@ -1,7 +1,8 @@
 pub(crate) use bevy::{prelude::*, sprite::Anchor};
 pub(crate) use bevy_lunex::prelude::*;
 pub(crate) use bevy_kira_audio::prelude::*;
-//pub(crate) use vleue_kinetoscope::*;
+#[cfg(not(target_family = "wasm"))]
+pub(crate) use vleue_kinetoscope::*;
 
 mod boilerplate;
 use boilerplate::*;
@@ -34,15 +35,13 @@ fn main() {
         .add_plugins(RoutePlugin);
 
 
-    // Load gif before starting our app
-    //let gif = AnimatedGifLoader::load_now("assets/images/intro/intro-lossy.gif".into(), app);
+    #[cfg(not(target_family = "wasm"))]
+    let intro = AnimatedImageLoader::load_now("assets/images/intro/intro.gif".into(), app).unwrap();
 
-    // Insert the loaded handle and start our app
-    app
-    .insert_resource(PreLoader {
-        //intro: gif
-    })
-    .run();
+    #[cfg(not(target_family = "wasm"))]
+    app.insert_resource(PreLoader { intro });
+
+    app.run();
 }
 
 
@@ -87,5 +86,9 @@ fn setup(mut commands: Commands, assets: Res<AssetServer>, mut atlas_layout: Res
     audio.play(assets.load(PreLoader::MUSIC)).looped();
 
     // Spawn intro route
+    #[cfg(not(target_family = "wasm"))]
+    commands.spawn(IntroRoute);
+
+    #[cfg(target_family = "wasm")]
     commands.spawn(MainMenuRoute);
 }
