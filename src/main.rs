@@ -36,7 +36,7 @@ fn main() {
 
 
     #[cfg(not(target_family = "wasm"))]
-    if let Ok(intro) = AnimatedImageLoader::load_now_gif_bytes(include_bytes!("../assets/images/intro/intro.gif"), app){
+    if let Ok(intro) = AnimatedImageLoader::load_now_from_bytes(include_bytes!("../assets/images/intro/intro.gif"), "gif", app){
         app.insert_resource(PreLoader { intro }); 
     }
 
