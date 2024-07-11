@@ -1,4 +1,4 @@
-use bevy_rapier3d::prelude::*;
+use avian3d::prelude::*;
 
 use crate::*;
 
@@ -108,7 +108,7 @@ fn controller_state(keyboard_input: Res<ButtonInput<KeyCode>>, mut query: Query<
         }
     }
 }
-fn controller_movement(mut query: Query<(&ControllerInput, &ControllerState, &ControllerPlaneRotation, &mut KinematicCharacterController)>, time: Res<Time>) {
+fn controller_movement(mut query: Query<(&ControllerInput, &ControllerState, &ControllerPlaneRotation, &mut LinearVelocity)>, time: Res<Time>) {
     for (input, state, rotation, mut physics) in &mut query {
 
         // Get the proper movement speed
@@ -136,7 +136,8 @@ fn controller_movement(mut query: Query<(&ControllerInput, &ControllerState, &Co
         global += front_vector * local.x;
         global += right_vector * local.y;
 
-        physics.translation = Some(Vec3::new(global.x, 0.0, global.y) * time.delta_seconds());
+        physics.x = global.x;//* time.delta_seconds();
+        physics.z = global.y;//* time.delta_seconds();
     }
 }
 
@@ -145,20 +146,18 @@ fn controller_movement(mut query: Query<(&ControllerInput, &ControllerState, &Co
 pub struct ControllerGravity {
     z: f32,
 }
-fn controller_gravity(mut query: Query<(&mut ControllerGravity, &ControllerInput, &mut KinematicCharacterController, &KinematicCharacterControllerOutput)>, time: Res<Time>) {
-    for (mut gravity, input, mut physics, physics_output) in &mut query {
+fn controller_gravity(mut query: Query<(&mut ControllerGravity, &ControllerInput, &mut LinearVelocity, &CollidingEntities)>, time: Res<Time>) {
+    for (mut gravity, input, mut physics, collisions) in &mut query {
 
-        gravity.z += -10.0 * time.delta_seconds();
-        if physics_output.grounded { gravity.z = 0.0 }
+        //gravity.z += -10.0 * time.delta_seconds();
+        //if collisions.is_empty() { gravity.z = 0.0 }
 
-        if input.jump { gravity.z = 6.0 };
+        if input.jump { physics.z = 60.0 };
 
-        if !physics_output.grounded {
-            if let Some(t) = &mut physics.translation {
-                t.y = gravity.z * time.delta_seconds();
-            }
-        }
-        
+        //if !collisions.is_empty() {
+        //    physics.y += gravity.z * time.delta_seconds();
+        //}
+        info!("{:?}", physics);
     }
 }
 

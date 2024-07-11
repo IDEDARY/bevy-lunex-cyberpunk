@@ -1,7 +1,7 @@
 use bevy::{core_pipeline::{bloom::BloomSettings, contrast_adaptive_sharpening::ContrastAdaptiveSharpeningSettings, experimental::taa::{TemporalAntiAliasBundle, TemporalAntiAliasPlugin}, Skybox}, render::render_resource::{Extent3d, TextureDescriptor, TextureDimension, TextureFormat, TextureUsages}, sprite::SpriteSource};
 
 use crate::*;
-use bevy_rapier3d::prelude::*;
+use avian3d::prelude::*;
 
 
 // #=========================#
@@ -106,10 +106,8 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                 ControllerState::default(),
                 ControllerGravity::default(),
 
-                RigidBody::KinematicPositionBased,
-                Collider::capsule_y(0.5, 0.25),
-                KinematicCharacterController::default(),
-
+                RigidBody::Dynamic,
+                Collider::capsule(0.5, 0.25),
             )).with_children(|obj| {
 
                 obj.spawn(SpatialBundle {
@@ -176,7 +174,8 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                     transform: Transform::from_xyz(0.0, -1.0, 0.0),
                     ..default()
                 },
-                Collider::cuboid(25.0, 1.0, 25.0),
+                Collider::cuboid(50.0, 2.0, 50.0),
+                RigidBody::Static,
             ));
             route.spawn((
                 PbrBundle {
@@ -185,7 +184,8 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                     transform: Transform::from_xyz(0.0, 1.0, -25.0),
                     ..default()
                 },
-                Collider::cuboid(25.0, 1.0, 1.0),
+                Collider::cuboid(50.0, 2.0, 2.0),
+                RigidBody::Static,
             ));
             route.spawn((
                 PbrBundle {
@@ -194,7 +194,8 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                     transform: Transform::from_xyz(0.0, 1.0, 25.0),
                     ..default()
                 },
-                Collider::cuboid(25.0, 1.0, 1.0),
+                Collider::cuboid(50.0, 2.0, 2.0),
+                RigidBody::Static,
             ));
             route.spawn((
                 PbrBundle {
@@ -203,7 +204,8 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                     transform: Transform::from_xyz(-25.0, 1.0, 0.0),
                     ..default()
                 },
-                Collider::cuboid(1.0, 1.0, 25.0),
+                Collider::cuboid(2.0, 2.0, 50.0),
+                RigidBody::Static,
             ));
             route.spawn((
                 PbrBundle {
@@ -212,7 +214,8 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                     transform: Transform::from_xyz(25.0, 1.0, 0.0),
                     ..default()
                 },
-                Collider::cuboid(1.0, 1.0, 25.0),
+                Collider::cuboid(2.0, 2.0, 50.0),
+                RigidBody::Static,
             ));
 
             route.spawn((

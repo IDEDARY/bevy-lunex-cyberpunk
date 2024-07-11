@@ -37,7 +37,7 @@
   bevy_kira_audio = { version = "^0.20.0" }
 
   # Physics
-  bevy_rapier3d = "^0.27.0"
+  avian3d = "^0.1.0"
 
   # Game engine
   bevy = { version = "^0.14.0", default-features = false, features = [
