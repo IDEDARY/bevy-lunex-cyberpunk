@@ -1,7 +1,7 @@
 use crate::{Plugin, App};
+use avian3d::prelude::*;
 
 pub mod controller;
-use bevy_rapier3d::plugin::{NoUserData, RapierPhysicsPlugin};
 pub use controller::*;
 
 pub mod route;
@@ -21,8 +21,8 @@ impl Plugin for GamePlugin {
         app
             .add_plugins(InputPlugin)
             .add_plugins(EntryPlugin)
-            .add_plugins(RapierPhysicsPlugin::<NoUserData>::default())
-            .add_plugins(ControllerPlugin);
+            .add_plugins(ControllerPlugin)
+            .add_plugins(PhysicsPlugins::default());
     }
 }
 

@@ -1,7 +1,8 @@
 pub(crate) use bevy::{prelude::*, sprite::Anchor};
 pub(crate) use bevy_lunex::prelude::*;
 pub(crate) use bevy_kira_audio::prelude::*;
-//pub(crate) use vleue_kinetoscope::*;
+#[cfg(not(target_family = "wasm"))]
+pub(crate) use vleue_kinetoscope::*;
 
 mod boilerplate;
 use boilerplate::*;
@@ -34,15 +35,12 @@ fn main() {
         .add_plugins(RoutePlugin);
 
 
-    // Load gif before starting our app
-    //let gif = AnimatedGifLoader::load_now("assets/images/intro/intro-lossy.gif".into(), app);
+    #[cfg(not(target_family = "wasm"))]
+    if let Ok(intro) = AnimatedImageLoader::load_now_from_bytes(include_bytes!("../assets/images/intro/intro.gif"), "gif", app){
+        app.insert_resource(PreLoader { intro }); 
+    }
 
-    // Insert the loaded handle and start our app
-    app
-    .insert_resource(PreLoader {
-        //intro: gif
-    })
-    .run();
+    app.run();
 }
 
 
@@ -57,11 +55,17 @@ fn setup(mut commands: Commands, assets: Res<AssetServer>, mut atlas_layout: Res
         camera.spawn ((
 
             // Here we can map different native cursor icons to texture atlas indexes and sprite offsets
-            Cursor2d::new().native_cursor(false).confined(true)
-                .register_cursor(CursorIcon::Default, 0, (14.0, 14.0))
-                .register_cursor(CursorIcon::Pointer, 1, (10.0, 12.0))
-                .register_cursor(CursorIcon::Grab, 2, (40.0, 40.0)),
+            Cursor2d::new()
+                .set_index(CursorIcon::Default, 0, (14.0, 14.0))
+                .set_index(CursorIcon::Pointer, 1, (10.0, 12.0))
+                .set_index(CursorIcon::Grab, 2, (40.0, 40.0)),
 
+            // Here we specify that the cursor should be controlled by gamepad 0
+            //GamepadCursor::new(0),
+
+            // This is required for picking to work
+            PointerBundle::new(PointerId::Custom(pointer::Uuid::new_v4())),
+            
             // Add texture atlas to the cursor
             TextureAtlas {
                 layout: atlas_layout.add(TextureAtlasLayout::from_grid(UVec2::splat(80), 3, 1, None, None)),
@@ -83,9 +87,19 @@ fn setup(mut commands: Commands, assets: Res<AssetServer>, mut atlas_layout: Res
         ));
     });
 
-    // Play audio
-    audio.play(assets.load(PreLoader::MUSIC)).looped();
+    #[cfg(not(target_family = "wasm"))]
+    {   
+        // Spawn intro route
+        commands.spawn(IntroRoute);
+    }
+    
 
-    // Spawn intro route
-    commands.spawn(MainMenuRoute);
+    #[cfg(target_family = "wasm")]
+    {   
+        // Skip intro on wasm
+        commands.spawn(MainMenuRoute);
+
+        // Play audio
+        audio.play(assets.load(PreLoader::MUSIC)).looped();
+    }
 }
