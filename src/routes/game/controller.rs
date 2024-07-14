@@ -157,7 +157,7 @@ fn controller_gravity(mut query: Query<(&mut ControllerGravity, &ControllerInput
         //if !collisions.is_empty() {
         //    physics.y += gravity.z * time.delta_seconds();
         //}
-        info!("{:?}", physics);
+        //info!("{:?}", physics);
     }
 }
 
