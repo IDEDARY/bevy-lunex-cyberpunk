@@ -47,6 +47,7 @@
     "bevy_winit",
     #"bevy_audio",
     "bevy_sprite",
+    "bevy_gilrs",
     "bevy_text",
     "webgl2",
 

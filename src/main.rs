@@ -55,11 +55,17 @@ fn setup(mut commands: Commands, assets: Res<AssetServer>, mut atlas_layout: Res
         camera.spawn ((
 
             // Here we can map different native cursor icons to texture atlas indexes and sprite offsets
-            Cursor2d::new().native_cursor(false)
-                .register_cursor(CursorIcon::Default, 0, (14.0, 14.0))
-                .register_cursor(CursorIcon::Pointer, 1, (10.0, 12.0))
-                .register_cursor(CursorIcon::Grab, 2, (40.0, 40.0)),
+            Cursor2d::new()
+                .set_index(CursorIcon::Default, 0, (14.0, 14.0))
+                .set_index(CursorIcon::Pointer, 1, (10.0, 12.0))
+                .set_index(CursorIcon::Grab, 2, (40.0, 40.0)),
 
+            // Here we specify that the cursor should be controlled by gamepad 0
+            GamepadCursor::new(0),
+
+            // This is required for picking to work
+            PointerBundle::new(PointerId::Custom(pointer::Uuid::new_v4())),
+            
             // Add texture atlas to the cursor
             TextureAtlas {
                 layout: atlas_layout.add(TextureAtlasLayout::from_grid(UVec2::splat(80), 3, 1, None, None)),
