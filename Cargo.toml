@@ -8,39 +8,46 @@
   repository  = "https://github.com/idedary/bevypunk"
 
 [profile.dev]
-opt-level = 1
+  debug = 0
+  strip = "debuginfo"
+  opt-level = 0
 
 [profile.dev.package."*"]
-opt-level = 3
+  opt-level = 3
 
+[profile.release]
+  opt-level = 3
+  panic = 'abort'
+  debug = 0
+  strip = true
+  lto = "thin"
+  codegen-units = 1
 
 [dependencies]
 
   # Required for VFX
   rand = "0.8.5"
 
-  # Required for animations
-  #vleue_kinetoscope = "0.1.1"
-
   # UI framework
-  #bevy_lunex = "0.1.1"
-  #bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev", features=[] }
+  #bevy_lunex = "0.2.1"
+  #bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev", features=["kira"] }
   bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex", features=["kira"] }
 
   # Audio
-  bevy_kira_audio = { version = "0.20.0-rc.1" }
+  bevy_kira_audio = { version = "^0.20.0" }
 
   # Physics
-  bevy_rapier3d = "0.27.0-rc.1"
+  avian3d = "^0.1.0"
 
   # Game engine
-  bevy = { version = "0.14.0-rc.4", default-features = false, features = [
+  bevy = { version = "^0.14.0", default-features = false, features = [
     # Core
     "bevy_core_pipeline",
     "multi_threaded",
     "bevy_winit",
     #"bevy_audio",
     "bevy_sprite",
+    "bevy_gilrs",
     "bevy_text",
     "webgl2",
 
@@ -61,8 +68,10 @@ opt-level = 3
 
 # Not WASM
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
-  bevy_embedded_assets = { version = "0.11.0-rc.2" }
+  bevy_embedded_assets = { version = "^0.11.0" }
+  #vleue_kinetoscope = "0.2.0"
+  vleue_kinetoscope = { git = "https://github.com/IDEDARY/vleue_kinetoscope" }
 
 # Platform specific
 [target.'cfg(unix)'.dependencies]
-  bevy = { version = "0.14.0-rc.4", default-features = false, features = ["x11"] }
+  bevy = { version = "^0.14.0", default-features = false, features = ["x11", "wayland"] }

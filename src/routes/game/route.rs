@@ -1,7 +1,7 @@
 use bevy::{core_pipeline::{bloom::BloomSettings, contrast_adaptive_sharpening::ContrastAdaptiveSharpeningSettings, experimental::taa::{TemporalAntiAliasBundle, TemporalAntiAliasPlugin}, Skybox}, render::render_resource::{Extent3d, TextureDescriptor, TextureDimension, TextureFormat, TextureUsages}, sprite::SpriteSource};
 
 use crate::*;
-use bevy_rapier3d::prelude::*;
+use avian3d::prelude::*;
 
 
 // #=========================#
@@ -106,10 +106,8 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                 ControllerState::default(),
                 ControllerGravity::default(),
 
-                RigidBody::KinematicPositionBased,
-                Collider::capsule_y(0.5, 0.25),
-                KinematicCharacterController::default(),
-
+                RigidBody::Dynamic,
+                Collider::capsule(0.5, 0.25),
             )).with_children(|obj| {
 
                 obj.spawn(SpatialBundle {
@@ -176,7 +174,8 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                     transform: Transform::from_xyz(0.0, -1.0, 0.0),
                     ..default()
                 },
-                Collider::cuboid(25.0, 1.0, 25.0),
+                Collider::cuboid(50.0, 2.0, 50.0),
+                RigidBody::Static,
             ));
             route.spawn((
                 PbrBundle {
@@ -185,7 +184,8 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                     transform: Transform::from_xyz(0.0, 1.0, -25.0),
                     ..default()
                 },
-                Collider::cuboid(25.0, 1.0, 1.0),
+                Collider::cuboid(50.0, 2.0, 2.0),
+                RigidBody::Static,
             ));
             route.spawn((
                 PbrBundle {
@@ -194,7 +194,8 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                     transform: Transform::from_xyz(0.0, 1.0, 25.0),
                     ..default()
                 },
-                Collider::cuboid(25.0, 1.0, 1.0),
+                Collider::cuboid(50.0, 2.0, 2.0),
+                RigidBody::Static,
             ));
             route.spawn((
                 PbrBundle {
@@ -203,7 +204,8 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                     transform: Transform::from_xyz(-25.0, 1.0, 0.0),
                     ..default()
                 },
-                Collider::cuboid(1.0, 1.0, 25.0),
+                Collider::cuboid(2.0, 2.0, 50.0),
+                RigidBody::Static,
             ));
             route.spawn((
                 PbrBundle {
@@ -212,7 +214,8 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                     transform: Transform::from_xyz(25.0, 1.0, 0.0),
                     ..default()
                 },
-                Collider::cuboid(1.0, 1.0, 25.0),
+                Collider::cuboid(2.0, 2.0, 50.0),
+                RigidBody::Static,
             ));
 
             route.spawn((
@@ -226,12 +229,36 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                     UiLink::<Ui3d>::path("Display"),
 
                     UiLayout::boundary().pos2((1920.0/1000.0, 1080.0/1000.0)).pack::<Base>(),
-                    UiLayout::boundary().pos1(-10.0/1000.0).pos2((1930.0/1000.0, 1090.0/1000.0)).pack::<Hover>(),
+                    UiLayout::boundary().pos1((-100.0/1000.0, 0.0)).pos2((2020.0/1000.0, 1080.0/1000.0)).pack::<Hover>(),
                     UiLayoutController::default(),
 
                     PickableBundle::default(),
                     SpriteSource::default(),
-                    UiAnimator::<Hover>::new().forward_speed(5.0).backward_speed(1.0),
+                    UiAnimator::<Hover>::new().forward_speed(6.0).backward_speed(6.0),
+                    OnHoverSetCursor::new(CursorIcon::Pointer),
+
+                    //UiMaterial3dBundle::from_image(&mut material, asset_server.load("images/hud/hud.png")),
+                    UiMaterial3dBundle::from_transparent_image(&mut materials, asset_server.load("images/hud/hud.png")),
+                ));
+            });
+
+            route.spawn((
+                UiTreeBundle::<Ui3d> {
+                    transform: Transform::from_xyz(0.0, 2.0, -2.5),
+                    tree: UiTree::new("Worldspace"),
+                    ..default()
+                },
+            )).with_children(|ui|{
+                ui.spawn((
+                    UiLink::<Ui3d>::path("Display"),
+
+                    UiLayout::boundary().pos2((1920.0/1000.0, 1080.0/1000.0)).pack::<Base>(),
+                    UiLayout::boundary().pos1((-100.0/1000.0, 0.0)).pos2((2020.0/1000.0, 1080.0/1000.0)).pack::<Hover>(),
+                    UiLayoutController::default(),
+
+                    PickableBundle::default(),
+                    SpriteSource::default(),
+                    UiAnimator::<Hover>::new().forward_speed(6.0).backward_speed(6.0),
                     OnHoverSetCursor::new(CursorIcon::Pointer),
 
                     //UiMaterial3dBundle::from_image(&mut material, asset_server.load("images/hud/hud.png")),

@@ -174,6 +174,9 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
                 // This will change cursor icon on mouse hover
                 OnHoverSetCursor::new(CursorIcon::Pointer),
 
+                // Play sound on hover event
+                OnHoverPlaySound::new(assets.load(PreLoader::SFX_UI)),
+
                 // This will set hover color to yellow
                 UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW),
 
@@ -209,6 +212,9 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
 
                 // This will change cursor icon on mouse hover
                 OnHoverSetCursor::new(CursorIcon::Pointer),
+
+                // Play sound on hover event
+                OnHoverPlaySound::new(assets.load(PreLoader::SFX_UI)),
 
                 // This will set hover color to yellow
                 UiColor::<Hover>::new(Color::BEVYPUNK_YELLOW),

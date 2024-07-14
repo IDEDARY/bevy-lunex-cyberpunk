@@ -16,11 +16,13 @@ pub struct IntroRoute;
 struct IntroGif;
 
 /// System that builds the route
-fn build_route(mut commands: Commands, assets: Res<AssetServer>, _preloader: Res<PreLoader>, query: Query<Entity, Added<IntroRoute>>, mut event: EventWriter<actions::HideCursor2d>) {
+#[cfg(not(target_family = "wasm"))]
+fn build_route(mut commands: Commands, assets: Res<AssetServer>, preloader: Res<PreLoader>, query: Query<Entity, Added<IntroRoute>>, mut event: EventWriter<actions::HideCursor2d>) {
     for route_entity in &query {
         // #======================#
         // #=== USER INTERFACE ===#
 
+        // Hide cursor
         event.send(actions::HideCursor2d(true));
 
         // Spawn route
@@ -58,10 +60,10 @@ fn build_route(mut commands: Commands, assets: Res<AssetServer>, _preloader: Res
                     Dimension::default(),
 
                     // Spawn the gif bundle
-                    /* AnimatedGifImageBundle {
-                        animated_gif: preloader.intro.clone(),
+                    AnimatedImageBundle {
+                        animated_image: preloader.intro.clone(),
                         ..default()
-                    }, */
+                    },
                     IntroGif,
                 ));
 
@@ -74,21 +76,36 @@ fn build_route(mut commands: Commands, assets: Res<AssetServer>, _preloader: Res
 // #=====================#
 // #=== INTERACTIVITY ===#
 
-/* /// Function that checks if our main intro has finished playing
+/// Function that checks if our main intro has finished playing
+#[cfg(not(target_family = "wasm"))]
 fn despawn_intro_and_spawn_main_menu(
     mut commands: Commands,
     mut event: EventWriter<actions::HideCursor2d>,
     route: Query<Entity, With<IntroRoute>>,
-    intro: Query<&AnimatedGifController, With<IntroGif>>,
+    intro: Query<&AnimatedImageController, With<IntroGif>>,
+    assets: Res<AssetServer>,
+    audio: Res<Audio>,
 ) {
     for gif in &intro {
+        if gif.current_frame() == 0 {
+            // Play audio
+            audio.play(assets.load(PreLoader::MUSIC_INTRO)).with_volume(0.5);
+        }
         if gif.current_frame() + 1 == gif.frame_count() {
+
+            // Unhide cursor
             event.send(actions::HideCursor2d(false));
+
+            // Change to main menu
             commands.entity(route.single()).despawn_recursive();
             commands.spawn(MainMenuRoute);
+
+            // Play music
+            audio.stop();
+            audio.play(assets.load(PreLoader::MUSIC)).looped();
         }
     }
-} */
+}
 
 
 // #====================#
@@ -98,10 +115,11 @@ fn despawn_intro_and_spawn_main_menu(
 pub struct IntroRoutePlugin;
 impl Plugin for IntroRoutePlugin {
     fn build(&self, app: &mut App) {
+        #[cfg(not(target_family = "wasm"))]
         app
-            //.add_plugins(AnimatedGifPlugin)
+            .add_plugins(AnimatedImagePlugin)
 
-            //.add_systems(Update, despawn_intro_and_spawn_main_menu)
+            .add_systems(Update, despawn_intro_and_spawn_main_menu)
             .add_systems(PreUpdate, build_route.before(UiSystems::Compute));
     }
 }
