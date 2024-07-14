@@ -90,7 +90,7 @@ fn setup(mut commands: Commands, assets: Res<AssetServer>, mut atlas_layout: Res
     #[cfg(not(target_family = "wasm"))]
     {   
         // Spawn intro route
-        commands.spawn(MainMenuRoute);
+        commands.spawn(IntroRoute);
     }
     
 
