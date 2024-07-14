@@ -61,7 +61,7 @@ fn setup(mut commands: Commands, assets: Res<AssetServer>, mut atlas_layout: Res
                 .set_index(CursorIcon::Grab, 2, (40.0, 40.0)),
 
             // Here we specify that the cursor should be controlled by gamepad 0
-            GamepadCursor::new(0),
+            //GamepadCursor::new(0),
 
             // This is required for picking to work
             PointerBundle::new(PointerId::Custom(pointer::Uuid::new_v4())),
