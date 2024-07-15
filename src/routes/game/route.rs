@@ -93,20 +93,35 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                 }
             } */
 
-
             // Spawn player
             route.spawn((
+                /* PbrBundle {
+                    mesh: meshes.add(Capsule3d::new(0.4, 1.0)),
+                    material: materials.add(Color::srgb(0.8, 0.7, 0.6)),
+                    transform: Transform::from_xyz(0.0, 1.5, 0.0),
+                    ..default()
+                },
+                CharacterControllerBundle::new(Collider::capsule(0.4, 1.0)).with_movement(
+                    30.0,
+                    0.92,
+                    7.0,
+                    (30.0 as avian3d::math::Scalar).to_radians(),
+                ),
+                Friction::ZERO.with_combine_rule(CoefficientCombine::Min),
+                Restitution::ZERO.with_combine_rule(CoefficientCombine::Min),
+                GravityScale(2.0), */
                 // THIS is XY PLANE (Around Z) rotation and XYZ movement
                 SpatialBundle {
                     transform: Transform::from_xyz(0.0, 3.0, 0.0),
                     ..default()
                 },
-                ControllerInput::default(),
-                ControllerPlaneRotation::default(),
-                ControllerState::default(),
-                ControllerGravity::default(),
+                //ControllerInput::default(),
+                PlayerPlaneRotation::default(),
+                PlayerState::default(),
+                //ControllerGravity::default(),
 
                 RigidBody::Dynamic,
+                LockedAxes::ROTATION_LOCKED,
                 Collider::capsule(0.5, 0.25),
             )).with_children(|obj| {
 
@@ -149,7 +164,7 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                                 ..default()
                             },
                             VisibilityBundle::default(),
-                            ControllerTiltRotation::default(),
+                            PlayerTiltRotation::default(),
                         ));
 
                         #[cfg(not(target_family = "wasm"))]
