@@ -1,6 +1,9 @@
 use crate::{Plugin, App};
 use avian3d::prelude::*;
 
+pub mod avian;
+pub use avian::*;
+
 pub mod controller;
 pub use controller::*;
 
@@ -21,7 +24,8 @@ impl Plugin for GamePlugin {
         app
             .add_plugins(InputPlugin)
             .add_plugins(EntryPlugin)
-            .add_plugins(ControllerPlugin)
+            .add_plugins(PlayerPlugin)
+            .add_plugins(CharacterControllerPlugin)
             .add_plugins(PhysicsPlugins::default());
     }
 }
