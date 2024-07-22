@@ -80,7 +80,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetServer>, query: Query<En
 
             // Spawn the master ui tree
             route.spawn((
-                UiTreeBundle::<MainUi>::from(UiTree::new("CharacterCreator")),
+                UiTreeBundle::<MainUi>::from(UiTree::new2d("CharacterCreator")),
                 MovableByCamera,
             )).with_children(|ui| {
     

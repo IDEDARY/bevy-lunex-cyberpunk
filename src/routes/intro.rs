@@ -32,7 +32,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetServer>, preloader: Res<
 
             // Spawn the master ui tree
             route.spawn((
-                UiTreeBundle::<MainUi>::from(UiTree::new("Intro")),
+                UiTreeBundle::<MainUi>::from(UiTree::new2d("Intro")),
                 MovableByCamera,
             )).with_children(|ui| {
 

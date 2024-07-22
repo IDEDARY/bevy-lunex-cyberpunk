@@ -236,15 +236,15 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
             route.spawn((
                 UiTreeBundle::<Ui3d> {
                     transform: Transform::from_xyz(0.0, 2.0, -2.0),
-                    tree: UiTree::new("Worldspace"),
+                    tree: UiTree::new3d("Worldspace"),
                     ..default()
                 },
             )).with_children(|ui|{
                 ui.spawn((
                     UiLink::<Ui3d>::path("Display"),
 
-                    UiLayout::boundary().pos2((1920.0/1000.0, 1080.0/1000.0)).pack::<Base>(),
-                    UiLayout::boundary().pos1((-100.0/1000.0, 0.0)).pos2((2020.0/1000.0, 1080.0/1000.0)).pack::<Hover>(),
+                    UiLayout::boundary().pos2((1920.0, 1080.0)).pack::<Base>(),
+                    UiLayout::boundary().pos1((-100.0, 0.0)).pos2((2020.0, 1080.0)).pack::<Hover>(),
                     UiLayoutController::default(),
 
                     PickableBundle::default(),
@@ -260,15 +260,15 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
             route.spawn((
                 UiTreeBundle::<Ui3d> {
                     transform: Transform::from_xyz(0.0, 2.0, -2.5),
-                    tree: UiTree::new("Worldspace"),
+                    tree: UiTree::new3d("Worldspace"),
                     ..default()
                 },
             )).with_children(|ui|{
                 ui.spawn((
                     UiLink::<Ui3d>::path("Display"),
 
-                    UiLayout::boundary().pos2((1920.0/1000.0, 1080.0/1000.0)).pack::<Base>(),
-                    UiLayout::boundary().pos1((-100.0/1000.0, 0.0)).pos2((2020.0/1000.0, 1080.0/1000.0)).pack::<Hover>(),
+                    UiLayout::boundary().pos2((1920.0, 1080.0)).pack::<Base>(),
+                    UiLayout::boundary().pos1((-100.0, 0.0)).pos2((2020.0, 1080.0)).pack::<Hover>(),
                     UiLayoutController::default(),
 
                     PickableBundle::default(),
@@ -283,7 +283,7 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
 
             // Spawn the master ui tree        
             route.spawn((
-                UiTreeBundle::<MainUi>::from(UiTree::new("HUD")),
+                UiTreeBundle::<MainUi>::from(UiTree::new2d("HUD")),
                 MovableByCamera,
             )).with_children(|ui| {
 
