@@ -104,8 +104,8 @@ pub fn default_plugins() -> PluginGroupBuilder {
         meta_check: bevy::asset::AssetMetaCheck::Never,
         ..default()
     })
-    .add(UiGenericPlugin::<Ui3d>::new())
-    .add(UiDebugPlugin::<Ui3d>::new())
+    .add_group(UiGenericPlugins::<Ui3d>::new())
+    //.add(UiDebugPlugin::<Ui3d>::new())
     .add(AudioPlugin)
 }
 

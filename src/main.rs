@@ -23,7 +23,7 @@ fn main() {
 
     // Add plugins
     let app = app
-        .add_plugins((default_plugins(), UiPlugin))
+        .add_plugins((default_plugins(), UiDefaultPlugins))
         //.add_plugins(UiDebugPlugin::<MainUi>::new())
 
         // General setup
