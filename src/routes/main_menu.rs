@@ -27,7 +27,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetServer>, query: Query<En
             // Spawn the master ui tree        
             route.spawn((
                 UiTreeBundle::<MainUi>::from(UiTree::new2d("MainMenu")),
-                MovableByCamera,
+                SourceFromCamera,
             )).with_children(|ui| {
 
                 // Spawn the root div

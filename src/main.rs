@@ -47,7 +47,7 @@ fn main() {
 // #=====================#
 // #=== GENERIC SETUP ===#
 
-fn setup(mut commands: Commands, assets: Res<AssetServer>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>, audio: Res<Audio>){
+fn setup(mut commands: Commands, assets: Res<AssetServer>, mut atlas_layout: ResMut<Assets<TextureAtlasLayout>>, _audio: Res<Audio>){
     // Spawn 2D camera
     commands.spawn(camera()).with_children(|camera| {
 
@@ -86,7 +86,7 @@ fn setup(mut commands: Commands, assets: Res<AssetServer>, mut atlas_layout: Res
     #[cfg(not(target_family = "wasm"))]
     {
         // Spawn intro route
-        commands.spawn(MainMenuRoute);
+        commands.spawn(IntroRoute);
     }
 
 
@@ -96,6 +96,6 @@ fn setup(mut commands: Commands, assets: Res<AssetServer>, mut atlas_layout: Res
         commands.spawn(MainMenuRoute);
 
         // Play audio
-        audio.play(assets.load(PreLoader::MUSIC)).looped();
+        _audio.play(assets.load(PreLoader::MUSIC)).looped();
     }
 }

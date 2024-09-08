@@ -118,6 +118,7 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                 //ControllerInput::default(),
                 PlayerPlaneRotation::default(),
                 PlayerState::default(),
+                MovementDampingFactor(0.99),
                 //ControllerGravity::default(),
 
                 RigidBody::Dynamic,
@@ -248,7 +249,7 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                     UiLayoutController::default(),
 
                     PickableBundle::default(),
-                    SpriteSource::default(),
+                    SpriteSource,
                     UiAnimator::<Hover>::new().forward_speed(6.0).backward_speed(6.0),
                     OnHoverSetCursor::new(CursorIcon::Pointer),
 
@@ -272,7 +273,7 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                     UiLayoutController::default(),
 
                     PickableBundle::default(),
-                    SpriteSource::default(),
+                    SpriteSource,
                     UiAnimator::<Hover>::new().forward_speed(6.0).backward_speed(6.0),
                     OnHoverSetCursor::new(CursorIcon::Pointer),
 
@@ -284,14 +285,14 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
             // Spawn the master ui tree        
             route.spawn((
                 UiTreeBundle::<MainUi>::from(UiTree::new2d("HUD")),
-                MovableByCamera,
+                SourceFromCamera,
             )).with_children(|ui| {
 
                 // Spawn 3D camera view
                 ui.spawn((
                     UiLink::<MainUi>::path("Camera"),
                     UiLayout::window_full().pack::<Base>(), // Make this resizable
-                    MovableByCamera,                        // This will resize the texture on Dimension change
+                    SourceFromCamera,                        // This will resize the texture on Dimension change
                     UiImage2dBundle::from(render_image),
                     PickingPortal,
                 ));

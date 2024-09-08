@@ -81,7 +81,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetServer>, query: Query<En
             // Spawn the master ui tree
             route.spawn((
                 UiTreeBundle::<MainUi>::from(UiTree::new2d("CharacterCreator")),
-                MovableByCamera,
+                SourceFromCamera,
             )).with_children(|ui| {
     
                 // Spawn the root div
@@ -115,7 +115,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetServer>, query: Query<En
 
                     // If it detects UiClick event for this entity it will despawn route_entity and run a closure
                     OnUiClickDespawn::new(route_entity),
-                    OnUiClickCommands::new(|commands| { commands.spawn((MainMenuRoute, MovableByCamera)); })
+                    OnUiClickCommands::new(|commands| { commands.spawn((MainMenuRoute, SourceFromCamera)); })
                 ));
     
                 // Spawn panel boundary
