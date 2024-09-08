@@ -132,7 +132,7 @@ impl Plugin for MainButtonPlugin {
     fn build(&self, app: &mut App) {
         app
             // Add Lunex plugins for our sandboxed UI
-            .add_plugins(UiGenericPlugin::<MainButtonUi>::new())
+            .add_plugins(UiGenericPlugins::<MainButtonUi>::new())
 
             // Add general systems
             .add_systems(Update, build_component.before(UiSystems::Compute));
