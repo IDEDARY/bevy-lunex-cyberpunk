@@ -20,7 +20,7 @@ fn build_route(mut commands: Commands, assets: Res<AssetServer>, query: Query<En
 
         // Spawn the master ui tree
         commands.entity(entity).insert((
-            UiTreeBundle::<MainUi>::from(UiTree::new("Settings")),
+            UiTreeBundle::<MainUi>::from(UiTree::new2d("Settings")),
         )).with_children(|ui| {
 
             // Spawn the root div

@@ -40,7 +40,7 @@ pub struct MovementAcceleration(Scalar);
 
 /// The damping factor used for slowing down movement.
 #[derive(Component)]
-pub struct MovementDampingFactor(Scalar);
+pub struct MovementDampingFactor(pub Scalar);
 
 /// The strength of a jump.
 #[derive(Component)]
@@ -234,8 +234,8 @@ fn movement(
         {
             match event {
                 MovementAction::Move(direction) => {
-                    linear_velocity.x += direction.x * movement_acceleration.0 * delta_time;
-                    linear_velocity.z -= direction.y * movement_acceleration.0 * delta_time;
+                    linear_velocity.x += direction.x * movement_acceleration.0 * delta_time * 3.0;
+                    linear_velocity.z -= direction.y * movement_acceleration.0 * delta_time * 3.0;
                 }
                 MovementAction::Jump => {
                     if is_grounded {
