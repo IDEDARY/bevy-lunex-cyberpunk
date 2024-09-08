@@ -205,8 +205,8 @@ fn player_movement(
             global += front_vector * local.x;
             global += right_vector * local.y;
     
-            physics.x += global.x * time.delta_seconds() * 1.0;
-            physics.z += global.y * time.delta_seconds() * 1.0;
+            physics.x += global.x * time.delta_seconds() * 4.0;
+            physics.z += global.y * time.delta_seconds() * 4.0;
         }
     }
 }

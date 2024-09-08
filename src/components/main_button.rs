@@ -24,7 +24,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &MainButton), 
 
         // This will create a private sandboxed UiTree within the entity just for the button
         commands.entity(entity).insert(
-            UiTreeBundle::<MainButtonUi>::from(UiTree::new("MainButton")),
+            UiTreeBundle::<MainButtonUi>::from(UiTree::new2d("MainButton")),
         ).with_children(|ui| {
 
             // Spawn button image

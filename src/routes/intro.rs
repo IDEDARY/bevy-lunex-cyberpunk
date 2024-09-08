@@ -32,8 +32,8 @@ fn build_route(mut commands: Commands, assets: Res<AssetServer>, preloader: Res<
 
             // Spawn the master ui tree
             route.spawn((
-                UiTreeBundle::<MainUi>::from(UiTree::new("Intro")),
-                MovableByCamera,
+                UiTreeBundle::<MainUi>::from(UiTree::new2d("Intro")),
+                SourceFromCamera,
             )).with_children(|ui| {
 
                 // Spawn the root div

@@ -32,7 +32,7 @@ fn build_component (mut commands: Commands, query: Query<(Entity, &Spinner), Add
 
         // This will create a private sandboxed UiTree within the entity just for the button
         commands.entity(entity).insert(
-            UiTreeBundle::<SpinnerUi>::from(UiTree::new("Spinner")),
+            UiTreeBundle::<SpinnerUi>::from(UiTree::new2d("Spinner")),
         ).with_children(|ui| {
 
             // Spawn chevron left

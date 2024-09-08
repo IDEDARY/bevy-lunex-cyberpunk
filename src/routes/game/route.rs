@@ -118,6 +118,7 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                 //ControllerInput::default(),
                 PlayerPlaneRotation::default(),
                 PlayerState::default(),
+                MovementDampingFactor(0.99),
                 //ControllerGravity::default(),
 
                 RigidBody::Dynamic,
@@ -236,19 +237,19 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
             route.spawn((
                 UiTreeBundle::<Ui3d> {
                     transform: Transform::from_xyz(0.0, 2.0, -2.0),
-                    tree: UiTree::new("Worldspace"),
+                    tree: UiTree::new3d("Worldspace"),
                     ..default()
                 },
             )).with_children(|ui|{
                 ui.spawn((
                     UiLink::<Ui3d>::path("Display"),
 
-                    UiLayout::boundary().pos2((1920.0/1000.0, 1080.0/1000.0)).pack::<Base>(),
-                    UiLayout::boundary().pos1((-100.0/1000.0, 0.0)).pos2((2020.0/1000.0, 1080.0/1000.0)).pack::<Hover>(),
+                    UiLayout::boundary().pos2((1920.0, 1080.0)).pack::<Base>(),
+                    UiLayout::boundary().pos1((-100.0, 0.0)).pos2((2020.0, 1080.0)).pack::<Hover>(),
                     UiLayoutController::default(),
 
                     PickableBundle::default(),
-                    SpriteSource::default(),
+                    SpriteSource,
                     UiAnimator::<Hover>::new().forward_speed(6.0).backward_speed(6.0),
                     OnHoverSetCursor::new(CursorIcon::Pointer),
 
@@ -260,19 +261,19 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
             route.spawn((
                 UiTreeBundle::<Ui3d> {
                     transform: Transform::from_xyz(0.0, 2.0, -2.5),
-                    tree: UiTree::new("Worldspace"),
+                    tree: UiTree::new3d("Worldspace"),
                     ..default()
                 },
             )).with_children(|ui|{
                 ui.spawn((
                     UiLink::<Ui3d>::path("Display"),
 
-                    UiLayout::boundary().pos2((1920.0/1000.0, 1080.0/1000.0)).pack::<Base>(),
-                    UiLayout::boundary().pos1((-100.0/1000.0, 0.0)).pos2((2020.0/1000.0, 1080.0/1000.0)).pack::<Hover>(),
+                    UiLayout::boundary().pos2((1920.0, 1080.0)).pack::<Base>(),
+                    UiLayout::boundary().pos1((-100.0, 0.0)).pos2((2020.0, 1080.0)).pack::<Hover>(),
                     UiLayoutController::default(),
 
                     PickableBundle::default(),
-                    SpriteSource::default(),
+                    SpriteSource,
                     UiAnimator::<Hover>::new().forward_speed(6.0).backward_speed(6.0),
                     OnHoverSetCursor::new(CursorIcon::Pointer),
 
@@ -283,15 +284,15 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
 
             // Spawn the master ui tree        
             route.spawn((
-                UiTreeBundle::<MainUi>::from(UiTree::new("HUD")),
-                MovableByCamera,
+                UiTreeBundle::<MainUi>::from(UiTree::new2d("HUD")),
+                SourceFromCamera,
             )).with_children(|ui| {
 
                 // Spawn 3D camera view
                 ui.spawn((
                     UiLink::<MainUi>::path("Camera"),
                     UiLayout::window_full().pack::<Base>(), // Make this resizable
-                    MovableByCamera,                        // This will resize the texture on Dimension change
+                    SourceFromCamera,                        // This will resize the texture on Dimension change
                     UiImage2dBundle::from(render_image),
                     PickingPortal,
                 ));
