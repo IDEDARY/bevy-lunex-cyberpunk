@@ -30,9 +30,9 @@
 
   # UI framework
   # This project is used to dogfood the Bevy Lunex library. Please select one version that works.
-  #bevy_lunex = { version = "0.2.3", features=["kira"]}
+  bevy_lunex = { version = "0.2.4", features=["kira"]}
   #bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev", features=["kira"] }
-  bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex", features=["kira"] }
+  #bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex", features=["kira"] }
 
   # Audio
   bevy_kira_audio = { version = "^0.20.0" }

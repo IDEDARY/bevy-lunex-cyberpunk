@@ -3,7 +3,7 @@
     { 
         "key": "f5",
         "command": "workbench.action.tasks.runTask",
-        "args": "rust: cargo run 1",
+        "args": "Run 1",
         "when": "editorLangId == 'rust'"
     }
 ]

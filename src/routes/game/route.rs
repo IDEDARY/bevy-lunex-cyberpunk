@@ -253,8 +253,18 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                     UiAnimator::<Hover>::new().forward_speed(6.0).backward_speed(6.0),
                     OnHoverSetCursor::new(CursorIcon::Pointer),
 
-                    //UiMaterial3dBundle::from_image(&mut material, asset_server.load("images/hud/hud.png")),
-                    UiMaterial3dBundle::from_transparent_image(&mut materials, asset_server.load("images/hud/hud.png")),
+                    UiMaterial3dBundle {
+                        material: materials.add(StandardMaterial {
+                            base_color_texture: Some(asset_server.load("images/hud/hud.png")),
+                            unlit: true,
+                            alpha_mode: AlphaMode::Blend,
+
+                            double_sided: true,
+                            cull_mode: None,
+                            
+                            ..default() }),
+                        ..default()
+                    }
                 ));
             });
 
@@ -277,8 +287,18 @@ fn build_route(mut commands: Commands, asset_server: Res<AssetServer>, query: Qu
                     UiAnimator::<Hover>::new().forward_speed(6.0).backward_speed(6.0),
                     OnHoverSetCursor::new(CursorIcon::Pointer),
 
-                    //UiMaterial3dBundle::from_image(&mut material, asset_server.load("images/hud/hud.png")),
-                    UiMaterial3dBundle::from_transparent_image(&mut materials, asset_server.load("images/hud/hud.png")),
+                    UiMaterial3dBundle {
+                        material: materials.add(StandardMaterial {
+                            base_color_texture: Some(asset_server.load("images/hud/hud.png")),
+                            unlit: true,
+                            alpha_mode: AlphaMode::Blend,
+
+                            double_sided: true,
+                            cull_mode: None,
+
+                            ..default() }),
+                        ..default()
+                    }
                 ));
             });
 
