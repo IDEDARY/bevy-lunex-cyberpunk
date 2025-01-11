@@ -35,7 +35,38 @@
 [dependencies]
 
   # GAME ENGINE
-  bevy = { version = "^0.15.1" }
+  bevy = { version = "^0.15.1", default-features = false, features = [
+    "animation",
+    "bevy_asset",
+    "bevy_color",
+    "bevy_core_pipeline",
+    "bevy_gilrs",
+    "bevy_gizmos",
+    "bevy_gltf",
+    "bevy_mesh_picking_backend",
+    "bevy_pbr",
+    "bevy_picking",
+    "bevy_render",
+    "bevy_scene",
+    "bevy_sprite",
+    "bevy_sprite_picking_backend",
+    "bevy_state",
+    "bevy_text",
+    "bevy_ui",
+    "bevy_ui_picking_backend",
+    "bevy_window",
+    "bevy_winit",
+    "custom_cursor",
+    "hdr",
+    "multi_threaded",
+    "png",
+    "smaa_luts",
+    "sysinfo_plugin",
+    "tonemapping_luts",
+    "vorbis",
+    "webgl2",
+    "x11",
+  ]}
   log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] }
 
   # ASSETS
