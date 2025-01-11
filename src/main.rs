@@ -1,4 +1,4 @@
-use avian3d::parry::utils::hashmap::HashMap;
+use bevy::utils::HashMap;
 use bevy::core_pipeline::bloom::Bloom;
 pub(crate) use bevy::prelude::*;
 pub(crate) use bevy_kira_audio::prelude::*;
