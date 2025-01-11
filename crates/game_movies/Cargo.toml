@@ -1,0 +1,24 @@
+#====================#
+#=== PACKAGE INFO ===#
+
+[package]
+  name = "game_movies"
+  authors.workspace = true
+  version.workspace = true
+  edition.workspace = true
+  license.workspace = true
+  repository.workspace = true
+
+#===============================#
+#=== DEPENDENCIES & FEATURES ===#
+
+[dependencies]
+
+  # GAME ENGINE
+  bevy = { workspace = true }
+
+  # ASSETS
+  vleue_kinetoscope = { workspace = true }
+
+  # AUDIO
+  bevy_kira_audio = { workspace = true }

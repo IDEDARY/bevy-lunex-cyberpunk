@@ -1,12 +1,14 @@
-#====================#
-#=== PACKAGE INFO ===#
+#======================#
+#=== WORKSPACE INFO ===#
 
-[package]
-  name = "bevypunk"
+[workspace]
+  resolver = "2"
+  members = ["app", "crates/*"]
+
+[workspace.package]
   authors     = ["IDEDARY"]
   version     = "0.0.1"
   edition     = "2021"
-  resolver    = "2"
   license     = "MIT OR Apache-2.0"
   repository  = "https://github.com/idedary/bevypunk"
 
@@ -32,7 +34,11 @@
 #===============================#
 #=== DEPENDENCIES & FEATURES ===#
 
-[dependencies]
+[workspace.dependencies]
+
+  # GAME CRATES
+  game_movies = { path = "crates/game_movies" }
+  game_vfx = { path = "crates/game_vfx" }
 
   # GAME ENGINE
   bevy = { version = "^0.15.1", default-features = false, features = [

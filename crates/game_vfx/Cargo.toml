@@ -1,0 +1,21 @@
+#====================#
+#=== PACKAGE INFO ===#
+
+[package]
+  name = "game_vfx"
+  authors.workspace = true
+  version.workspace = true
+  edition.workspace = true
+  license.workspace = true
+  repository.workspace = true
+
+#===============================#
+#=== DEPENDENCIES & FEATURES ===#
+
+[dependencies]
+
+  # GAME ENGINE
+  bevy = { workspace = true }
+
+  # OTHER
+  rand = { workspace = true }

@@ -4,6 +4,7 @@
 		{
 			"type": "cargo",
 			"command": "run",
+			"args": ["--bin", "bevypunk"],
 			"problemMatcher": [
 				"$rustc"
 			],

@@ -4,6 +4,9 @@ pub(crate) use bevy::prelude::*;
 pub(crate) use bevy_kira_audio::prelude::*;
 pub(crate) use vleue_kinetoscope::*;
 
+//pub(crate) use game_movies::*;
+pub(crate) use game_vfx::*;
+
 use bevy_embedded_assets::*;
 
 
@@ -50,34 +53,4 @@ fn start_intro(mut commands: Commands, asset_server: Res<AssetServer>, priority_
     // Start the intro together with music
     commands.spawn(AnimatedImageController::play(priority_assets.video.get("intro").unwrap().clone()));
     audio.play(asset_server.load("audio/intro.ogg"));
-}
-
-
-// #===============================#
-// #=== VFX LOGIC AND ANIMATION ===#
-
-#[derive(Component)]
-pub struct VFXBloomFlicker;
-impl VFXBloomFlicker {
-    /// System for immitating flickering by randomly adjusting camera's bloom values
-    fn system(mut query: Query<&mut Bloom, With<VFXBloomFlicker>>) {
-        use rand::Rng;
-
-        for mut bloom in &mut query {
-            let mut rng = rand::thread_rng();
-            if rng.gen_range(0..100) < 20 {
-                // This formula will make the value jumping smooth and natural, like neon flicker
-                bloom.intensity += (rng.gen_range(0.20..0.30)-bloom.intensity)/6.0;
-                bloom.prefilter.threshold += (rng.gen_range(0.20..0.30)-bloom.prefilter.threshold)/4.0;
-            }
-        }
-    }
-}
-
-/// Plugin with VFX systems for our menu
-pub struct VFXPlugin;
-impl Plugin for VFXPlugin {
-    fn build(&self, app: &mut App) {
-        app.add_systems(Update, VFXBloomFlicker::system);
-    }
 }

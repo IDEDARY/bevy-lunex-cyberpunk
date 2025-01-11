@@ -1,0 +1,33 @@
+#====================#
+#=== PACKAGE INFO ===#
+
+[package]
+  name = "bevypunk"
+  authors.workspace = true
+  version.workspace = true
+  edition.workspace = true
+  license.workspace = true
+  repository.workspace = true
+
+#===============================#
+#=== DEPENDENCIES & FEATURES ===#
+
+[dependencies]
+
+  # GAME CRATES
+  game_movies = { workspace = true }
+  game_vfx = { workspace = true }
+
+  # GAME ENGINE
+  bevy = { workspace = true }
+  log = { workspace = true }
+
+  # ASSETS
+  vleue_kinetoscope = { workspace = true }
+  bevy_embedded_assets = { workspace = true }
+
+  # AUDIO
+  bevy_kira_audio = { workspace = true }
+
+  # PHYSICS
+  avian3d = { workspace = true }
