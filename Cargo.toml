@@ -1,3 +1,6 @@
+#====================#
+#=== PACKAGE INFO ===#
+
 [package]
   name = "bevypunk"
   authors     = ["IDEDARY"]
@@ -7,10 +10,13 @@
   license     = "MIT OR Apache-2.0"
   repository  = "https://github.com/idedary/bevypunk"
 
+#========================#
+#=== PACKAGE SETTINGS ===#
+
 [profile.dev]
   debug = 0
   strip = "debuginfo"
-  opt-level = 0
+  opt-level = 1
 
 [profile.dev.package."*"]
   opt-level = 3
@@ -23,56 +29,25 @@
   lto = "thin"
   codegen-units = 1
 
+#===============================#
+#=== DEPENDENCIES & FEATURES ===#
+
 [dependencies]
 
-  # Required for VFX
+  # GAME ENGINE
+  bevy = { version = "^0.15.1" }
+  log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] }
+
+  # ASSETS
+  vleue_kinetoscope = { version = "^0.3.0" }
+  bevy_embedded_assets = { version = "^0.12.0" }
+
+  # AUDIO
+  bevy_kira_audio = { version = "^0.22.0" }
+
+  # PHYSICS
+  avian3d = { version = "^0.2.0" }
+
+
+  # OTHER
   rand = "0.8.5"
-
-  # UI framework
-  # This project is used to dogfood the Bevy Lunex library. Please select one version that works.
-  #bevy_lunex = { version = "0.2.3", features=["kira"]}
-  #bevy_lunex = { git = "https://github.com/bytestring-net/bevy_lunex", branch="dev", features=["kira"] }
-  bevy_lunex = { path = "/home/dominik/Projects/Bytestring/bevy_lunex/crates/bevy_lunex", features=["kira"] }
-
-  # Audio
-  bevy_kira_audio = { version = "^0.20.0" }
-
-  # Physics
-  avian3d = "^0.1.0"
-
-  # Game engine
-  bevy = { version = "^0.14.0", default-features = false, features = [
-    # Core
-    "bevy_core_pipeline",
-    "multi_threaded",
-    "bevy_winit",
-    #"bevy_audio",
-    "bevy_sprite",
-    "bevy_gilrs",
-    "bevy_text",
-    "webgl2",
-
-    # Core formats
-    #"vorbis",
-    "png",
-
-    # VFX
-    "hdr",
-    "tonemapping_luts",
-    
-    # 3D
-    "jpeg",
-    "bevy_gltf",
-
-    #"dynamic_linking",
-  ] }
-
-# Not WASM
-[target.'cfg(not(target_family = "wasm"))'.dependencies]
-  bevy_embedded_assets = { version = "^0.11.0" }
-  #vleue_kinetoscope = "0.2.0"
-  vleue_kinetoscope = { git = "https://github.com/IDEDARY/vleue_kinetoscope" }
-
-# Platform specific
-[target.'cfg(unix)'.dependencies]
-  bevy = { version = "^0.14.0", default-features = false, features = ["x11", "wayland"] }

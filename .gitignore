@@ -13,11 +13,6 @@ Cargo.lock
 # MSVC Windows builds of rustc generate these, which store debugging information
 *.pdb
 
+# Krita backup files
 **/*.kra~
-assets_src
 **/*.png~
-
-assets/scenes/apartment_nomat.glb
-
-bevypunk
-webbuild.zip
