@@ -4,7 +4,7 @@ pub(crate) use bevy::prelude::*;
 pub(crate) use bevy_kira_audio::prelude::*;
 pub(crate) use vleue_kinetoscope::*;
 
-//pub(crate) use game_movies::*;
+pub(crate) use game_movies::*;
 pub(crate) use game_vfx::*;
 
 use bevy_embedded_assets::*;
@@ -36,7 +36,7 @@ fn main() -> AppExit {
     // ----- START THE APPLICATION -----
 
     app.add_systems(Startup, start_intro);
-    app.add_plugins(VFXPlugin);
+    app.add_plugins((VFXPlugin, MoviePlugin));
 
     app.run()
 }
@@ -46,11 +46,10 @@ pub struct PriorityAssets {
     video: HashMap<String, Handle<AnimatedImage>>,
 }
 
-fn start_intro(mut commands: Commands, asset_server: Res<AssetServer>, priority_assets: Res<PriorityAssets>, audio: Res<Audio>) {
+fn start_intro(mut commands: Commands, asset_server: Res<AssetServer>, priority_assets: Res<PriorityAssets>) {
     // Spawn the camera
     commands.spawn((Camera2d, Camera { hdr: true, ..default() }, Bloom::OLD_SCHOOL, VFXBloomFlicker));
     
     // Start the intro together with music
-    commands.spawn(AnimatedImageController::play(priority_assets.video.get("intro").unwrap().clone()));
-    audio.play(asset_server.load("audio/intro.ogg"));
+    commands.spawn(Movie::play(priority_assets.video.get("intro").unwrap().clone(), asset_server.load("audio/intro.ogg")));
 }

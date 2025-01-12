@@ -69,14 +69,14 @@
     "smaa_luts",
     "sysinfo_plugin",
     "tonemapping_luts",
-    "vorbis",
     "webgl2",
     "x11",
   ]}
   log = { version = "*", features = ["max_level_debug", "release_max_level_warn"] }
 
   # ASSETS
-  vleue_kinetoscope = { version = "^0.3.0" }
+  #vleue_kinetoscope = { version = "^0.3.1" }
+  vleue_kinetoscope = { git = "https://github.com/IDEDARY/vleue_kinetoscope", branch = "pause-pr"}
   bevy_embedded_assets = { version = "^0.12.0" }
 
   # AUDIO
