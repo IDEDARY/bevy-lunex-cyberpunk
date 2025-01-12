@@ -27,7 +27,7 @@ fn main() -> AppExit {
     let mut priority_assets = PriorityAssets::default();
 
     // Load the game intro
-    let intro = AnimatedImageLoader::load_now("assets/images/movies/intro.webp".into(), &mut app).expect("Priority load failed");
+    let intro = AnimatedImageLoader::load_now_from_bytes(include_bytes!("../../assets/images/movies/intro_720p.webp"),"webp", &mut app).expect("Priority load failed");
     priority_assets.video.insert("intro".to_string(), intro);
 
     app.insert_resource(priority_assets);
@@ -51,5 +51,5 @@ fn start_intro(mut commands: Commands, asset_server: Res<AssetServer>, priority_
     commands.spawn((Camera2d, Camera { hdr: true, ..default() }, Bloom::OLD_SCHOOL, VFXBloomFlicker));
     
     // Start the intro together with music
-    commands.spawn(Movie::play(priority_assets.video.get("intro").unwrap().clone(), asset_server.load("audio/intro.ogg")));
+    commands.spawn(Movie::play(priority_assets.video.get("intro").unwrap().clone(), asset_server.load("audio/intro.ogg")).playback(MoviePlayback::Stop));
 }
